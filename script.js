@@ -22,12 +22,7 @@ document.querySelectorAll('.reveal-on-scroll').forEach(el => {
   io.observe(el);
 });
 
-// Dynamic vh for mobile (iOS Safari address bar)
-(function setDynamicVh(){
-  const setVh = () => { document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`); };
-  setVh();
-  window.addEventListener('resize', setVh, { passive: true });
-})();
+// (hero dynamic vh removed per revert)
 
 /* ---------- How it Works ---------- */
 const tabButtons = document.querySelectorAll('.tab-btn');

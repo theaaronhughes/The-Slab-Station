@@ -49,10 +49,7 @@
     /* Review Modal (Netlify form) */
     #reviewModal{position:fixed;inset:0;z-index:2147483647 !important}
 
-    /* --- Hero dynamic viewport height to avoid iOS address bar issues --- */
-    .hero-viewport{ height: calc(var(--vh, 1vh) * 60); }
-    @media (min-width:640px){ .hero-viewport{ height: 64vh; height: 64dvh; } }
-    @media (min-width:1024px){ .hero-viewport{ height: 61vh; height: 61dvh; } }
+    /* (hero dynamic viewport removed per revert) */
 
     /* Simple loading state */
     .btn-busy{opacity:.7;pointer-events:none;position:relative}
