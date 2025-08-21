@@ -77,6 +77,23 @@
       .feature-card{padding:4px 8px;font-size:14px}
     }
 
+    /* Builder: stack preview above form and keep preview visible on mobile */
+    @media (max-width: 640px){
+      #builder .grid{grid-template-columns:1fr}
+      #builder .sticky{position:sticky;top:96px}
+    }
+
+    /* General mobile polish */
+    @media (max-width: 640px){
+      body{font-size:15px}
+      section{padding:8px 16px}
+    }
+
+    /* Reveal animation + subtle accents */
+    .reveal-on-scroll{animation:fadeIn .5s ease-out forwards}
+    @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .feature-card{border-color:rgba(255,255,255,.1)}
+
   </style>
 </head>
 <body class="bg-black text-white antialiased selection:bg-white/15">
@@ -145,12 +162,12 @@
         <h2 class="text-3xl sm:text-4xl font-extrabold text-center mb-12">Why The Slab Station?</h2>
 
         <div class="grid lg:grid-cols-[1fr,2fr,1fr] gap-10 items-center justify-items-center">
-          <!-- Left GIF -->
+          <!-- Left video (WebM with GIF fallback) -->
           <div class="w-full flex justify-center self-center">
-            <img src="assets/images/spinnobackground2.gif"
-                 alt="Rotating slab demo of The Slab Station"
-                 loading="lazy" decoding="async"
-                 class="w-full max-w-[520px] md:max-w-[560px] reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700" />
+            <video class="w-full max-w-[520px] md:max-w-[560px] reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700" autoplay loop muted playsinline>
+              <source src="assets/images/spinnobackground2.webm" type="video/webm">
+              <img src="assets/images/spinnobackground2.gif" alt="Rotating slab demo of The Slab Station" loading="lazy" decoding="async">
+            </video>
           </div>
 
           <!-- Feature grid -->
@@ -264,8 +281,8 @@
     <section id="builder" class="bg-gradient-to-b from-black to-zinc-900">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
         <div class="grid lg:grid-cols-2 gap-12 items-start">
-          <!-- Preview -->
-          <div>
+          <!-- Preview (sticky on mobile) -->
+          <div class="sticky top-0 z-10 bg-black pb-4">
             <img id="productPreview" src="assets/images/black.jpg" alt="Selected Slab Station style"
                  class="mx-auto w-full max-w-xl rounded-2xl ring-1 ring-white/10 shadow-2xl shadow-white/10 reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700">
           </div>
@@ -299,6 +316,11 @@
                   <option>Red/White/Red</option>
                   <option>Custom Colors</option>
                 </select>
+              </label>
+
+              <label class="flex items-center gap-2">
+                <input type="checkbox" id="livePreviewToggle" checked class="h-4 w-4">
+                <span class="text-sm text-white/70">Show Live Preview</span>
               </label>
 
               <div id="customColors" class="grid sm:grid-cols-3 gap-4 hidden">

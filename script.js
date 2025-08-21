@@ -67,6 +67,7 @@ const lidColor = document.getElementById('lidColor');
 const pillarColor = document.getElementById('pillarColor');
 const baseColor = document.getElementById('baseColor');
 const addOns = document.getElementById('addOns');
+const livePreviewToggle = document.getElementById('livePreviewToggle');
 const qtyMinus2 = document.getElementById('qtyMinus2');
 const qtyPlus2 = document.getElementById('qtyPlus2');
 const qtyInput2 = document.getElementById('qtyInput2');
@@ -142,6 +143,14 @@ function updatePreview(){
   if (previewImg){ previewImg.src = src; previewImg.alt = `Slab Station — ${style}`; }
 }
 updatePreview();
+
+// Live preview toggle
+if (livePreviewToggle) {
+  livePreviewToggle.addEventListener('change', () => {
+    const img = document.getElementById('productPreview');
+    if (img) img.classList.toggle('hidden', !livePreviewToggle.checked);
+  });
+}
 
 // Notes character counter and limit
 customNotes?.addEventListener('input', () => {
