@@ -49,9 +49,7 @@
     /* Review Modal (Netlify form) */
     #reviewModal{position:fixed;inset:0;z-index:2147483647 !important}
 
-    /* (hero dynamic viewport removed per revert) */
-
-    /* --- Optimized Hero (mobile-first) --- */
+    /* Mobile-optimized hero */
     .hero{min-height:68vh;position:relative;overflow:hidden}
     @supports(height:1svh){.hero{min-height:68svh}}
     @media (min-width:640px){.hero{min-height:64vh}@supports(height:1dvh){.hero{min-height:64dvh}}}
@@ -106,12 +104,11 @@
   <main id="top">
     <!-- HERO (image + overlay copy) -->
     <section class="hero">
-      <img
-        src="assets/images/backgroundmain.JPG"
-        srcset="assets/images/backgroundmain.webp 1x, assets/images/backgroundmain-2x.webp 2x"
-        alt="The Slab Station hero"
-        class="hero-img absolute inset-0 w-full h-full reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700"
-      />
+      <img src="assets/images/backgroundmain.JPG"
+           srcset="assets/images/backgroundmain.webp 1x, assets/images/backgroundmain-2x.webp 2x"
+           alt="The Slab Station hero"
+           fetchpriority="high"
+           class="hero-img absolute inset-0 w-full h-full reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700" />
       <div class="relative z-10 h-full flex items-center justify-center">
         <div class="text-center space-y-5 px-4">
           <p class="uppercase tracking-[.35em] text-sm text-white/70">THE SLAB STATION</p>
@@ -137,13 +134,10 @@
         <div class="grid lg:grid-cols-[1fr,2fr,1fr] gap-10 items-center justify-items-center">
           <!-- Left GIF -->
           <div class="w-full flex justify-center self-center">
-            <img
-              src="assets/images/spinnobackground2.gif"
-              alt="Rotating slab demo"
-              class="w-full max-w-[520px] md:max-w-[560px] reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700"
-              loading="lazy"
-              fetchpriority="low"
-            />
+            <video class="w-full max-w-[520px] md:max-w-[560px] reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700" autoplay loop muted playsinline>
+              <source src="assets/images/spinnobackground2.webm" type="video/webm">
+              <img src="assets/images/spinnobackground2.gif" alt="Rotating slab demo">
+            </video>
           </div>
 
           <!-- Feature grid -->
