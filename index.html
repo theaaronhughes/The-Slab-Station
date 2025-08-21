@@ -33,7 +33,7 @@
 
     body.modal-open{overflow:hidden}
 
-    /* -------- Instagram (SnapWidget) – tighter crop to kill the white strip -------- */
+    /* -------- Instagram (SnapWidget) – eliminate potential white strip below iframe -------- */
 .ig-frame-crop{
   --igH: 330px;                  /* desktop height */
   height: var(--igH);
@@ -46,24 +46,24 @@
 .ig-frame-crop .snapwidget-widget{
   display: block !important;
   width: 100% !important;
-  height: calc(var(--igH) + 28px) !important;  /* a bit taller than the wrapper */
+  height: calc(var(--igH) + 36px) !important;  /* oversize slightly to avoid subpixel gaps */
   background: transparent !important;
-  transform: translateY(-14px);                /* crop more from the bottom */
+  transform: translateY(-18px);                /* crop extra from the bottom */
   border: 0 !important;
   vertical-align: top;
 }
 @media (max-width:1024px){
   .ig-frame-crop{ --igH: 270px; }
   .ig-frame-crop .snapwidget-widget{
-    height: calc(var(--igH) + 24px) !important;
-    transform: translateY(-12px);
+    height: calc(var(--igH) + 30px) !important;
+    transform: translateY(-15px);
   }
 }
 @media (max-width:640px){
   .ig-frame-crop{ --igH: 210px; }
   .ig-frame-crop .snapwidget-widget{
-    height: calc(var(--igH) + 22px) !important;
-    transform: translateY(-11px);
+    height: calc(var(--igH) + 26px) !important;
+    transform: translateY(-13px);
   }
 }
 
@@ -440,7 +440,7 @@
                 frameborder="0"
                 scrolling="no"
                 title="Posts from Instagram"
-                style="border:none;overflow:hidden;width:100%;background:transparent;">
+                style="display:block;width:100%;height:100%;border:0;background:transparent;overflow:hidden;">
               </iframe>
             </div>
           </div>
