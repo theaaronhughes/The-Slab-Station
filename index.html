@@ -49,6 +49,11 @@
     /* Review Modal (Netlify form) */
     #reviewModal{position:fixed;inset:0;z-index:2147483647 !important}
 
+    /* --- Hero dynamic viewport height to avoid iOS address bar issues --- */
+    .hero-viewport{ height: calc(var(--vh, 1vh) * 60); }
+    @media (min-width:640px){ .hero-viewport{ height: 64vh; height: 64dvh; } }
+    @media (min-width:1024px){ .hero-viewport{ height: 61vh; height: 61dvh; } }
+
     /* Simple loading state */
     .btn-busy{opacity:.7;pointer-events:none;position:relative}
     .btn-busy::after{content:"";position:absolute;right:12px;top:50%;width:16px;height:16px;border:2px solid rgba(255,255,255,.5);border-top-color:#fff;border-radius:50%;transform:translateY(-50%);animation:spin .9s linear infinite}
@@ -96,7 +101,7 @@
     <!-- HERO IMAGE -->
     <section class="relative">
       <img src="assets/images/backgroundmain.JPG" alt="The Slab Station hero"
-           class="w-full h-[60vh] sm:h-[64vh] lg:h-[61vh] object-cover reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700" />
+           class="hero-viewport w-full object-contain sm:object-cover object-[center_15%] sm:object-center reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700" />
     </section>
 
     <!-- HERO COPY -->
