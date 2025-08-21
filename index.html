@@ -49,6 +49,14 @@
     /* Review Modal (Netlify form) */
     #reviewModal{position:fixed;inset:0;z-index:2147483647 !important}
 
+    /* Simple loading state */
+    .btn-busy{opacity:.7;pointer-events:none;position:relative}
+    .btn-busy::after{content:"";position:absolute;right:12px;top:50%;width:16px;height:16px;border:2px solid rgba(255,255,255,.5);border-top-color:#fff;border-radius:50%;transform:translateY(-50%);animation:spin .9s linear infinite}
+    @keyframes spin{to{transform:translateY(-50%) rotate(360deg)}}
+
+    /* Back to top */
+    #backToTop{position:fixed;right:16px;bottom:16px;z-index:50}
+
   </style>
 </head>
 <body class="bg-black text-white antialiased selection:bg-white/15">
@@ -183,19 +191,19 @@
         <h2 class="text-3xl sm:text-4xl font-extrabold text-center">How It Works — Slab Station in Action</h2>
         <p class="text-white/70 text-center mt-3 max-w-3xl mx-auto">See how the Slab Station revolutionizes the way you store and display your graded cards.</p>
 
-        <div class="mt-6 flex items-center justify-center gap-3">
-          <button class="tab-btn active rounded-xl px-5 py-3 bg-white/15 hover:bg-white/20 border border-white/20 focus-ring" data-target="tab-setup" aria-selected="true">Setup &amp; Storage</button>
-          <button class="tab-btn rounded-xl px-5 py-3 bg-white/15 hover:bg-white/20 border border-white/20 focus-ring" data-target="tab-showcase" aria-selected="false">Showcase Mode</button>
+        <div class="mt-6 flex items-center justify-center gap-3" role="tablist" aria-label="How it Works Tabs">
+          <button class="tab-btn active rounded-xl px-5 py-3 bg-white/15 hover:bg-white/20 border border-white/20 focus-ring" role="tab" id="tabbtn-setup" aria-controls="tab-setup" data-target="tab-setup" aria-selected="true" tabindex="0">Setup &amp; Storage</button>
+          <button class="tab-btn rounded-xl px-5 py-3 bg-white/15 hover:bg-white/20 border border-white/20 focus-ring" role="tab" id="tabbtn-showcase" aria-controls="tab-showcase" data-target="tab-showcase" aria-selected="false" tabindex="-1">Showcase Mode</button>
         </div>
 
         <div class="mt-6 max-w-5xl mx-auto">
           <div class="rounded-3xl border border-white/15 p-2">
-            <div id="tab-setup" class="tab-panel">
+            <div id="tab-setup" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn-setup">
               <div class="relative rounded-2xl overflow-hidden bg-black" style="aspect-ratio:16/9;">
                 <video id="video-setup" class="absolute inset-0 h-full w-full object-contain" muted autoplay loop playsinline preload="metadata"></video>
               </div>
             </div>
-            <div id="tab-showcase" class="tab-panel hidden">
+            <div id="tab-showcase" class="tab-panel hidden" role="tabpanel" aria-labelledby="tabbtn-showcase">
               <div class="relative rounded-2xl overflow-hidden bg-black" style="aspect-ratio:16/9;">
                 <video id="video-showcase" class="absolute inset-0 h-full w-full object-contain" muted loop playsinline preload="metadata"></video>
               </div>
@@ -313,6 +321,7 @@
                 <p class="text-white/60 text-xs mt-1">+ $19.95 Australia Wide Postage (added to total)</p>
                 <div class="mt-4 space-y-2 text-sm">
                   <div class="flex items-center justify-between"><span class="text-white/80">Subtotal</span><span id="subtotalPrice">$119.95</span></div>
+                  <div class="flex items-center justify-between"><span class="text-white/80">Custom Colors Fee</span><span id="customFeePrice">$0.00</span></div>
                   <div class="flex items-center justify-between"><span class="text-white/80">Shipping</span><span id="shippingPrice">$19.95</span></div>
                 </div>
                 <div class="mt-3 pt-3 border-t border-white/10 flex items-center justify-between">
@@ -469,6 +478,11 @@
       </div>
     </div>
   </div>
+
+  <!-- Back to top button -->
+  <button id="backToTop" class="hidden rounded-full bg-white/10 border border-white/20 p-3 hover:bg-white/20 focus-ring" aria-label="Back to top">
+    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 15l7-7 7 7"/></svg>
+  </button>
 
   <!-- REVIEW MODAL (Netlify form) -->
   <div id="reviewModal" class="fixed inset-0 hidden">

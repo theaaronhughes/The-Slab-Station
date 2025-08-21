@@ -74,19 +74,23 @@ const basePriceEl = document.getElementById('basePrice');
 const subtotalEl = document.getElementById('subtotalPrice');
 const shippingEl = document.getElementById('shippingPrice');
 const grandTotalEl = document.getElementById('grandTotal');
+const customFeeEl = document.getElementById('customFeePrice');
 
 const BASE = 119.95;
 const ADDON_PRICE = 14.95;
 const SHIPPING = 19.95; // added once per order
+const CUSTOM_COLOR_FEE = 10.00; // additional for custom colors
 
 function fmt(n){ return `$${n.toFixed(2)}`; }
 
 function computeParts(){
   const qty = Math.max(1, parseInt(qtyInput2.value || '1', 10));
   const addon = addOns.value.includes('Pokéball') ? ADDON_PRICE : 0;
-  const subtotal = (BASE + addon) * qty;
+  const isCustom = selectedStyle?.value === 'Custom Colors';
+  const customFee = isCustom ? CUSTOM_COLOR_FEE : 0;
+  const subtotal = (BASE + addon + customFee) * qty;
   const total = subtotal + SHIPPING;
-  return { qty, addon, subtotal, total };
+  return { qty, addon, customFee, subtotal, total };
 }
 function updateTotals(){
   const p = computeParts();
@@ -94,6 +98,7 @@ function updateTotals(){
   subtotalEl.textContent = fmt(p.subtotal);
   shippingEl.textContent = fmt(SHIPPING);
   grandTotalEl.textContent = fmt(p.total);
+  if (customFeeEl) customFeeEl.textContent = fmt(p.customFee);
   // Update PayID modal total if open
   const due = document.getElementById('payidDue');
   if (due) due.textContent = `Total due: ${fmt(p.total)} AUD`;
@@ -110,6 +115,7 @@ selectedStyle?.addEventListener('change', () => {
   customColors.classList.toggle('hidden', !isCustom);
   customNotesWrap.classList.toggle('hidden', !isCustom);
   updatePreview();
+  updateTotals();
 });
 [lidColor, pillarColor, baseColor].forEach(el => el?.addEventListener('change', updatePreview));
 gradingService?.addEventListener('change', updatePreview);
@@ -135,6 +141,21 @@ function updatePreview(){
 }
 updatePreview();
 
+// Notes character counter and limit
+customNotes?.addEventListener('input', () => {
+  const max = 500;
+  if (customNotes.value.length > max) customNotes.value = customNotes.value.slice(0,max);
+  const counter = document.getElementById('customNotesCount');
+  if (counter) counter.textContent = String(customNotes.value.length);
+});
+
+// Validate qty field to ensure >=1 and integer
+qtyInput2?.addEventListener('blur', () => {
+  const v = parseInt(qtyInput2.value || '1', 10);
+  if (!Number.isFinite(v) || v < 1) qtyInput2.value = '1';
+  updateTotals();
+});
+
 function buildOrder(){
   const { qty, addon, subtotal, total } = computeParts();
   const style = selectedStyle.value;
@@ -154,6 +175,8 @@ const cardCheckoutBtn = document.getElementById('cardCheckoutBtn');
 const appleCheckoutBtn = document.getElementById('appleCheckoutBtn');
 
 async function startStripeCheckout() {
+  const btns = [cardCheckoutBtn, appleCheckoutBtn].filter(Boolean);
+  btns.forEach(b=>b.classList.add('btn-busy'));
   const order = buildOrder();
   try {
     const res = await fetch('/.netlify/functions/create-checkout', {
@@ -165,6 +188,7 @@ async function startStripeCheckout() {
     if (data?.url) window.location.href = data.url;
     else alert('Could not start checkout. Check your Stripe keys/function.');
   } catch (e) { console.error(e); alert('Stripe checkout error.'); }
+  finally { btns.forEach(b=>b.classList.remove('btn-busy')); }
 }
 cardCheckoutBtn?.addEventListener('click', startStripeCheckout);
 appleCheckoutBtn?.addEventListener('click', startStripeCheckout);
@@ -279,7 +303,7 @@ payidSubmit?.addEventListener('click', async () => {
     payid_reference: must('pd_ref').value || null
   };
 
-  payidSubmit.disabled = true;
+  payidSubmit.disabled = true; payidSubmit.classList.add('btn-busy');
   await sendOrderEmail('PAYID', null, buildOrder(), buyer);
   window.location.href = 'thankyou.html';
 });
@@ -304,6 +328,18 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     }
   });
 });
+
+// Back to top visibility + behavior
+(function(){
+  const btn = document.getElementById('backToTop');
+  if (!btn) return;
+  const onScroll = () => {
+    if (window.scrollY > 600) btn.classList.remove('hidden');
+    else btn.classList.add('hidden');
+  };
+  window.addEventListener('scroll', onScroll, { passive:true });
+  btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+})();
 
 /* ---------- Reviews carousel ---------- */
 const reviewsViewport = document.getElementById('reviewsViewport');
