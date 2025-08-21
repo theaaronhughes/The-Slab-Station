@@ -471,8 +471,18 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!track) return;
 
   const base = 'assets/instagram';
-  // Use ig-1.jpg ... ig-12.jpg. If some files are missing, they will be skipped on error.
-  const files = Array.from({ length: 12 }, (_, i) => `${base}/ig-${i+1}.jpg`);
+  // Primary pattern: ig-1..ig-24 with common extensions
+  const numMax = 24;
+  const exts = ['.jpg','.JPG','.jpeg','.JPEG','.png','.PNG','.webp','.WEBP'];
+  const primary = [];
+  for (let i=1;i<=numMax;i++) {
+    for (const ext of exts) primary.push(`${base}/ig-${i}${ext}`);
+  }
+  // Secondary: a few common filenames already in repo; safe image types only
+  const secondary = [
+    'IMG_8983.JPG','IMG_9004.JPG','IMG_9005.JPG','IMG_9791.jpg',
+    'RWR.JPG','backgroundmain.jpg','black.JPG','redbluered.JPG','white.JPG','whiteblue.JPG','whitered.JPG'
+  ].map(n => `${base}/${n}`);
 
   function addItem(src){
     const a = document.createElement('a'); a.href = src; a.target = '_blank'; a.rel='noopener'; a.className='ig-row-item';
@@ -480,17 +490,25 @@ document.addEventListener('DOMContentLoaded', () => {
     img.src = src; img.onerror = () => { a.remove(); };
     a.appendChild(img); track.appendChild(a);
   }
+  // Try primary pattern first, then fallback to secondary and as a last resort, product images
+  primary.forEach(addItem);
+  if (track.children.length === 0) secondary.forEach(addItem);
+  if (track.children.length === 0) {
+    ['assets/images/black.jpg','assets/images/white.jpg','assets/images/IMG_9805.jpg','assets/images/IMG_9792.jpg','assets/images/IMG_9002.JPG','assets/images/orange.JPG']
+      .forEach(addItem);
+  }
 
-  files.forEach(addItem);
+  const itemCount = track.children.length;
+  if (itemCount === 0) return; // nothing to animate
   // Duplicate once for looping effect
-  files.forEach(addItem);
+  const snapshot = Array.from(track.children).map(n => n.querySelector('img')?.src).filter(Boolean);
+  snapshot.forEach(src => addItem(src));
 
   let offset = 0; const speed = 0.6; // px per frame
   function step(){
     offset -= speed;
-    // reset when we scrolled past half (since we duplicated items)
-    const firstWidth = track.scrollWidth / 2;
-    if (Math.abs(offset) >= firstWidth) offset = 0;
+    const half = track.scrollWidth / 2;
+    if (half > 0 && Math.abs(offset) >= half) offset = 0;
     track.style.transform = `translateX(${offset}px)`;
     requestAnimationFrame(step);
   }
