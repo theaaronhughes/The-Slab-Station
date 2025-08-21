@@ -41,30 +41,25 @@
   border-radius: 1rem;
   background:#000;
   line-height: 0;                /* remove baseline gap */
-  position: relative;
+  position: relative;            /* anchor absolutely-positioned iframe */
 }
 .ig-frame-crop .snapwidget-widget{
   display: block !important;
+  position: absolute !important;
+  left: 0; right: 0; top: -20px; /* nudge up to hide any internal white bar */
   width: 100% !important;
-  height: calc(var(--igH) + 36px) !important;  /* oversize slightly to avoid subpixel gaps */
+  height: calc(100% + 40px) !important; /* overscan vertically to avoid subpixel gaps */
   background: transparent !important;
-  transform: translateY(-18px);                /* crop extra from the bottom */
   border: 0 !important;
   vertical-align: top;
 }
 @media (max-width:1024px){
   .ig-frame-crop{ --igH: 270px; }
-  .ig-frame-crop .snapwidget-widget{
-    height: calc(var(--igH) + 30px) !important;
-    transform: translateY(-15px);
-  }
+  .ig-frame-crop .snapwidget-widget{ top: -16px; height: calc(100% + 32px) !important; }
 }
 @media (max-width:640px){
   .ig-frame-crop{ --igH: 210px; }
-  .ig-frame-crop .snapwidget-widget{
-    height: calc(var(--igH) + 26px) !important;
-    transform: translateY(-13px);
-  }
+  .ig-frame-crop .snapwidget-widget{ top: -14px; height: calc(100% + 28px) !important; }
 }
 
   </style>
