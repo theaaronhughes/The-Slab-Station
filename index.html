@@ -95,17 +95,16 @@
   </header>
 
   <main id="top">
-    <!-- HERO SECTION (Combined image + copy with overlay) -->
-    <section class="relative min-h-[60vh] sm:min-h-[64vh] lg:min-h-[61vh]">
-      <!-- Background image -->
-      <div class="absolute inset-0">
-        <img src="assets/images/backgroundmain.JPG" alt="The Slab Station hero"
-             srcset="assets/images/backgroundmain.webp 1x, assets/images/backgroundmain-2x.webp 2x"
-             class="hero-viewport w-full object-contain sm:object-cover object-[center_15%] sm:object-center reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700">
-      </div>
-      <!-- Overlay content -->
-      <div class="absolute inset-0 flex items-center justify-center">
-        <div class="text-center space-y-5 px-4">
+    <!-- HERO IMAGE -->
+    <section class="relative">
+      <img src="assets/images/backgroundmain.JPG" alt="The Slab Station hero"
+           class="w-full h-[48vh] sm:h-[54vh] lg:h-[61vh] object-cover reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700" />
+    </section>
+
+    <!-- HERO COPY -->
+    <section class="bg-black">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+        <div class="text-center space-y-5">
           <p class="uppercase tracking-[.35em] text-sm text-white/70">THE SLAB STATION</p>
           <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight">
             The Ultimate <span class="bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">Slab Showcase</span>
