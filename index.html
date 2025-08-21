@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
   <title>The Slab Station — The Ultimate Slab Showcase</title>
   <meta name="description" content="Premium rotating, stackable slab display for PSA/BGS trading cards.">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -33,6 +33,17 @@
 
     body.modal-open{overflow:hidden}
 
+    /* iOS safe area for sticky header */
+    header{padding-top: env(safe-area-inset-top, 0)}
+
+    /* Faster taps on mobile nav links */
+    header nav a{touch-action:manipulation}
+
+    /* Reduce motion preference */
+    @media (prefers-reduced-motion: reduce){
+      *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+    }
+
     /* (Instagram slider removed) */
 
     /* Review Modal (Netlify form) */
@@ -48,7 +59,7 @@
         <!-- Logo -->
         <a href="#top" aria-label="Home" class="focus-ring">
           <img src="assets/images/logo.jpg" alt="The Slab Station"
-               class="h-[80px] sm:h-[94px] min-h-[40px] w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.35)]">
+               class="h-[60px] sm:h-[80px] lg:h-[94px] min-h-[40px] w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.35)]">
         </a>
 
         <div class="hidden md:flex items-center gap-8">
@@ -77,7 +88,7 @@
     <!-- HERO IMAGE -->
     <section class="relative">
       <img src="assets/images/backgroundmain.JPG" alt="The Slab Station hero"
-           class="w-full h-[48vh] sm:h-[54vh] lg:h-[61vh] object-cover reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700" />
+           class="w-full h-[60vh] sm:h-[64vh] lg:h-[61vh] object-cover reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700" />
     </section>
 
     <!-- HERO COPY -->
@@ -173,8 +184,8 @@
         <p class="text-white/70 text-center mt-3 max-w-3xl mx-auto">See how the Slab Station revolutionizes the way you store and display your graded cards.</p>
 
         <div class="mt-6 flex items-center justify-center gap-3">
-          <button class="tab-btn active rounded-xl px-4 py-2 bg-white/15 hover:bg-white/20 border border-white/20 focus-ring" data-target="tab-setup" aria-selected="true">Setup &amp; Storage</button>
-          <button class="tab-btn rounded-xl px-4 py-2 bg-white/15 hover:bg-white/20 border border-white/20 focus-ring" data-target="tab-showcase" aria-selected="false">Showcase Mode</button>
+          <button class="tab-btn active rounded-xl px-5 py-3 bg-white/15 hover:bg-white/20 border border-white/20 focus-ring" data-target="tab-setup" aria-selected="true">Setup &amp; Storage</button>
+          <button class="tab-btn rounded-xl px-5 py-3 bg-white/15 hover:bg-white/20 border border-white/20 focus-ring" data-target="tab-showcase" aria-selected="false">Showcase Mode</button>
         </div>
 
         <div class="mt-6 max-w-5xl mx-auto">
@@ -370,7 +381,7 @@
               <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
 
-            <div id="reviewsViewport" class="overflow-x-auto no-scrollbar scroll-smooth">
+            <div id="reviewsViewport" class="overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory">
               <ul id="reviewsTrack" class="flex gap-6 px-2">
                 <!-- ... (reviews unchanged for brevity) ... -->
                 <li class="snap-start shrink-0 min-w-[320px] max-w-[420px] rounded-2xl border border-white/12 bg-white/[0.06] p-5 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/50 transition">
