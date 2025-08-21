@@ -77,7 +77,7 @@ const grandTotalEl = document.getElementById('grandTotal');
 
 const BASE = 119.95;
 const ADDON_PRICE = 14.95;
-const SHIPPING = 24.95; // added once per order
+const SHIPPING = 19.95; // added once per order
 
 function fmt(n){ return `$${n.toFixed(2)}`; }
 
@@ -465,24 +465,36 @@ function updateAverageRating(){
   }
 })();
 
-/* ---------- Local Instagram Grid (no iframe) ---------- */
+/* ---------- Local Instagram Row Carousel (no iframe) ---------- */
 document.addEventListener('DOMContentLoaded', () => {
-  const grid = document.getElementById('igLocalGrid');
-  if (!grid) return;
+  const track = document.getElementById('igRowTrack');
+  if (!track) return;
 
-  // Configure folder and filenames you will drop in: assets/instagram/ig-1.jpg ... ig-12.jpg
   const base = 'assets/instagram';
+  // Use ig-1.jpg ... ig-12.jpg. If some files are missing, they will be skipped on error.
   const files = Array.from({ length: 12 }, (_, i) => `${base}/ig-${i+1}.jpg`);
 
-  grid.innerHTML = '';
-  files.forEach(src => {
-    const a = document.createElement('a');
-    a.href = src; a.target = '_blank'; a.rel = 'noopener';
-    const img = document.createElement('img');
-    img.src = src; img.loading = 'lazy'; img.alt = 'Slab Station Instagram preview';
-    a.appendChild(img);
-    grid.appendChild(a);
-  });
+  function addItem(src){
+    const a = document.createElement('a'); a.href = src; a.target = '_blank'; a.rel='noopener'; a.className='ig-row-item';
+    const img = document.createElement('img'); img.loading='lazy'; img.alt='Slab Station Instagram preview';
+    img.src = src; img.onerror = () => { a.remove(); };
+    a.appendChild(img); track.appendChild(a);
+  }
+
+  files.forEach(addItem);
+  // Duplicate once for looping effect
+  files.forEach(addItem);
+
+  let offset = 0; const speed = 0.6; // px per frame
+  function step(){
+    offset -= speed;
+    // reset when we scrolled past half (since we duplicated items)
+    const firstWidth = track.scrollWidth / 2;
+    if (Math.abs(offset) >= firstWidth) offset = 0;
+    track.style.transform = `translateX(${offset}px)`;
+    requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
 });
 
 /* ---------- Review submission (modal + Netlify form) ---------- */
@@ -508,20 +520,21 @@ reviewForm?.addEventListener('submit', async (e) => {
   const fd = new FormData(form);
 
   const name = fd.get('name')?.toString() || 'Anonymous';
+  const role = fd.get('role')?.toString() || 'Customer';
   const email = fd.get('email')?.toString() || '';
   const rating = Number(fd.get('rating') || 5);
   const text = fd.get('message')?.toString() || '';
 
   // Append locally for instant UX
   if (reviewsDataGlobal) {
-    reviewsDataGlobal.unshift({ name, role: email ? 'Verified Buyer' : 'Customer', rating, text });
+    reviewsDataGlobal.unshift({ name, role, rating, text });
     // Re-render the track minimally: prepend one card
     const li = document.createElement('li');
     li.className = 'snap-start shrink-0 min-w-[320px] max-w-[420px] rounded-2xl border border-white/12 bg-white/[0.06] p-5 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/50 transition';
     const header = document.createElement('header'); header.className='flex items-center justify-between';
     const left = document.createElement('div');
     const nameP = document.createElement('p'); nameP.className='font-semibold'; nameP.textContent=name;
-    const roleP = document.createElement('p'); roleP.className='text-white/60 text-sm'; roleP.textContent=(email?'Verified Buyer':'Customer');
+    const roleP = document.createElement('p'); roleP.className='text-white/60 text-sm'; roleP.textContent=role;
     left.appendChild(nameP); left.appendChild(roleP);
     const ratingDiv = document.createElement('div'); ratingDiv.className='text-yellow-400'; ratingDiv.textContent=(rating>=5?'★★★★★':rating>=4?'★★★★☆':'★★★☆☆');
     header.appendChild(left); header.appendChild(ratingDiv);

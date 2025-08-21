@@ -33,12 +33,13 @@
 
     body.modal-open{overflow:hidden}
 
-    /* -------- Local Instagram Grid (no iframe) -------- */
-.ig-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;border-radius:1rem;overflow:hidden;background:#000;line-height:0}
-.ig-grid a{display:block}
-.ig-grid img{display:block;width:100%;height:200px;object-fit:cover;background:#000}
-@media (max-width:1024px){.ig-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.ig-grid img{height:180px}}
-@media (max-width:640px){.ig-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ig-grid img{height:160px}}
+    /* -------- Local Instagram Row Carousel -------- */
+.ig-row-viewport{position:relative;overflow:hidden;border-radius:1rem;background:#000}
+.ig-row-track{display:flex;gap:12px;will-change:transform}
+.ig-row-item{flex:0 0 auto;width:260px;height:180px}
+.ig-row-item img{display:block;width:100%;height:100%;object-fit:cover;background:#000}
+@media (max-width:1024px){.ig-row-item{width:220px;height:160px}}
+@media (max-width:640px){.ig-row-item{width:180px;height:140px}}
 
     /* Review Modal (Netlify form) */
     #reviewModal{position:fixed;inset:0;z-index:2147483647 !important}
@@ -304,10 +305,10 @@
                   <p class="font-semibold">Base Price</p>
                   <p class="font-semibold" id="basePrice">$119.95</p>
                 </div>
-                <p class="text-white/60 text-xs mt-1">+ $24.95 Australia Wide Postage (added to total)</p>
+                <p class="text-white/60 text-xs mt-1">+ $19.95 Australia Wide Postage (added to total)</p>
                 <div class="mt-4 space-y-2 text-sm">
                   <div class="flex items-center justify-between"><span class="text-white/80">Subtotal</span><span id="subtotalPrice">$119.95</span></div>
-                  <div class="flex items-center justify-between"><span class="text-white/80">Shipping</span><span id="shippingPrice">$24.95</span></div>
+                  <div class="flex items-center justify-between"><span class="text-white/80">Shipping</span><span id="shippingPrice">$19.95</span></div>
                 </div>
                 <div class="mt-3 pt-3 border-t border-white/10 flex items-center justify-between">
                   <p class="text-lg font-extrabold">Total</p><p id="grandTotal" class="text-lg font-extrabold">$144.90</p>
@@ -410,8 +411,10 @@
               </a>
             </div>
 
-            <div id="igLocalGrid" class="ig-grid ring-1 ring-white/10">
-              <!-- Populated by script.js from assets/instagram/*.jpg -->
+            <div class="ig-row-viewport ring-1 ring-white/10">
+              <div id="igRowTrack" class="ig-row-track px-3 py-3">
+                <!-- Populated by script.js from assets/instagram/*.jpg -->
+              </div>
             </div>
           </div>
         </section>
@@ -498,6 +501,9 @@
         <p class="hidden"><label>Don’t fill this out: <input name="bot-field" /></label></p>
         <label class="block"><span class="text-sm text-white/70">Full Name*</span><input name="name" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2" /></label>
         <label class="block"><span class="text-sm text-white/70">Email*</span><input name="email" type="email" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2" /></label>
+        <label class="block"><span class="text-sm text-white/70">Role / Title</span>
+          <input name="role" placeholder="e.g., PSA Collector, Card Shop Owner" class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2" />
+        </label>
         <label class="block"><span class="text-sm text-white/70">Rating*</span>
           <select name="rating" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2">
             <option value="5">★★★★★ (5)</option>
