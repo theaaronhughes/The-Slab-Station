@@ -33,34 +33,15 @@
 
     body.modal-open{overflow:hidden}
 
-    /* -------- Instagram (SnapWidget) – eliminate potential white strip below iframe -------- */
-.ig-frame-crop{
-  --igH: 330px;                  /* desktop height */
-  height: var(--igH);
-  overflow: hidden;
-  border-radius: 1rem;
-  background:#000;
-  line-height: 0;                /* remove baseline gap */
-  position: relative;            /* anchor absolutely-positioned iframe */
-}
-.ig-frame-crop .snapwidget-widget{
-  display: block !important;
-  position: absolute !important;
-  left: 0; right: 0; top: -20px; /* nudge up to hide any internal white bar */
-  width: 100% !important;
-  height: calc(100% + 40px) !important; /* overscan vertically to avoid subpixel gaps */
-  background: transparent !important;
-  border: 0 !important;
-  vertical-align: top;
-}
-@media (max-width:1024px){
-  .ig-frame-crop{ --igH: 270px; }
-  .ig-frame-crop .snapwidget-widget{ top: -16px; height: calc(100% + 32px) !important; }
-}
-@media (max-width:640px){
-  .ig-frame-crop{ --igH: 210px; }
-  .ig-frame-crop .snapwidget-widget{ top: -14px; height: calc(100% + 28px) !important; }
-}
+    /* -------- Local Instagram Grid (no iframe) -------- */
+.ig-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;border-radius:1rem;overflow:hidden;background:#000;line-height:0}
+.ig-grid a{display:block}
+.ig-grid img{display:block;width:100%;height:200px;object-fit:cover;background:#000}
+@media (max-width:1024px){.ig-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.ig-grid img{height:180px}}
+@media (max-width:640px){.ig-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.ig-grid img{height:160px}}
+
+    /* Review Modal (Netlify form) */
+    #reviewModal{position:fixed;inset:0;z-index:2147483647 !important}
 
   </style>
 </head>
@@ -373,6 +354,9 @@
         <div class="relative mt-8 mb-10">
           <h3 class="text-2xl sm:text-3xl font-extrabold text-center">Collector Approved</h3>
           <p class="text-white/70 text-center mt-2">Join hundreds of collectors who have elevated their displays with The Slab Station</p>
+          <div class="mt-4 flex items-center justify-center">
+            <button id="openReviewModal" class="rounded-xl border border-white/20 px-4 py-2 hover:bg-white/10 transition">Leave a Review</button>
+          </div>
           <div class="mt-4 flex items-center justify-center gap-3">
             <span class="text-2xl font-extrabold">4.8</span>
             <div class="flex">
@@ -414,11 +398,11 @@
           </div>
         </div>
 
-        <!-- Instagram (SnapWidget) -->
+        <!-- Instagram (Local Grid) -->
         <section id="instagram" class="bg-black pt-6 pb-12">
           <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Right-aligned follow button (same icon as footer) -->
-            <div class="flex items-center justify-end mb-4">
+            <div class="flex items-center justify-between mb-4">
+              <h3 class="text-xl font-bold">From Instagram</h3>
               <a href="https://instagram.com/theslabstation" target="_blank" rel="noopener"
                  class="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2 hover:bg-white/10 transition">
                 <img src="assets/images/instagram-icon.png" alt="Instagram" class="h-6 w-6 rounded-[8px]">
@@ -426,17 +410,8 @@
               </a>
             </div>
 
-            <script src="https://snapwidget.com/js/snapwidget.js" async></script>
-            <div class="ig-frame-crop ring-1 ring-white/10">
-              <iframe
-                src="https://snapwidget.com/embed/1105902"
-                class="snapwidget-widget"
-                allowtransparency="true"
-                frameborder="0"
-                scrolling="no"
-                title="Posts from Instagram"
-                style="display:block;width:100%;height:100%;border:0;background:transparent;overflow:hidden;">
-              </iframe>
+            <div id="igLocalGrid" class="ig-grid ring-1 ring-white/10">
+              <!-- Populated by script.js from assets/instagram/*.jpg -->
             </div>
           </div>
         </section>
@@ -504,6 +479,42 @@
         <button id="payidCancel" class="rounded-xl px-4 py-2 border border-white/15 hover:bg-white/10 focus-ring">Close</button>
         <button id="payidSubmit" class="rounded-xl px-4 py-2 bg-white text-black font-semibold hover:bg-white/90 focus-ring">I’ve Paid</button>
       </div>
+    </div>
+  </div>
+
+  <!-- REVIEW MODAL (Netlify form) -->
+  <div id="reviewModal" class="fixed inset-0 hidden">
+    <div class="absolute inset-0 bg-black/70"></div>
+    <div class="relative mx-auto mt-20 w-[92%] max-w-xl rounded-2xl border border-white/10 bg-zinc-900 p-6 shadow-2xl">
+      <div class="flex items-start justify-between gap-4">
+        <h3 class="text-xl font-bold">Leave a Review</h3>
+        <button id="reviewClose" class="p-2 rounded-xl hover:bg-white/10 focus-ring" aria-label="Close review modal">
+          <svg class="h-5 w-5" viewBox="0 0 24 24" stroke="currentColor" fill="none"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form name="reviews" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="mt-4 grid gap-3">
+        <input type="hidden" name="form-name" value="reviews" />
+        <p class="hidden"><label>Don’t fill this out: <input name="bot-field" /></label></p>
+        <label class="block"><span class="text-sm text-white/70">Full Name*</span><input name="name" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2" /></label>
+        <label class="block"><span class="text-sm text-white/70">Email*</span><input name="email" type="email" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2" /></label>
+        <label class="block"><span class="text-sm text-white/70">Rating*</span>
+          <select name="rating" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2">
+            <option value="5">★★★★★ (5)</option>
+            <option value="4">★★★★☆ (4)</option>
+            <option value="3">★★★☆☆ (3)</option>
+            <option value="2">★★☆☆☆ (2)</option>
+            <option value="1">★☆☆☆☆ (1)</option>
+          </select>
+        </label>
+        <label class="block"><span class="text-sm text-white/70">Your Review*</span>
+          <textarea name="message" rows="4" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2" placeholder="Tell us about your experience with The Slab Station..."></textarea>
+        </label>
+        <div class="mt-2 flex items-center justify-end gap-2">
+          <button type="button" id="reviewCancel" class="rounded-xl px-4 py-2 border border-white/15 hover:bg-white/10">Cancel</button>
+          <button type="submit" class="rounded-xl px-4 py-2 bg-white text-black font-semibold hover:bg-white/90">Submit Review</button>
+        </div>
+      </form>
     </div>
   </div>
 

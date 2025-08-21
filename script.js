@@ -449,3 +449,38 @@ reviewsViewport?.addEventListener('wheel', (e) => {
     });
   }
 })();
+
+/* ---------- Local Instagram Grid (no iframe) ---------- */
+document.addEventListener('DOMContentLoaded', () => {
+  const grid = document.getElementById('igLocalGrid');
+  if (!grid) return;
+
+  // Configure folder and filenames you will drop in: assets/instagram/ig-1.jpg ... ig-12.jpg
+  const base = 'assets/instagram';
+  const files = Array.from({ length: 12 }, (_, i) => `${base}/ig-${i+1}.jpg`);
+
+  grid.innerHTML = '';
+  files.forEach(src => {
+    const a = document.createElement('a');
+    a.href = src; a.target = '_blank'; a.rel = 'noopener';
+    const img = document.createElement('img');
+    img.src = src; img.loading = 'lazy'; img.alt = 'Slab Station Instagram preview';
+    a.appendChild(img);
+    grid.appendChild(a);
+  });
+});
+
+/* ---------- Review submission (modal + Netlify form) ---------- */
+const reviewBtn = document.getElementById('openReviewModal');
+const reviewModal = document.getElementById('reviewModal');
+const reviewClose = document.getElementById('reviewClose');
+const reviewCancel = document.getElementById('reviewCancel');
+
+function toggleReviewModal(show){
+  if (!reviewModal) return;
+  reviewModal.classList.toggle('hidden', !show);
+  document.body.classList.toggle('modal-open', !!show);
+}
+
+reviewBtn?.addEventListener('click', () => toggleReviewModal(true));
+[reviewClose, reviewCancel].forEach(b => b?.addEventListener('click', () => toggleReviewModal(false)));
