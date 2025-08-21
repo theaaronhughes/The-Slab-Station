@@ -51,6 +51,15 @@
 
     /* (hero dynamic viewport removed per revert) */
 
+    /* --- Optimized Hero (mobile-first) --- */
+    .hero{min-height:68vh;position:relative;overflow:hidden}
+    @supports(height:1svh){.hero{min-height:68svh}}
+    @media (min-width:640px){.hero{min-height:64vh}@supports(height:1dvh){.hero{min-height:64dvh}}}
+    @media (min-width:1024px){.hero{min-height:61vh}@supports(height:1dvh){.hero{min-height:61dvh}}}
+    .hero-img{object-fit:contain;object-position:center 20%}
+    @media (min-width:640px){.hero-img{object-fit:cover;object-position:center}}
+    .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.35) 0%, rgba(0,0,0,.15) 30%, rgba(0,0,0,0) 60%);pointer-events:none}
+
     /* Simple loading state */
     .btn-busy{opacity:.7;pointer-events:none;position:relative}
     .btn-busy::after{content:"";position:absolute;right:12px;top:50%;width:16px;height:16px;border:2px solid rgba(255,255,255,.5);border-top-color:#fff;border-radius:50%;transform:translateY(-50%);animation:spin .9s linear infinite}
@@ -95,16 +104,16 @@
   </header>
 
   <main id="top">
-    <!-- HERO IMAGE -->
-    <section class="relative">
-      <img src="assets/images/backgroundmain.JPG" alt="The Slab Station hero"
-           class="w-full h-[48vh] sm:h-[54vh] lg:h-[61vh] object-cover reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700" />
-    </section>
-
-    <!-- HERO COPY -->
-    <section class="bg-black">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
-        <div class="text-center space-y-5">
+    <!-- HERO (image + overlay copy) -->
+    <section class="hero">
+      <img
+        src="assets/images/backgroundmain.JPG"
+        srcset="assets/images/backgroundmain.webp 1x, assets/images/backgroundmain-2x.webp 2x"
+        alt="The Slab Station hero"
+        class="hero-img absolute inset-0 w-full h-full reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700"
+      />
+      <div class="relative z-10 h-full flex items-center justify-center">
+        <div class="text-center space-y-5 px-4">
           <p class="uppercase tracking-[.35em] text-sm text-white/70">THE SLAB STATION</p>
           <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight">
             The Ultimate <span class="bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">Slab Showcase</span>
