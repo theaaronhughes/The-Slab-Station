@@ -33,13 +33,7 @@
 
     body.modal-open{overflow:hidden}
 
-    /* -------- Local Instagram Row Carousel -------- */
-.ig-row-viewport{position:relative;overflow:hidden;border-radius:1rem;background:#000}
-.ig-row-track{display:flex;gap:12px;will-change:transform}
-.ig-row-item{flex:0 0 auto;width:260px;height:180px}
-.ig-row-item img{display:block;width:100%;height:100%;object-fit:cover;background:#000}
-@media (max-width:1024px){.ig-row-item{width:220px;height:160px}}
-@media (max-width:640px){.ig-row-item{width:180px;height:140px}}
+    /* (Instagram slider removed) */
 
     /* Review Modal (Netlify form) */
     #reviewModal{position:fixed;inset:0;z-index:2147483647 !important}
@@ -398,26 +392,6 @@
             </button>
           </div>
         </div>
-
-        <!-- Instagram (Local Grid) -->
-        <section id="instagram" class="bg-black pt-6 pb-12">
-          <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="text-xl font-bold">From Instagram</h3>
-              <a href="https://instagram.com/theslabstation" target="_blank" rel="noopener"
-                 class="inline-flex items-center gap-2 rounded-xl border border-white/15 px-4 py-2 hover:bg-white/10 transition">
-                <img src="assets/images/instagram-icon.png" alt="Instagram" class="h-6 w-6 rounded-[8px]">
-                <span class="font-semibold">@theslabstation</span>
-              </a>
-            </div>
-
-            <div class="ig-row-viewport ring-1 ring-white/10">
-              <div id="igRowTrack" class="ig-row-track px-3 py-3">
-                <!-- Populated by script.js from assets/instagram/*.jpg -->
-              </div>
-            </div>
-          </div>
-        </section>
       </div>
     </section>
   </main>
