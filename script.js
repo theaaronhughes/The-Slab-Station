@@ -331,7 +331,8 @@ reviewsViewport?.addEventListener('wheel', (e) => {
   }
 }, { passive: false });
 
-/* ---------- Populate Reviews (40+) ---------- */
+/* ---------- Populate Reviews (40+) + dynamic rating ---------- */
+let reviewsDataGlobal = null;
 (function renderReviews(){
   if (!reviewsTrack) return;
 
@@ -383,7 +384,8 @@ reviewsViewport?.addEventListener('wheel', (e) => {
     { name:'Aria E.', role:'Collector', rating:5, text:'Color options match my setup. The Yellow/Blue/Yellow slaps.' }
   ];
 
-  const starFor = (rating) => rating === 5 ? '★★★★★' : '★★★★☆';
+  reviewsDataGlobal = reviewsData;
+  const starFor = (rating) => rating >= 5 ? '★★★★★' : rating >= 4 ? '★★★★☆' : '★★★☆☆';
 
   reviewsTrack.innerHTML = '';
   reviewsData.forEach(r => {
@@ -414,7 +416,20 @@ reviewsViewport?.addEventListener('wheel', (e) => {
   const spacer = document.createElement('li');
   spacer.className = 'shrink-0 w-2';
   reviewsTrack.appendChild(spacer);
+
+  updateAverageRating();
 })();
+
+function updateAverageRating(){
+  const avgEl = document.getElementById('avgRating');
+  const countEl = document.getElementById('avgCountText');
+  if (!reviewsDataGlobal || !avgEl || !countEl) return;
+  const total = reviewsDataGlobal.reduce((s,r)=>s+Number(r.rating||0),0);
+  const count = reviewsDataGlobal.length;
+  const avg = total / Math.max(1,count);
+  avgEl.textContent = (Math.round(avg*10)/10).toFixed(1);
+  countEl.textContent = `Average rating from ${count} verified buyers`;
+}
 
 /* ---------- Instagram feed (via Netlify Function) ---------- */
 (async function loadIG(){
@@ -475,6 +490,7 @@ const reviewBtn = document.getElementById('openReviewModal');
 const reviewModal = document.getElementById('reviewModal');
 const reviewClose = document.getElementById('reviewClose');
 const reviewCancel = document.getElementById('reviewCancel');
+const reviewForm = document.querySelector('#reviewModal form[name="reviews"]');
 
 function toggleReviewModal(show){
   if (!reviewModal) return;
@@ -484,3 +500,43 @@ function toggleReviewModal(show){
 
 reviewBtn?.addEventListener('click', () => toggleReviewModal(true));
 [reviewClose, reviewCancel].forEach(b => b?.addEventListener('click', () => toggleReviewModal(false)));
+
+// Intercept Netlify submit to avoid redirect; append to reviews immediately
+reviewForm?.addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const form = e.currentTarget;
+  const fd = new FormData(form);
+
+  const name = fd.get('name')?.toString() || 'Anonymous';
+  const email = fd.get('email')?.toString() || '';
+  const rating = Number(fd.get('rating') || 5);
+  const text = fd.get('message')?.toString() || '';
+
+  // Append locally for instant UX
+  if (reviewsDataGlobal) {
+    reviewsDataGlobal.unshift({ name, role: email ? 'Verified Buyer' : 'Customer', rating, text });
+    // Re-render the track minimally: prepend one card
+    const li = document.createElement('li');
+    li.className = 'snap-start shrink-0 min-w-[320px] max-w-[420px] rounded-2xl border border-white/12 bg-white/[0.06] p-5 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/50 transition';
+    const header = document.createElement('header'); header.className='flex items-center justify-between';
+    const left = document.createElement('div');
+    const nameP = document.createElement('p'); nameP.className='font-semibold'; nameP.textContent=name;
+    const roleP = document.createElement('p'); roleP.className='text-white/60 text-sm'; roleP.textContent=(email?'Verified Buyer':'Customer');
+    left.appendChild(nameP); left.appendChild(roleP);
+    const ratingDiv = document.createElement('div'); ratingDiv.className='text-yellow-400'; ratingDiv.textContent=(rating>=5?'★★★★★':rating>=4?'★★★★☆':'★★★☆☆');
+    header.appendChild(left); header.appendChild(ratingDiv);
+    const bodyP = document.createElement('p'); bodyP.className='mt-3 text-white/80 leading-relaxed'; bodyP.textContent=`“${text}”`;
+    li.appendChild(header); li.appendChild(bodyP);
+    const spacer = reviewsTrack.querySelector('li.shrink-0.w-2');
+    reviewsTrack.insertBefore(li, spacer || null);
+    updateAverageRating();
+  }
+
+  // Post to Netlify to store submission (no-redirect)
+  try {
+    await fetch('/', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: new URLSearchParams([...fd, ['form-name','reviews']]).toString() });
+  } catch {}
+
+  toggleReviewModal(false);
+  form.reset();
+});
