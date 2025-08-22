@@ -94,6 +94,12 @@
     @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
     .feature-card{border-color:rgba(255,255,255,.1)}
 
+    /* Swipe slider helpers */
+    .features-row{scroll-behavior:smooth}
+    .snap-x{scroll-snap-type:x mandatory}
+    .snap-center{scroll-snap-align:center}
+    @media (min-width:1024px){.features-row{overflow-x:hidden;justify-content:space-between}}
+
   </style>
 </head>
 <body class="bg-black text-white antialiased selection:bg-white/15">
@@ -159,58 +165,57 @@
     <!-- WHY -->
     <section id="features" class="relative bg-[#121212]">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
-        <h2 class="text-3xl sm:text-4xl font-extrabold text-center mb-12">Why The Slab Station?</h2>
+        <!-- Centered GIF header -->
+        <div class="mb-8 flex justify-center">
+          <img src="assets/images/spinnobackground2.gif" alt="Rotating slab demo"
+               class="w-full max-w-[520px] md:max-w-[560px] reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700" loading="lazy">
+        </div>
 
-        <div class="grid lg:grid-cols-[1fr,2fr,1fr] gap-10 items-center justify-items-center">
-          <!-- Left GIF -->
-          <div class="w-full flex justify-center self-center">
-            <img src="assets/images/spinnobackground2.gif"
-                 alt="Rotating slab demo of The Slab Station"
-                 loading="lazy" decoding="async"
-                 class="w-full max-w-[520px] md:max-w-[560px] reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700" />
-          </div>
+        <div class="grid lg:grid-cols-[2fr,1fr] gap-10 items-center justify-items-center">
+          <!-- Feature slider -->
+          <div class="w-full self-center">
+            <h3 class="text-2xl font-bold text-center mb-4 text-white/90">Key Features</h3>
+            <div class="features-row flex overflow-x-auto gap-4 no-scrollbar snap-x snap-mandatory">
+              <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-6 text-center flex-shrink-0 w-[80vw] sm:w-[45vw] lg:w-[20vw] snap-center">
+                <div class="icon-wrap inline-flex rounded-2xl p-3 mb-4">
+                  <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 12c0 4 4.5 7 9 7s9-3 9-7-4.5-7-9-7"/><path d="M12 5v4m0 6v4"/>
+                  </svg>
+                </div>
+                <h4 class="text-[22px] sm:text-[24px] font-extrabold leading-snug">360° Smooth Rotation</h4>
+                <p class="text-white/75 text-[15px] leading-relaxed mt-2">Effortlessly showcase every angle of your graded card with a silent, smooth rotating mechanism.</p>
+              </article>
 
-          <!-- Feature grid -->
-          <div class="w-full grid grid-cols-1 sm:grid-cols-2 gap-6 self-center">
-            <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-6 text-center">
-              <div class="icon-wrap inline-flex rounded-2xl p-3 mb-4">
-                <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M3 12c0 4 4.5 7 9 7s9-3 9-7-4.5-7-9-7"/><path d="M12 5v4m0 6v4"/>
-                </svg>
-              </div>
-              <h3 class="text-[22px] sm:text-[24px] font-extrabold leading-snug">360° Smooth Rotation</h3>
-              <p class="text-white/75 text-[15px] leading-relaxed mt-2">Effortlessly showcase every angle of your graded card with a silent, smooth rotating mechanism.</p>
-            </article>
+              <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-6 text-center flex-shrink-0 w-[80vw] sm:w-[45vw] lg:w-[20vw] snap-center">
+                <div class="icon-wrap inline-flex rounded-2xl p-3 mb-4">
+                  <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="8.5" y="13" width="7" height="7" rx="1.5"/>
+                  </svg>
+                </div>
+                <h4 class="text-[22px] sm:text-[24px] font-extrabold leading-snug">Stackability &amp; Storage</h4>
+                <p class="text-white/75 text-[15px] leading-relaxed mt-2">Displays 6 slabs externally, stores 12 internally. Easily stack multiple units—perfect for growing collections.</p>
+              </article>
 
-            <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-6 text-center">
-              <div class="icon-wrap inline-flex rounded-2xl p-3 mb-4">
-                <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="8.5" y="13" width="7" height="7" rx="1.5"/>
-                </svg>
-              </div>
-              <h3 class="text-[22px] sm:text-[24px] font-extrabold leading-snug">Stackability &amp; Storage</h3>
-              <p class="text-white/75 text-[15px] leading-relaxed mt-2">Displays 6 slabs externally, stores 12 internally. Easily stack multiple units—perfect for growing collections.</p>
-            </article>
+              <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-6 text-center flex-shrink-0 w-[80vw] sm:w-[45vw] lg:w-[20vw] snap-center">
+                <div class="icon-wrap inline-flex rounded-2xl p-3 mb-4">
+                  <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 3l8 4v5c0 5-8 9-8 9s-8-4-8-9V7l8-4z"/>
+                  </svg>
+                </div>
+                <h4 class="text-[22px] sm:text-[24px] font-extrabold leading-snug">Perfect Fit &amp; Premium Build</h4>
+                <p class="text-white/75 text-[15px] leading-relaxed mt-2">Designed for standard PSA/BGS slabs. Crafted from high-quality materials for stability.</p>
+              </article>
 
-            <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-6 text-center">
-              <div class="icon-wrap inline-flex rounded-2xl p-3 mb-4">
-                <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 3l8 4v5c0 5-8 9-8 9s-8-4-8-9V7l8-4z"/>
-                </svg>
-              </div>
-              <h3 class="text-[22px] sm:text-[24px] font-extrabold leading-snug">Perfect Fit &amp; Premium Build</h3>
-              <p class="text-white/75 text-[15px] leading-relaxed mt-2">Designed for standard PSA/BGS slabs. Crafted from high-quality materials for stability.</p>
-            </article>
-
-            <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-6 text-center">
-              <div class="icon-wrap inline-flex rounded-2xl p-3 mb-4">
-                <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3.5" y="5" width="17" height="11" rx="2"/><path d="M8 20h8"/>
-                </svg>
-              </div>
-              <h3 class="text-[22px] sm:text-[24px] font-extrabold leading-snug">Sleek Display-Ready Design</h3>
-              <p class="text-white/75 text-[15px] leading-relaxed mt-2">Made to elevate your collection on any desk, shelf, or display case—without bulky clutter. Easy Assembly.</p>
-            </article>
+              <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-6 text-center flex-shrink-0 w-[80vw] sm:w-[45vw] lg:w-[20vw] snap-center">
+                <div class="icon-wrap inline-flex rounded-2xl p-3 mb-4">
+                  <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3.5" y="5" width="17" height="11" rx="2"/><path d="M8 20h8"/>
+                  </svg>
+                </div>
+                <h4 class="text-[22px] sm:text-[24px] font-extrabold leading-snug">Sleek Display-Ready Design</h4>
+                <p class="text-white/75 text-[15px] leading-relaxed mt-2">Made to elevate your collection on any desk, shelf, or display case—without bulky clutter. Easy Assembly.</p>
+              </article>
+            </div>
           </div>
 
           <!-- Right image -->
