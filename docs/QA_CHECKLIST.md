@@ -1,24 +1,24 @@
-# QA Checklist
+# Quick QA Checklist
 
-## Mobile (390×844)
+**Mobile 390×844**
 - [ ] No horizontal scroll
-- [ ] Tap targets ≥ 44px
-- [ ] Headline & body readable
-- [ ] No overlaps with system bars (safe-area respected)
-
-## Desktop (≥1024px)
-- [ ] Layout stable
-- [ ] Header/footer unchanged (unless task specifies)
-
-## Accessibility
-- [ ] Roles/aria preserved for tabs/carousels
-- [ ] Focus states visible and keyboard accessible
-
-## Performance
+- [ ] H1 ≤ 3 lines; paragraph readable
+- [ ] Buttons ≥ 44px tall, full width if specified
+- [ ] Carousels swipe smoothly; dots/arrows (as specified)
+- [ ] Videos muted/playsinline; poster set; no autoplay issues
 - [ ] No console errors
-- [ ] Offscreen images lazy; non-critical images `decoding="async"`
-- [ ] Media uses `poster`, `muted`, `playsinline` where applicable
 
-## Regression
-- [ ] Payment/checkout logic untouched (unless explicitly required)
-- [ ] Preserved IDs used by JS
+**Desktop ≥1024**
+- [ ] Layout stable; no extra top/bottom gaps
+- [ ] Header/footer unchanged unless task says so
+- [ ] Carousels/grid render cleanly
+- [ ] Hover/focus visible
+
+**A11y**
+- [ ] Roles/aria for tabs/carousels intact
+- [ ] Focus ring visible; tab order logical
+- [ ] Images have alt text
+
+**Perf**
+- [ ] Offscreen images lazy-loaded, decoding="async"
+- [ ] MP4/WebM (not GIF) for animations
