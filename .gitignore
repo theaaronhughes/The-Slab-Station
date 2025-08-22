@@ -3,3 +3,4 @@ node_modules/
 .DS_Store
 Thumbs.db
 \n# Ignore heavy local media\nassets/images/New folder/\n*.MOV\n*.mov\n
+\n# Ignore heavy local media\nassets/images/New folder/\n*.MOV\n*.mov\n
