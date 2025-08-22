@@ -2,3 +2,4 @@ node_modules/
 .netlify/
 .DS_Store
 Thumbs.db
+\n# Ignore heavy local media\nassets/images/New folder/\n*.MOV\n*.mov\n
