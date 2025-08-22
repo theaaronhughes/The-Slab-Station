@@ -469,3 +469,36 @@ reviewForm?.addEventListener('submit', async (e) => {
   toggleReviewModal(false);
   form.reset();
 });
+
+// --- Features carousel (mobile) ---
+(function(){
+  const vp = document.getElementById('featViewport');
+  const track = document.getElementById('featTrack');
+  const prev = document.getElementById('featPrev');
+  const next = document.getElementById('featNext');
+  const dots = document.getElementById('featDots')?.children || [];
+
+  if (!vp || !track) return;
+
+  const slideCount = track.children.length;
+  let active = 0;
+
+  function setActive(i){
+    active = Math.max(0, Math.min(slideCount - 1, i));
+    vp.scrollTo({ left: vp.clientWidth * active, behavior: 'smooth' });
+    [...dots].forEach((d, idx) => {
+      d.className = 'h-1.5 rounded-full ' + (idx === active ? 'w-5 bg-white/70' : 'w-2.5 bg-white/30');
+    });
+  }
+  function onScroll(){
+    const i = Math.round(vp.scrollLeft / Math.max(1, vp.clientWidth));
+    if (i !== active) setActive(i);
+  }
+
+  prev?.addEventListener('click', () => setActive(active - 1));
+  next?.addEventListener('click', () => setActive(active + 1));
+  vp.addEventListener('scroll', () => { window.requestAnimationFrame(onScroll); }, { passive:true });
+
+  // Resize recalibration
+  window.addEventListener('resize', () => setActive(active));
+})();

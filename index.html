@@ -133,51 +133,129 @@
     </section>
 
     <!-- FEATURES -->
-    <section id="features" class="relative bg-[#121212] py-8 sm:py-10">
+    <section id="features" class="relative bg-[#121212] py-16 sm:py-20">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h3 class="text-2xl font-bold text-center mb-4 text-white/90">Key Features</h3>
-        <div class="features-row flex flex-wrap overflow-x-auto gap-4 no-scrollbar snap-x snap-mandatory lg:overflow-x-hidden lg:justify-center">
-          <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-4 text-center flex-shrink-0 w-full sm:w-1/2 lg:w-1/4 snap-center">
+
+        <h3 class="text-2xl font-extrabold text-center text-white/90">Key Features</h3>
+
+        <!-- Mobile: one-card swipe carousel -->
+        <div class="mt-5 lg:hidden relative" role="region" aria-label="Key features carousel">
+          <button id="featPrev" class="absolute left-1 top-1/2 -translate-y-1/2 z-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 p-2 backdrop-blur focus-ring" aria-label="Previous feature">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+
+          <div id="featViewport" class="overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-smooth">
+            <ul id="featTrack" class="flex flex-nowrap">
+              <!-- Card 1 -->
+              <li class="w-full shrink-0 snap-center px-1">
+                <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-5 text-center">
+                  <div class="icon-wrap inline-flex rounded-2xl p-2 mb-3">
+                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M3 12c0 4 4.5 7 9 7s9-3 9-7-4.5-7-9-7"/><path d="M12 5v4m0 6v4"/>
+                    </svg>
+                  </div>
+                  <h3 class="text-xl font-extrabold leading-snug">360° Smooth Rotation</h3>
+                  <p class="text-white/75 text-sm leading-relaxed mt-1">Effortlessly showcase every angle with a silent, smooth rotating mechanism.</p>
+                </article>
+              </li>
+              <!-- Card 2 -->
+              <li class="w-full shrink-0 snap-center px-1">
+                <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-5 text-center">
+                  <div class="icon-wrap inline-flex rounded-2xl p-2 mb-3">
+                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="8.5" y="13" width="7" height="7" rx="1.5"/>
+                    </svg>
+                  </div>
+                  <h3 class="text-xl font-extrabold leading-snug">Stackability &amp; Storage</h3>
+                  <p class="text-white/75 text-sm leading-relaxed mt-1">Displays 6 externally, stores 12 internally. Stack multiple units as your collection grows.</p>
+                </article>
+              </li>
+              <!-- Card 3 -->
+              <li class="w-full shrink-0 snap-center px-1">
+                <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-5 text-center">
+                  <div class="icon-wrap inline-flex rounded-2xl p-2 mb-3">
+                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M12 3l8 4v5c0 5-8 9-8 9s-8-4-8-9V7l8-4z"/>
+                    </svg>
+                  </div>
+                  <h3 class="text-xl font-extrabold leading-snug">Perfect Fit &amp; Premium Build</h3>
+                  <p class="text-white/75 text-sm leading-relaxed mt-1">Precisely sized for PSA/BGS slabs and built from high‑quality materials for stability.</p>
+                </article>
+              </li>
+              <!-- Card 4 -->
+              <li class="w-full shrink-0 snap-center px-1">
+                <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-5 text-center">
+                  <div class="icon-wrap inline-flex rounded-2xl p-2 mb-3">
+                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3.5" y="5" width="17" height="11" rx="2"/><path d="M8 20h8"/>
+                    </svg>
+                  </div>
+                  <h3 class="text-xl font-extrabold leading-snug">Sleek Display‑Ready Design</h3>
+                  <p class="text-white/75 text-sm leading-relaxed mt-1">Elevates any desk or shelf without bulky clutter. Easy assembly.</p>
+                </article>
+              </li>
+            </ul>
+          </div>
+
+          <button id="featNext" class="absolute right-1 top-1/2 -translate-y-1/2 z-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 p-2 backdrop-blur focus-ring" aria-label="Next feature">
+            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+
+          <div id="featDots" class="mt-4 flex items-center justify-center gap-2" aria-hidden="true">
+            <span class="h-1.5 w-5 rounded-full bg-white/70"></span>
+            <span class="h-1.5 w-2.5 rounded-full bg-white/30"></span>
+            <span class="h-1.5 w-2.5 rounded-full bg-white/30"></span>
+            <span class="h-1.5 w-2.5 rounded-full bg-white/30"></span>
+          </div>
+        </div>
+
+        <!-- Desktop: clean 4-up grid -->
+        <div class="mt-6 hidden lg:grid grid-cols-4 gap-4">
+          <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-5 text-center">
             <div class="icon-wrap inline-flex rounded-2xl p-2 mb-3">
               <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 12c0 4 4.5 7 9 7s9-3 9-7-4.5-7-9-7"/><path d="M12 5v4m0 6v4"/>
               </svg>
             </div>
             <h3 class="text-xl font-extrabold leading-snug">360° Smooth Rotation</h3>
-            <p class="text-white/75 text-sm leading-relaxed mt-1">Effortlessly showcase every angle of your graded card with a silent, smooth rotating mechanism.</p>
+            <p class="text-white/75 text-sm leading-relaxed mt-1">Effortlessly showcase every angle with a silent, smooth rotating mechanism.</p>
           </article>
-          <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-4 text-center flex-shrink-0 w-full sm:w-1/2 lg:w-1/4 snap-center">
+
+          <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-5 text-center">
             <div class="icon-wrap inline-flex rounded-2xl p-2 mb-3">
               <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="8.5" y="13" width="7" height="7" rx="1.5"/>
               </svg>
             </div>
             <h3 class="text-xl font-extrabold leading-snug">Stackability &amp; Storage</h3>
-            <p class="text-white/75 text-sm leading-relaxed mt-1">Displays 6 slabs externally, stores 12 internally. Easily stack multiple units—perfect for growing collections.</p>
+            <p class="text-white/75 text-sm leading-relaxed mt-1">Displays 6 externally, stores 12 internally. Stack multiple units as your collection grows.</p>
           </article>
-          <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-4 text-center flex-shrink-0 w-full sm:w-1/2 lg:w-1/4 snap-center">
+
+          <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-5 text-center">
             <div class="icon-wrap inline-flex rounded-2xl p-2 mb-3">
               <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 3l8 4v5c0 5-8 9-8 9s-8-4-8-9V7l8-4z"/>
               </svg>
             </div>
             <h3 class="text-xl font-extrabold leading-snug">Perfect Fit &amp; Premium Build</h3>
-            <p class="text-white/75 text-sm leading-relaxed mt-1">Designed for standard PSA/BGS slabs. Crafted from high-quality materials for stability.</p>
+            <p class="text-white/75 text-sm leading-relaxed mt-1">Precisely sized for PSA/BGS slabs and built from high‑quality materials for stability.</p>
           </article>
-          <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-4 text-center flex-shrink-0 w-full sm:w-1/2 lg:w-1/4 snap-center">
+
+          <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-5 text-center">
             <div class="icon-wrap inline-flex rounded-2xl p-2 mb-3">
               <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3.5" y="5" width="17" height="11" rx="2"/><path d="M8 20h8"/>
               </svg>
             </div>
-            <h3 class="text-xl font-extrabold leading-snug">Sleek Display-Ready Design</h3>
-            <p class="text-white/75 text-sm leading-relaxed mt-1">Made to elevate your collection on any desk, shelf, or display case—without bulky clutter. Easy Assembly.</p>
+            <h3 class="text-xl font-extrabold leading-snug">Sleek Display‑Ready Design</h3>
+            <p class="text-white/75 text-sm leading-relaxed mt-1">Elevates any desk or shelf without bulky clutter. Easy assembly.</p>
           </article>
         </div>
 
-        <div class="mt-8 lg:mt-0 w-full self-center">
+        <!-- The 5-station image grid you love -->
+        <div class="mt-10 w-full">
           <div class="relative group rounded-2xl overflow-hidden ring-2 ring-white/80">
-            <img src="assets/images/IMG_8980.JPG" alt="Slab Station color grid" loading="lazy" class="w-full h-full object-cover transition duration-300 ease-out group-hover:scale-[1.02]">
+            <img src="assets/images/IMG_8980.JPG" alt="Slab Station color grid" loading="lazy" decoding="async" class="w-full h-full object-cover transition duration-300 ease-out group-hover:scale-[1.02]">
             <div class="pointer-events-none absolute inset-0 ring-1 ring-white/20 rounded-2xl"></div>
           </div>
         </div>
@@ -188,39 +266,42 @@
     <section id="how" class="bg-black py-16 sm:py-20">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-3xl sm:text-4xl font-extrabold text-center">How It Works — Slab Station in Action</h2>
-        <p class="text-white/70 text-center mt-3 max-w-3xl mx-auto">See how the Slab Station revolutionizes the way you store and display your graded cards.</p>
+        <p class="text-white/70 text-center mt-3 max-w-3xl mx-auto">
+          See how the Slab Station revolutionizes the way you store and display your graded cards.
+        </p>
 
+        <!-- Tabs -->
         <div class="mt-6 flex items-center justify-center gap-3" role="tablist" aria-label="How it Works Tabs">
-          <button class="tab-btn active rounded-xl px-5 py-3 bg-white/15 hover:bg-white/20 border border-white/20 focus-ring" role="tab" id="tabbtn-setup" aria-controls="tab-setup" data-target="tab-setup" aria-selected="true" tabindex="0">Setup &amp; Storage</button>
-          <button class="tab-btn rounded-xl px-5 py-3 bg-white/15 hover:bg-white/20 border border-white/20 focus-ring" role="tab" id="tabbtn-showcase" aria-controls="tab-showcase" data-target="tab-showcase" aria-selected="false" tabindex="-1">Showcase Mode</button>
+          <button class="tab-btn active rounded-xl px-5 py-3 bg-white/15 hover:bg-white/20 border border-white/20 focus-ring"
+                  role="tab" id="tabbtn-setup" aria-controls="tab-setup" data-target="tab-setup" aria-selected="true" tabindex="0">
+            Setup &amp; Storage
+          </button>
+          <button class="tab-btn rounded-xl px-5 py-3 bg-white/15 hover:bg-white/20 border border-white/20 focus-ring"
+                  role="tab" id="tabbtn-showcase" aria-controls="tab-showcase" data-target="tab-showcase" aria-selected="false" tabindex="-1">
+            Showcase Mode
+          </button>
         </div>
 
+        <!-- Video Panels -->
         <div class="mt-6 max-w-5xl mx-auto">
-          <div class="rounded-3xl border border-white/15 p-2">
-            <div id="tab-setup" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn-setup">
-              <div class="relative rounded-2xl overflow-hidden bg-black" style="aspect-ratio:16/9;">
-                <video id="video-setup" class="absolute inset-0 h-full w-full object-contain" muted autoplay loop playsinline preload="metadata"></video>
-              </div>
+          <div id="tab-setup" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn-setup">
+            <div class="relative rounded-3xl overflow-hidden bg-black ring-1 ring-white/10 shadow-2xl" style="aspect-ratio:16/9;">
+              <video id="video-setup" class="absolute inset-0 h-full w-full object-contain" muted autoplay loop playsinline preload="metadata"></video>
             </div>
-            <div id="tab-showcase" class="tab-panel hidden" role="tabpanel" aria-labelledby="tabbtn-showcase">
-              <div class="relative rounded-2xl overflow-hidden bg-black" style="aspect-ratio:16/9;">
-                <video id="video-showcase" class="absolute inset-0 h-full w-full object-contain" muted loop playsinline preload="metadata"></video>
-              </div>
+          </div>
+          <div id="tab-showcase" class="tab-panel hidden" role="tabpanel" aria-labelledby="tabbtn-showcase">
+            <div class="relative rounded-3xl overflow-hidden bg-black ring-1 ring-white/10 shadow-2xl" style="aspect-ratio:16/9;">
+              <video id="video-showcase" class="absolute inset-0 h-full w-full object-contain" muted loop playsinline preload="metadata"></video>
             </div>
           </div>
         </div>
 
-        <div class="mt-6 grid md:grid-cols-3 gap-4 max-w-5xl mx-auto">
-          <div class="rounded-2xl bg-white/8 border border-white/10 px-5 py-5 text-center hover:-translate-y-0.5 hover:bg-white/12 transition">
-            <p class="font-semibold">Easy Slab Insertion</p><p class="text-white/70 text-sm mt-1">Slots designed for perfect fit</p>
-          </div>
-          <div class="rounded-2xl bg-white/8 border border-white/10 px-5 py-5 text-center hover:-translate-y-0.5 hover:bg-white/12 transition">
-            <p class="font-semibold">Internal Storage</p><p class="text-white/70 text-sm mt-1">Store 12 slabs inside</p>
-          </div>
-          <div class="rounded-2xl bg-white/8 border border-white/10 px-5 py-5 text-center hover:-translate-y-0.5 hover:bg-white/12 transition">
-            <p class="font-semibold">Stackable Design</p><p class="text-white/70 text-sm mt-1">Expand as collection grows</p>
-          </div>
-        </div>
+        <!-- Simple supporting chips -->
+        <ul class="mt-6 flex flex-col sm:flex-row items-stretch justify-center gap-3 max-w-5xl mx-auto">
+          <li class="rounded-full px-4 py-2 bg-white/10 border border-white/15 text-center">Easy Slab Insertion</li>
+          <li class="rounded-full px-4 py-2 bg-white/10 border border-white/15 text-center">Internal Storage — 12 slabs</li>
+          <li class="rounded-full px-4 py-2 bg-white/10 border border-white/15 text-center">Stackable Design</li>
+        </ul>
       </div>
     </section>
 
@@ -404,9 +485,10 @@
       <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
         <img src="assets/images/logo.jpg" alt="The Slab Station Logo" loading="lazy" class="h-14 sm:h-16 min-h-[40px] w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
 
-        <a href="https://instagram.com/theslabstation" target="_blank" rel="noopener" class="inline-flex items-center gap-3 rounded-2xl border border-white/15 px-5 py-2.5 hover:bg-white/10 transition focus-ring">
+        <a href="https://instagram.com/theslabstation" target="_blank" rel="noopener"
+           class="inline-flex items-center gap-3 px-1.5 py-1.5 hover:opacity-90 focus-ring">
           <span class="text-sm sm:text-base">Follow us on</span>
-          <img src="assets/images/instagram-icon.png" alt="Instagram" loading="lazy" class="h-9 w-9 rounded-[10px]">
+          <img src="assets/images/instagram-icon.png" alt="Instagram" loading="lazy" decoding="async" class="h-9 w-9 rounded-[10px]">
         </a>
 
         <p class="text-white/40 text-sm">&copy; <span id="year"></span> The Slab Station. All rights reserved.</p>
