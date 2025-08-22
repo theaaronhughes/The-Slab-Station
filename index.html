@@ -105,25 +105,30 @@
         fetchpriority="high"
       />
 
-      <!-- Soft gradient overlay for legibility -->
-      <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/40 via-black/10 to-black/70 z-10"></div>
+      <!-- Legibility overlays: linear + radial -->
+      <div class="absolute inset-0 pointer-events-none z-10">
+        <!-- linear -->
+        <div class="absolute inset-0 bg-gradient-to-b from-black/55 via-black/20 to-black/75"></div>
+        <!-- radial vignette centered behind text -->
+        <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,0,0,0.55)_0%,rgba(0,0,0,0.35)_35%,rgba(0,0,0,0)_70%)]"></div>
+      </div>
 
       <!-- Centered copy stack -->
       <div class="relative z-20 flex items-center justify-center p-5 md:p-8 text-center">
         <div class="w-full max-w-3xl mx-auto space-y-4 md:space-y-6">
           <p class="uppercase text-xs tracking-wide text-white/70">THE SLAB STATION</p>
 
-          <!-- Restore the big headline you liked -->
+          <!-- Keep your original big headline -->
           <h1 class="text-white font-extrabold tracking-tight leading-[1.05] text-[40px] sm:text-6xl">
             The Ultimate Slab Showcase
           </h1>
 
-          <!-- Restore your original subhead copy -->
-          <p class="text-base md:text-lg text-white/80 max-w-prose mx-auto">
+          <!-- Same paragraph copy; constrain width for better density on phones -->
+          <p class="text-base md:text-lg text-white/85 mx-auto leading-relaxed max-w-[28ch] sm:max-w-[46ch]">
             A premium, rotating, stackable display built for PSA/BGS graded cards — engineered to look incredible on your desk or shelf.
           </p>
 
-          <!-- CTAs -->
+          <!-- CTAs unchanged -->
           <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 pt-1">
             <a href="#builder"
                class="w-full sm:w-auto inline-flex items-center justify-center rounded-2xl bg-white text-black px-6 py-3 font-semibold hover:bg-white/90 transition focus-ring">
