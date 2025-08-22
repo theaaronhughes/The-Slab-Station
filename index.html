@@ -69,7 +69,7 @@
       <div class="flex h-24 items-center justify-between">
         <!-- Logo -->
         <a href="#top" aria-label="Home" class="focus-ring">
-          <img src="assets/images/logo.jpg" alt="The Slab Station" loading="lazy" class="h-[60px] sm:h-[80px] lg:h-[94px] min-h-[40px] w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.35)]">
+          <img src="assets/images/logo.jpg" alt="The Slab Station" loading="lazy" decoding="async" class="h-[60px] sm:h-[80px] lg:h-[94px] min-h-[40px] w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.35)]">
         </a>
 
         <div class="hidden md:flex items-center gap-8">
@@ -95,23 +95,36 @@
   </header>
 
   <main id="top">
-    <section class="hero">
-      <div class="absolute inset-0">
-        <img src="assets/images/hero-image.jpg" alt="The Slab Station hero" loading="lazy" class="hero-img w-full h-full">
-      </div>
+    <section class="hero relative min-h-[92svh] overflow-hidden">
+      <!-- Background image -->
+      <img
+        src="assets/images/hero-image.jpg"
+        alt="Rotating Slab Station hero"
+        class="absolute inset-0 w-full h-full object-cover z-0"
+        decoding="async"
+        fetchpriority="high"
+      />
 
-      <!-- Centered, tighter hero stack -->
-      <div class="hero-content flex items-center justify-center p-4 md:p-8 text-center">
-        <div class="w-full max-w-2xl mx-auto space-y-4 md:space-y-6">
+      <!-- Soft gradient overlay for legibility -->
+      <div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-black/40 via-black/10 to-black/70 z-10"></div>
+
+      <!-- Centered copy stack -->
+      <div class="relative z-20 flex items-center justify-center p-5 md:p-8 text-center">
+        <div class="w-full max-w-3xl mx-auto space-y-4 md:space-y-6">
           <p class="uppercase text-xs tracking-wide text-white/70">THE SLAB STATION</p>
-          <h1 class="text-4xl leading-tight md:text-6xl md:leading-[1.05] font-extrabold text-white">
+
+          <!-- Restore the big headline you liked -->
+          <h1 class="text-white font-extrabold tracking-tight leading-[1.05] text-[40px] sm:text-6xl">
             The Ultimate Slab Showcase
           </h1>
+
+          <!-- Restore your original subhead copy -->
           <p class="text-base md:text-lg text-white/80 max-w-prose mx-auto">
-            Premium rotating, stackable display for PSA/BGS graded cards — engineered to look incredible on your desk or shelf.
+            A premium, rotating, stackable display built for PSA/BGS graded cards — engineered to look incredible on your desk or shelf.
           </p>
 
-          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 pt-2">
+          <!-- CTAs -->
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 pt-1">
             <a href="#builder"
                class="w-full sm:w-auto inline-flex items-center justify-center rounded-2xl bg-white text-black px-6 py-3 font-semibold hover:bg-white/90 transition focus-ring">
               Buy Now
@@ -133,12 +146,11 @@
           The essentials—one at a time. Swipe to explore.
         </p>
 
-        <!-- One-card swipe carousel (no arrows, no heavy box) -->
-        <div id="featuresViewport"
-             class="mt-8 overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-smooth -mx-4 px-4">
+        <!-- One-card swipe carousel (no arrows, accessible dots) -->
+        <div id="featuresViewport" class="mt-8 overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-smooth -mx-4 px-4" role="region" aria-label="Key features carousel">
           <ul id="featuresTrack" class="flex gap-4">
             <!-- Slide 1 -->
-            <li class="snap-center shrink-0 w-[88%] sm:w-[520px] max-w-[560px] mx-auto">
+            <li id="feature-slide-1" class="snap-center shrink-0 w-[86%] sm:w-[520px] max-w-[560px] mx-auto">
               <article class="rounded-3xl bg-white/[0.06] ring-1 ring-white/10 p-6 text-center">
                 <div class="inline-flex items-center justify-center rounded-2xl bg-white/[0.08] ring-1 ring-white/10 p-3 mb-4">
                   <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -153,7 +165,7 @@
             </li>
 
             <!-- Slide 2 -->
-            <li class="snap-center shrink-0 w-[88%] sm:w-[520px] max-w-[560px] mx-auto">
+            <li id="feature-slide-2" class="snap-center shrink-0 w-[86%] sm:w-[520px] max-w-[560px] mx-auto">
               <article class="rounded-3xl bg-white/[0.06] ring-1 ring-white/10 p-6 text-center">
                 <div class="inline-flex items-center justify-center rounded-2xl bg-white/[0.08] ring-1 ring-white/10 p-3 mb-4">
                   <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -168,7 +180,7 @@
             </li>
 
             <!-- Slide 3 -->
-            <li class="snap-center shrink-0 w-[88%] sm:w-[520px] max-w-[560px] mx-auto">
+            <li id="feature-slide-3" class="snap-center shrink-0 w-[86%] sm:w-[520px] max-w-[560px] mx-auto">
               <article class="rounded-3xl bg-white/[0.06] ring-1 ring-white/10 p-6 text-center">
                 <div class="inline-flex items-center justify-center rounded-2xl bg-white/[0.08] ring-1 ring-white/10 p-3 mb-4">
                   <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -183,7 +195,7 @@
             </li>
 
             <!-- Slide 4 -->
-            <li class="snap-center shrink-0 w-[88%] sm:w-[520px] max-w-[560px] mx-auto">
+            <li id="feature-slide-4" class="snap-center shrink-0 w-[86%] sm:w-[520px] max-w-[560px] mx-auto">
               <article class="rounded-3xl bg-white/[0.06] ring-1 ring-white/10 p-6 text-center">
                 <div class="inline-flex items-center justify-center rounded-2xl bg-white/[0.08] ring-1 ring-white/10 p-3 mb-4">
                   <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
@@ -199,19 +211,18 @@
           </ul>
         </div>
 
-        <!-- Dots (no arrows) -->
-        <div id="featuresDots" class="mt-5 flex items-center justify-center gap-2" aria-label="Feature slides">
-          <button type="button" class="h-1.5 w-6 rounded-full bg-white/90"></button>
-          <button type="button" class="h-1.5 w-6 rounded-full bg-white/30"></button>
-          <button type="button" class="h-1.5 w-6 rounded-full bg-white/30"></button>
-          <button type="button" class="h-1.5 w-6 rounded-full bg-white/30"></button>
+        <!-- Dots (accessible) -->
+        <div id="featuresDots" class="mt-5 flex items-center justify-center gap-2" role="tablist" aria-label="Feature slides">
+          <button type="button" role="tab" aria-controls="feature-slide-1" aria-selected="true" class="h-1.5 w-6 rounded-full bg-white/90"></button>
+          <button type="button" role="tab" aria-controls="feature-slide-2" aria-selected="false" class="h-1.5 w-3 rounded-full bg-white/30"></button>
+          <button type="button" role="tab" aria-controls="feature-slide-3" aria-selected="false" class="h-1.5 w-3 rounded-full bg-white/30"></button>
+          <button type="button" role="tab" aria-controls="feature-slide-4" aria-selected="false" class="h-1.5 w-3 rounded-full bg-white/30"></button>
         </div>
 
-        <!-- Keep the 5-image grid/logo shot just below (no change) -->
-        <div class="mt-10 w-full self-center">
+        <!-- The 5-station image grid you love -->
+        <div class="mt-10 w-full">
           <div class="relative group rounded-2xl overflow-hidden ring-2 ring-white/80">
-            <img src="assets/images/IMG_8980.JPG" alt="Slab Station color grid" loading="lazy"
-                 class="w-full h-full object-cover transition duration-300 ease-out group-hover:scale-[1.02]">
+            <img src="assets/images/IMG_8980.JPG" alt="Slab Station color grid" loading="lazy" decoding="async" class="w-full h-full object-cover transition duration-300 ease-out group-hover:scale-[1.02]">
             <div class="pointer-events-none absolute inset-0 ring-1 ring-white/20 rounded-2xl"></div>
           </div>
         </div>
@@ -238,20 +249,16 @@
           </button>
         </div>
 
+        <!-- Video Panels -->
         <div class="mt-6 max-w-5xl mx-auto">
-          <!-- Borderless, rounded video container -->
-          <div>
-            <div id="tab-setup" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn-setup">
-              <div class="relative rounded-2xl overflow-hidden bg-black/80" style="aspect-ratio:16/9;">
-                <video id="video-setup" class="absolute inset-0 h-full w-full object-contain"
-                       muted autoplay loop playsinline preload="metadata"></video>
-              </div>
+          <div id="tab-setup" class="tab-panel" role="tabpanel" aria-labelledby="tabbtn-setup">
+            <div class="relative rounded-3xl overflow-hidden bg-black ring-1 ring-white/10 shadow-2xl" style="aspect-ratio:16/9;">
+              <video id="video-setup" class="absolute inset-0 h-full w-full object-contain" poster="assets/videos/setup-poster.jpg" muted autoplay loop playsinline preload="metadata"></video>
             </div>
-            <div id="tab-showcase" class="tab-panel hidden" role="tabpanel" aria-labelledby="tabbtn-showcase">
-              <div class="relative rounded-2xl overflow-hidden bg-black/80" style="aspect-ratio:16/9;">
-                <video id="video-showcase" class="absolute inset-0 h-full w-full object-contain"
-                       muted loop playsinline preload="metadata"></video>
-              </div>
+          </div>
+          <div id="tab-showcase" class="tab-panel hidden" role="tabpanel" aria-labelledby="tabbtn-showcase">
+            <div class="relative rounded-3xl overflow-hidden bg-black ring-1 ring-white/10 shadow-2xl" style="aspect-ratio:16/9;">
+              <video id="video-showcase" class="absolute inset-0 h-full w-full object-contain" poster="assets/videos/showcase-poster.jpg" muted loop playsinline preload="metadata"></video>
             </div>
           </div>
         </div>
@@ -271,7 +278,7 @@
         <div class="grid lg:grid-cols-2 gap-12 items-start">
           <!-- Preview -->
           <div>
-            <img id="productPreview" src="assets/images/black.jpg" alt="Selected Slab Station style" loading="lazy" class="mx-auto w-full max-w-xl rounded-2xl ring-1 ring-white/10 shadow-2xl shadow-white/10 reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700">
+            <img id="productPreview" src="assets/images/black.jpg" alt="Selected Slab Station style" loading="lazy" decoding="async" class="mx-auto w-full max-w-xl rounded-2xl ring-1 ring-white/10 shadow-2xl shadow-white/10 reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700">
           </div>
 
           <!-- Builder / Checkout -->
@@ -443,12 +450,12 @@
   <footer class="border-t border-white/10 bg-black py-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
-        <img src="assets/images/logo.jpg" alt="The Slab Station Logo" loading="lazy" class="h-14 sm:h-16 min-h-[40px] w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
+        <img src="assets/images/logo.jpg" alt="The Slab Station Logo" loading="lazy" decoding="async" class="h-14 sm:h-16 min-h-[40px] w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
 
         <a href="https://instagram.com/theslabstation" target="_blank" rel="noopener"
-           class="inline-flex items-center gap-3 px-1 py-1 hover:opacity-90 transition focus-ring rounded-lg">
+           class="inline-flex items-center gap-3 px-1.5 py-1.5 hover:opacity-90 focus-ring">
           <span class="text-sm sm:text-base">Follow us on</span>
-          <img src="assets/images/instagram-icon.png" alt="Instagram" loading="lazy" class="h-9 w-9 rounded-[10px]">
+          <img src="assets/images/instagram-icon.png" alt="Instagram" loading="lazy" decoding="async" class="h-9 w-9 rounded-[10px]">
         </a>
 
         <p class="text-white/40 text-sm">&copy; <span id="year"></span> The Slab Station. All rights reserved.</p>
