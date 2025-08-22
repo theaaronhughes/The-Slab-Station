@@ -11,92 +11,48 @@
   <!-- Stripe.js -->
   <script src="https://js.stripe.com/v3/"></script>
   <style>
-    :root { color-scheme: dark; --padding-base: 16px; --space-base: 16px; --font-base: 16px; }
+    :root { color-scheme: dark; }
     html { scroll-behavior: smooth; }
-    body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; max-width:100vw; overflow-x:hidden; font-size: var(--font-base); }
+    body { font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; max-width:100vw; overflow-x:hidden; }
     .focus-ring:focus-visible { outline: 2px solid rgba(255,255,255,.75); outline-offset: 2px; border-radius: .75rem; }
-    .feature-card { transition: transform .18s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; padding: var(--padding-base); }
+    .feature-card { transition: transform .18s ease, box-shadow .25s ease, background .25s ease, border-color .25s ease; }
     .feature-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,.45); background: rgba(0,0,0,.5); border-color: rgba(255,255,255,.18); }
-    .icon-wrap { background: linear-gradient(145deg, rgba(255,255,255,.12), rgba(255,255,255,.06)); border: 1px solid rgba(255,255,255,.14); padding: 8px; } /* Uniform padding */
+    .icon-wrap { background: linear-gradient(145deg, rgba(255,255,255,.12), rgba(255,255,255,.06)); border: 1px solid rgba(255,255,255,.14); }
     .no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
-
-    /* --- PayPal full-bleed + spacing/edge fixes --- */
     .paypal-wrapper{border-radius:1rem;overflow:hidden;background:transparent;display:block;position:relative}
     #paypal-container{display:block}
     #paypal-container, #paypal-container iframe{width:100%!important;border:0!important;background:transparent!important;display:block}
     #paypal-container > div{margin:0!important}
-    #paypal-container .paypal-buttons,
-    #paypal-container .paypal-buttons > div{border-radius:1rem!important;overflow:hidden!important;margin:0!important}
-
-    /* Make sure the PayID modal always sits ON TOP of PayPal iframes */
+    #paypal-container .paypal-buttons, #paypal-container .paypal-buttons > div{border-radius:1rem!important;overflow:hidden!important;margin:0!important}
     #payidModal{position:fixed;inset:0;z-index:2147483647 !important}
-
     body.modal-open{overflow:hidden}
-
-    /* iOS safe area for sticky header */
     header{padding-top: env(safe-area-inset-top, 0)}
-
-    /* Faster taps on mobile nav links */
     header nav a{touch-action:manipulation}
-
-    /* Reduce motion preference */
-    @media (prefers-reduced-motion: reduce){
-      *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
-    }
-
-    /* (Instagram slider removed) */
-
-    /* Review Modal (Netlify form) */
+    @media (prefers-reduced-motion: reduce){ *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important} }
     #reviewModal{position:fixed;inset:0;z-index:2147483647 !important}
-
-    /* Mobile-optimized hero */
-    .hero{min-height:68vh;position:relative;overflow:hidden}
-    @supports(height:1svh){.hero{min-height:68svh}}
-    @media (min-width:640px){.hero{min-height:64vh}@supports(height:1dvh){.hero{min-height:64dvh}}}
-    @media (min-width:1024px){.hero{min-height:61vh}@supports(height:1dvh){.hero{min-height:61dvh}}}
+    .hero{min-height:calc(100vh - 80px);position:relative;overflow:hidden}
+    @supports(height:1svh){.hero{min-height:calc(100svh - 80px)}}
+    @media (min-width:640px){.hero{min-height:calc(100vh - 80px)}}
     .hero-img{object-fit:contain;object-position:center 20%}
     @media (min-width:640px){.hero-img{object-fit:cover;object-position:center}}
     .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.35) 0%, rgba(0,0,0,.15) 30%, rgba(0,0,0,0) 60%);pointer-events:none}
-    /* Overlay alignment: lift on phones, center on sm+ */
     .hero-content{position:absolute;inset:0;z-index:10;display:flex;justify-content:center;align-items:flex-start;padding-top:clamp(48px,14vh,120px)}
     @media (min-width:640px){.hero-content{align-items:center;padding-top:0}}
-    /* Subtle text shadow for premium readability */
     .text-shadow-sm{text-shadow:0 2px 8px rgba(0,0,0,.35)}
-
-    /* Simple loading state */
     .btn-busy{opacity:.7;pointer-events:none;position:relative}
     .btn-busy::after{content:"";position:absolute;right:12px;top:50%;width:16px;height:16px;border:2px solid rgba(255,255,255,.5);border-top-color:#fff;border-radius:50%;transform:translateY(-50%);animation:spin .9s linear infinite}
     @keyframes spin{to{transform:translateY(-50%) rotate(360deg)}}
-
-    /* Back to top */
     #backToTop{position:fixed;right:16px;bottom:16px;z-index:50}
-
-    /* Swipe slider helpers */
     .features-row{scroll-behavior:smooth}
-    .snap-x{scroll-snap-type:x mandatory}
+    .snap-x{scroll-snap-type:x proximity}
     .snap-center{scroll-snap-align:center}
     @media (min-width:1024px){.features-row{overflow-x:hidden;justify-content:space-between}}
-
-    /* Features responsive adjustments */
-    @media (max-width: 639px){
-      #features .features-row{flex-direction:column;overflow-x:hidden;gap:8px}
-      #features .snap-x{scroll-snap-type:none}
-      #features .feature-card{width:100%}
-    }
-    @media (min-width: 640px){
-      #features .features-row{justify-content:space-between}
-    }
-
-    /* Section baseline padding */
-    section { padding: var(--padding-base) 8px; }
-    @media (min-width:768px){ section{ padding: calc(var(--padding-base) * 2) 16px; } }
-
-    /* Global uniformity */
-    .space-y-base > * + * { margin-top: var(--space-base); }
-    .text-white\/70 { opacity: 0.85; } /* Improved contrast for Tailwind class */
-    .reveal-on-scroll { animation: fadeIn 0.6s ease-in; }
-    @keyframes fadeIn { 0% { opacity: 0; transform: translateY(20px); } 100% { opacity: 1; transform: translateY(0); } }
-    @media (max-width: 640px) { h1 { font-size: 2.5rem; } p { font-size: 0.9rem; } } /* Mobile font adjustments */
+    @media (max-width: 639px){ #features .features-row{flex-direction:column;overflow-x:hidden;gap:8px} #features .snap-x{scroll-snap-type:none} #features .feature-card{width:100%} }
+    @media (min-width: 640px){ #features .features-row{justify-content:space-between} }
+    section { padding: 16px 8px; }
+    @media (min-width:768px){ section{ padding: 32px 16px; } }
+    img, video { max-width: 100%; height: auto; }
+    button, a { transition: all 0.2s ease; }
   </style>
 </head>
 <body class="bg-black text-white antialiased selection:bg-white/15">
@@ -106,8 +62,7 @@
       <div class="flex h-24 items-center justify-between">
         <!-- Logo -->
         <a href="#top" aria-label="Home" class="focus-ring">
-          <img src="assets/images/logo.jpg" alt="The Slab Station"
-               class="h-[60px] sm:h-[80px] lg:h-[94px] min-h-[40px] w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.35)]">
+          <img src="assets/images/logo.jpg" alt="The Slab Station" loading="lazy" class="h-[60px] sm:h-[80px] lg:h-[94px] min-h-[40px] w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.35)]">
         </a>
 
         <div class="hidden md:flex items-center gap-8">
@@ -133,11 +88,11 @@
   </header>
 
   <main id="top">
-    <section class="relative min-h-[60vh] sm:min-h-[64vh] lg:min-h-[61vh]">
+    <section class="hero">
       <div class="absolute inset-0">
-        <img src="assets/images/hero-image.jpg" alt="The Slab Station hero" class="w-full h-full object-cover">
+        <img src="assets/images/hero-image.jpg" alt="The Slab Station hero" loading="lazy" class="hero-img w-full h-full">
       </div>
-      <div class="absolute inset-0 flex flex-col md:flex-row items-center justify-center text-center p-4 md:p-8 gap-4 md:gap-8">
+      <div class="hero-content flex flex-col md:flex-row items-center justify-center text-center p-4 md:p-8 gap-4 md:gap-8 text-shadow-sm">
         <div class="flex-1">
           <p class="uppercase text-sm text-white/70">THE SLAB STATION</p>
           <h1 class="text-4xl md:text-6xl font-bold">The Ultimate Slab Showcase</h1>
@@ -145,23 +100,22 @@
         <div class="flex-1">
           <p class="text-lg text-white/80">A premium, rotating, stackable display built for PSA/BGS graded cards — engineered to look incredible on your desk or shelf.</p>
           <div class="flex flex-col md:flex-row gap-3 mt-4">
-            <a href="#builder" class="bg-white text-black px-6 py-3 rounded-2xl">Buy Now</a>
-            <a href="#features" class="border border-white/25 px-6 py-3 rounded-2xl">Learn More</a>
+            <a href="#builder" class="bg-white text-black px-6 py-3 rounded-2xl font-semibold hover:bg-white/90 transition focus-ring">Buy Now</a>
+            <a href="#features" class="border border-white/25 px-6 py-3 rounded-2xl hover:bg-white/10 transition focus-ring">Learn More</a>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- WHY -->
-    <section id="features" class="relative bg-[#121212]">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+    <!-- FEATURES -->
+    <section id="features" class="relative bg-[#121212] py-16 sm:py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="mb-8 flex justify-center">
-          <img src="assets/images/spinnobackground2.gif" alt="Rotating slab demo"
-               class="w-full max-w-[520px] md:max-w-[560px] reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700" loading="lazy">
+          <img src="assets/images/spinnobackground2.gif" alt="Rotating slab demo" loading="lazy" class="w-full max-w-[520px] md:max-w-[560px] reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700">
         </div>
         <h3 class="text-2xl font-bold text-center mb-4 text-white/90">Key Features</h3>
-        <div class="features-row flex flex-col sm:flex-row overflow-x-auto gap-4 no-scrollbar snap-x snap-mandatory lg:overflow-x-hidden lg:justify-center">
-          <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-4 text-center flex-shrink-0 w-full sm:w-[45vw] lg:w-auto snap-center">
+        <div class="features-row flex flex-wrap overflow-x-auto gap-4 no-scrollbar snap-x snap-mandatory lg:overflow-x-hidden lg:justify-center">
+          <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-4 text-center flex-shrink-0 w-full sm:w-1/2 lg:w-1/4 snap-center">
             <div class="icon-wrap inline-flex rounded-2xl p-2 mb-3">
               <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M3 12c0 4 4.5 7 9 7s9-3 9-7-4.5-7-9-7"/><path d="M12 5v4m0 6v4"/>
@@ -170,7 +124,7 @@
             <h3 class="text-xl font-extrabold leading-snug">360° Smooth Rotation</h3>
             <p class="text-white/75 text-sm leading-relaxed mt-1">Effortlessly showcase every angle of your graded card with a silent, smooth rotating mechanism.</p>
           </article>
-          <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-4 text-center flex-shrink-0 w-full sm:w-[45vw] lg:w-auto snap-center">
+          <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-4 text-center flex-shrink-0 w-full sm:w-1/2 lg:w-1/4 snap-center">
             <div class="icon-wrap inline-flex rounded-2xl p-2 mb-3">
               <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="8.5" y="13" width="7" height="7" rx="1.5"/>
@@ -179,7 +133,7 @@
             <h3 class="text-xl font-extrabold leading-snug">Stackability &amp; Storage</h3>
             <p class="text-white/75 text-sm leading-relaxed mt-1">Displays 6 slabs externally, stores 12 internally. Easily stack multiple units—perfect for growing collections.</p>
           </article>
-          <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-4 text-center flex-shrink-0 w-full sm:w-[45vw] lg:w-auto snap-center">
+          <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-4 text-center flex-shrink-0 w-full sm:w-1/2 lg:w-1/4 snap-center">
             <div class="icon-wrap inline-flex rounded-2xl p-2 mb-3">
               <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 3l8 4v5c0 5-8 9-8 9s-8-4-8-9V7l8-4z"/>
@@ -188,7 +142,7 @@
             <h3 class="text-xl font-extrabold leading-snug">Perfect Fit &amp; Premium Build</h3>
             <p class="text-white/75 text-sm leading-relaxed mt-1">Designed for standard PSA/BGS slabs. Crafted from high-quality materials for stability.</p>
           </article>
-          <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-4 text-center flex-shrink-0 w-full sm:w-[45vw] lg:w-auto snap-center">
+          <article class="feature-card rounded-2xl border border-white/14 bg-black/40 p-4 text-center flex-shrink-0 w-full sm:w-1/2 lg:w-1/4 snap-center">
             <div class="icon-wrap inline-flex rounded-2xl p-2 mb-3">
               <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
                 <rect x="3.5" y="5" width="17" height="11" rx="2"/><path d="M8 20h8"/>
@@ -201,8 +155,7 @@
 
         <div class="mt-8 lg:mt-0 w-full self-center">
           <div class="relative group rounded-2xl overflow-hidden ring-2 ring-white/80">
-            <img src="assets/images/IMG_8980.JPG" alt="Slab Station color grid"
-                 class="w-full h-full object-cover transition duration-300 ease-out group-hover:scale-[1.02]" loading="lazy">
+            <img src="assets/images/IMG_8980.JPG" alt="Slab Station color grid" loading="lazy" class="w-full h-full object-cover transition duration-300 ease-out group-hover:scale-[1.02]">
             <div class="pointer-events-none absolute inset-0 ring-1 ring-white/20 rounded-2xl"></div>
           </div>
         </div>
@@ -210,8 +163,8 @@
     </section>
 
     <!-- HOW IT WORKS -->
-    <section id="how" class="bg-black">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+    <section id="how" class="bg-black py-16 sm:py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <h2 class="text-3xl sm:text-4xl font-extrabold text-center">How It Works — Slab Station in Action</h2>
         <p class="text-white/70 text-center mt-3 max-w-3xl mx-auto">See how the Slab Station revolutionizes the way you store and display your graded cards.</p>
 
@@ -235,40 +188,27 @@
           </div>
         </div>
 
-        <div class="mt-6 flex flex-row overflow-x-auto gap-3 max-w-5xl mx-auto no-scrollbar"> <!-- Horizontal for less room, with icons -->
-          <div class="flex-shrink-0 rounded-xl bg-white/8 border border-white/10 p-3 text-center hover:bg-white/12 transition flex items-center gap-2 min-w-[140px]">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 4v16" stroke-width="2"/></svg>
-            <div>
-              <p class="font-semibold text-sm">Easy Insertion</p>
-              <p class="text-white/80 text-xs">Perfect fit slots</p>
-            </div>
+        <div class="mt-6 grid md:grid-cols-3 gap-4 max-w-5xl mx-auto">
+          <div class="rounded-2xl bg-white/8 border border-white/10 px-5 py-5 text-center hover:-translate-y-0.5 hover:bg-white/12 transition">
+            <p class="font-semibold">Easy Slab Insertion</p><p class="text-white/70 text-sm mt-1">Slots designed for perfect fit</p>
           </div>
-          <div class="flex-shrink-0 rounded-xl bg-white/8 border border-white/10 p-3 text-center hover:bg-white/12 transition flex items-center gap-2 min-w-[140px]">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M20 12H4" stroke-width="2"/></svg>
-            <div>
-              <p class="font-semibold text-sm">Internal Storage</p>
-              <p class="text-white/80 text-xs">Store 12 slabs</p>
-            </div>
+          <div class="rounded-2xl bg-white/8 border border-white/10 px-5 py-5 text-center hover:-translate-y-0.5 hover:bg-white/12 transition">
+            <p class="font-semibold">Internal Storage</p><p class="text-white/70 text-sm mt-1">Store 12 slabs inside</p>
           </div>
-          <div class="flex-shrink-0 rounded-xl bg-white/8 border border-white/10 p-3 text-center hover:bg-white/12 transition flex items-center gap-2 min-w-[140px]">
-            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4h16v16H4z" stroke-width="2"/></svg>
-            <div>
-              <p class="font-semibold text-sm">Stackable Design</p>
-              <p class="text-white/80 text-xs">Expand collections</p>
-            </div>
+          <div class="rounded-2xl bg-white/8 border border-white/10 px-5 py-5 text-center hover:-translate-y-0.5 hover:bg-white/12 transition">
+            <p class="font-semibold">Stackable Design</p><p class="text-white/70 text-sm mt-1">Expand as collection grows</p>
           </div>
         </div>
       </div>
     </section>
 
     <!-- PRODUCT BUILDER -->
-    <section id="builder" class="bg-gradient-to-b from-black to-zinc-900">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20">
+    <section id="builder" class="bg-gradient-to-b from-black to-zinc-900 py-16 sm:py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid lg:grid-cols-2 gap-12 items-start">
           <!-- Preview -->
-          <div class="sticky top-0 z-10 bg-black pb-4"> <!-- Sticky for visibility -->
-            <img id="productPreview" src="assets/images/black.jpg" alt="Selected Slab Station style"
-                 class="mx-auto w-full max-w-xl rounded-2xl ring-1 ring-white/10 shadow-2xl shadow-white/10 reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700">
+          <div>
+            <img id="productPreview" src="assets/images/black.jpg" alt="Selected Slab Station style" loading="lazy" class="mx-auto w-full max-w-xl rounded-2xl ring-1 ring-white/10 shadow-2xl shadow-white/10 reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700">
           </div>
 
           <!-- Builder / Checkout -->
@@ -276,7 +216,123 @@
             <h2 class="text-3xl sm:text-4xl font-extrabold">Build Your Slab Station</h2>
 
             <form id="builderForm" class="space-y-5" onsubmit="return false;">
-              <!-- Form content unchanged -->
+              <label class="block">
+                <span class="text-sm text-white/70">Grading Service</span>
+                <select id="gradingService" class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2 focus:ring-2 focus:ring-white/30">
+                  <option>PSA</option><option>BGS</option>
+                </select>
+              </label>
+
+              <label class="block">
+                <span class="text-sm text-white/70">Selected Style</span>
+                <select id="selectedStyle" class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2 focus:ring-2 focus:ring-white/30">
+                  <option>Black</option>
+                  <option>White</option>
+                  <option>White/White/Red</option>
+                  <option>White/White/Blue</option>
+                  <option>Orange/Grey/Orange</option>
+                  <option>Yellow/White/Yellow</option>
+                  <option>Red/Blue/Red</option>
+                  <option>Pink</option>
+                  <option>Blue</option>
+                  <option>Orange</option>
+                  <option>Yellow/Blue/Yellow</option>
+                  <option>Red/White/Red</option>
+                  <option>Custom Colors</option>
+                </select>
+              </label>
+
+              <div id="customColors" class="grid sm:grid-cols-3 gap-4 hidden">
+                <label class="block"><span class="text-sm text-white/70">Lid Color</span>
+                  <select id="lidColor" class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2 focus:ring-2 focus:ring-white/30">
+                    <option>Black</option><option>White</option><option>Blue</option><option>Red</option>
+                    <option>Orange</option><option>Yellow</option><option>Green</option><option>Grey</option>
+                  </select>
+                </label>
+                <label class="block"><span class="text-sm text-white/70">Pillar Color</span>
+                  <select id="pillarColor" class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2 focus:ring-2 focus:ring-white/30">
+                    <option>Black</option><option>White</option><option>Blue</option><option>Red</option>
+                    <option>Orange</option><option>Yellow</option><option>Green</option><option>Grey</option>
+                  </select>
+                </label>
+                <label class="block"><span class="text-sm text-white/70">Base Color</span>
+                  <select id="baseColor" class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2 focus:ring-2 focus:ring-white/30">
+                    <option>Black</option><option>White</option><option>Blue</option><option>Red</option>
+                    <option>Orange</option><option>Yellow</option><option>Green</option><option>Grey</option>
+                  </select>
+                </label>
+              </div>
+
+              <div id="customNotesWrap" class="hidden">
+                <label class="block">
+                  <span class="text-sm text-white/70">Additional Instructions</span>
+                  <textarea id="customNotes" rows="3" placeholder="Tell us any specific color notes or requests…" class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2 focus:ring-2 focus:ring-white/30"></textarea>
+                </label>
+              </div>
+
+              <label class="block">
+                <span class="text-sm text-white/70">Add-ons</span>
+                <select id="addOns" class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2 focus:ring-2 focus:ring-white/30">
+                  <option>None</option>
+                  <option>Pokéball Top (+$14.95)</option>
+                </select>
+              </label>
+
+              <div class="flex items-center gap-3">
+                <span class="text-sm text-white/70">Qty</span>
+                <div class="flex items-center rounded-xl border border-white/15 overflow-hidden">
+                  <button type="button" id="qtyMinus2" class="px-3 py-2 hover:bg-white/10">−</button>
+                  <input id="qtyInput2" type="number" min="1" value="1" class="w-16 text-center bg-transparent py-2">
+                  <button type="button" id="qtyPlus2" class="px-3 py-2 hover:bg-white/10">+</button>
+                </div>
+              </div>
+
+              <!-- PRICING CARD -->
+              <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <div class="flex items-center justify-between">
+                  <p class="font-semibold">Base Price</p>
+                  <p class="font-semibold" id="basePrice">$119.95</p>
+                </div>
+                <p class="text-white/60 text-xs mt-1">+ $19.95 Australia Wide Postage (added to total)</p>
+                <div class="mt-4 space-y-2 text-sm">
+                  <div class="flex items-center justify-between"><span class="text-white/80">Subtotal</span><span id="subtotalPrice">$119.95</span></div>
+                  <div class="flex items-center justify-between"><span class="text-white/80">Custom Colors Fee</span><span id="customFeePrice">$0.00</span></div>
+                  <div class="flex items-center justify-between"><span class="text-white/80">Shipping</span><span id="shippingPrice">$19.95</span></div>
+                </div>
+                <div class="mt-3 pt-3 border-t border-white/10 flex items-center justify-between">
+                  <p class="text-lg font-extrabold">Total</p><p id="grandTotal" class="text-lg font-extrabold">$144.90</p>
+                </div>
+              </div>
+
+              <!-- PAYMENTS -->
+              <div class="space-y-3">
+                <!-- Card (Stripe) -->
+                <button type="button" id="cardCheckoutBtn" class="w-full rounded-2xl bg-white text-black px-6 py-3 font-semibold hover:bg-white/90 transition focus-ring inline-flex items-center justify-center gap-2">
+                  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5h18a2 2 0 0 1 2 2v2H1V7a2 2 0 0 1 2-2Zm-2 6h22v6a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-6Zm5 5h4v-2H6v2Z"/></svg>
+                  Pay with Card
+                </button>
+
+                <!-- Apple Pay (Stripe Checkout) -->
+                <button type="button" id="appleCheckoutBtn" class="w-full rounded-2xl bg-black text-white border border-white/20 transition focus-ring px-0 py-0">
+                  <div class="h-[48px] grid place-items-center">
+                    <div class="flex items-center gap-2">
+                      <svg viewBox="0 0 48 48" class="h-5 w-5 fill-white" aria-hidden="true">
+                        <path d="M35.2 25.6c0-3.6 3-5.3 3.2-5.4-1.7-2.5-4.4-2.8-5.4-2.8-2.3-.2-4.6 1.3-5.8 1.3-1.2 0-3-1.3-4.9-1.2-2.5.1-4.9 1.5-6.2 3.8-2.7 4.7-.7 11.8 1.9 15.6 1.3 1.8 2.8 3.8 4.8 3.7 1.9-.1 2.6-1.2 4.9-1.2 2.3 0 2.9 1.2 4.9 1.1 2-.1 3.2-1.8 4.5-3.6 1.4-2.1 2-4.1 2-4.2-.1 0-3.8-1.4-3.9-6.1Z" />
+                        <path d="M30.8 14.4c1-1.2 1.6-2.9 1.4-4.6-1.4.1-3.2 1-4.2 2.3-.9 1.1-1.7 2.9-1.5 4.6 1.6.1 3.2-.8 4.3-2.3Z" />
+                      </svg>
+                      <span class="text-base font-semibold">Pay with Apple&nbsp;Pay</span>
+                    </div>
+                  </div>
+                </button>
+
+                <!-- PayPal -->
+                <div class="paypal-wrapper"><div id="paypal-container" class="w-full"></div></div>
+
+                <!-- PAYID -->
+                <button type="button" id="payidBtn" class="w-full rounded-2xl border border-white/20 px-6 py-3 hover:bg-white/10 transition focus-ring font-semibold">
+                  PayID (Bank Transfer)
+                </button>
+              </div>
             </form>
           </div>
         </div>
@@ -286,34 +342,32 @@
           <h3 class="text-2xl sm:text-3xl font-extrabold text-center">Collector Approved</h3>
           <p class="text-white/70 text-center mt-2">Join hundreds of collectors who have elevated their displays with The Slab Station</p>
           <div class="mt-4 flex items-center justify-center">
-            <button id="openReviewModal" class="rounded-xl border border-white/20 px-4 py-2 hover:bg-white/10 transition">Leave a Review</button>
+            <button id="openReviewModal" class="rounded-xl border border-white/20 px-4 py-2 hover:bg-white/10 transition focus-ring">Leave a Review</button>
           </div>
           <div class="mt-4 flex items-center justify-center gap-3">
             <span id="avgRating" class="text-2xl font-extrabold">4.8</span>
             <div class="flex">
-              <svg class="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.562-.953L10 0l2.95 5.957 6.562.953-4.756 4.635 1.122 6.545z"/></svg>
-              <svg class="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.562-.953L10 0l2.95 5.957 6.562.953-4.756 4.635 1.122 6.545z"/></svg>
-              <svg class="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.562-.953L10 0l2.95 5.957 6.562.953-4.756 4.635 1.122 6.545z"/></svg>
-              <svg class="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.562-.953L10 0l2.95 5.957 6.562.953-4.756 4.635 1.122 6.545z"/></svg>
-              <svg class="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.562-.953L10 0l2.95 5.957 6.562.953-4.756 4.635 1.122 6.545z"/></svg>
+              <svg class="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.562-.953L10 0l2.95 5.957 6.562 .953-4.756 4.635 1.122 6.545z"/></svg>
+              <svg class="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.562-.953L10 0l2.95 5.957 6.562 .953-4.756 4.635 1.122 6.545z"/></svg>
+              <svg class="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.562-.953L10 0l2.95 5.957 6.562 .953-4.756 4.635 1.122 6.545z"/></svg>
+              <svg class="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.562-.953L10 0l2.95 5.957 6.562 .953-4.756 4.635 1.122 6.545z"/></svg>
+              <svg class="h-5 w-5 fill-yellow-400" viewBox="0 0 20 20"><path d="M10 15l-5.878 3.09 1.122-6.545L.488 6.91l6.562-.953L10 0l2.95 5.957 6.562 .953-4.756 4.635 1.122 6.545z"/></svg>
             </div>
             <span id="avgCountText" class="text-white/70">Average rating from 150 verified buyers</span>
           </div>
 
           <div class="relative mt-8">
-            <button id="revPrev"
-                    class="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 p-2 backdrop-blur focus-ring">
+            <button id="revPrev" class="absolute -left-3 sm:-left-5 top-1/2 -translate-y-1/2 z-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 p-2 backdrop-blur focus-ring">
               <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
             </button>
 
             <div id="reviewsViewport" class="overflow-x-auto no-scrollbar scroll-smooth snap-x snap-mandatory">
               <ul id="reviewsTrack" class="flex gap-6 px-2">
-                <!-- Reviews unchanged -->
+                <!-- Reviews populated via JS -->
               </ul>
             </div>
 
-            <button id="revNext"
-                    class="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 p-2 backdrop-blur focus-ring">
+            <button id="revNext" class="absolute -right-3 sm:-right-5 top-1/2 -translate-y-1/2 z-10 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 p-2 backdrop-blur focus-ring">
               <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
             </button>
           </div>
@@ -323,17 +377,14 @@
   </main>
 
   <!-- FOOTER -->
-  <footer class="border-t border-white/10 bg-black">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <footer class="border-t border-white/10 bg-black py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
-        <img src="assets/images/logo.jpg" alt="The Slab Station Logo"
-             class="h-14 sm:h-16 min-h-[40px] w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
+        <img src="assets/images/logo.jpg" alt="The Slab Station Logo" loading="lazy" class="h-14 sm:h-16 min-h-[40px] w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
 
-        <!-- Centered, larger Instagram button with text -->
-        <a href="https://instagram.com/theslabstation" target="_blank" rel="noopener"
-           class="inline-flex items-center gap-3 rounded-2xl border border-white/15 px-5 py-2.5 hover:bg-white/10 transition">
+        <a href="https://instagram.com/theslabstation" target="_blank" rel="noopener" class="inline-flex items-center gap-3 rounded-2xl border border-white/15 px-5 py-2.5 hover:bg-white/10 transition focus-ring">
           <span class="text-sm sm:text-base">Follow us on</span>
-          <img src="assets/images/instagram-icon.png" class="h-9 w-9 rounded-[10px]" alt="Instagram">
+          <img src="assets/images/instagram-icon.png" alt="Instagram" loading="lazy" class="h-9 w-9 rounded-[10px]">
         </a>
 
         <p class="text-white/40 text-sm">&copy; <span id="year"></span> The Slab Station. All rights reserved.</p>
@@ -357,7 +408,7 @@
           <p class="text-sm">Send your total via PayID to:</p>
           <div class="flex items-center gap-2 mt-1">
             <code class="px-2 py-1 rounded bg-black border border-white/10">giraffemilk19@up.me</code>
-            <button id="copyPayid" class="px-2 py-1 rounded border border-white/20 hover:bg-white/10">Copy</button>
+            <button id="copyPayid" class="px-2 py-1 rounded border border-white/20 hover:bg-white/10 focus-ring">Copy</button>
           </div>
           <p id="payidDue" class="text-sm font-semibold mt-3">Total due: —</p>
           <p class="text-xs text-white/60 mt-2">Use your name as the reference. Enter your details below so we can ship immediately.</p>
@@ -365,28 +416,28 @@
 
         <!-- Shipping + contact for PayID -->
         <form id="payidForm" class="grid sm:grid-cols-2 gap-3">
-          <label class="block"><span class="text-sm text-white/70">Full Name*</span><input id="pd_name" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2" /></label>
-          <label class="block"><span class="text-sm text-white/70">Email*</span><input id="pd_email" type="email" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2" /></label>
-          <label class="block sm:col-span-2"><span class="text-sm text-white/70">Address Line 1*</span><input id="pd_addr1" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2" /></label>
-          <label class="block sm:col-span-2"><span class="text-sm text-white/70">Address Line 2</span><input id="pd_addr2" class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2" /></label>
-          <label class="block"><span class="text-sm text-white/70">City*</span><input id="pd_city" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2" /></label>
-          <label class="block"><span class="text-sm text-white/70">State/Region*</span><input id="pd_state" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2" /></label>
-          <label class="block"><span class="text-sm text-white/70">Postcode*</span><input id="pd_post" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2" /></label>
-          <label class="block"><span class="text-sm text-white/70">Country*</span><input id="pd_country" value="Australia" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2" /></label>
-          <label class="block sm:col-span-2"><span class="text-sm text-white/70">Payment Reference / Receipt # (optional)</span><input id="pd_ref" class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2" /></label>
+          <label class="block"><span class="text-sm text-white/70">Full Name*</span><input id="pd_name" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2 focus:ring-2 focus:ring-white/30" pattern="[A-Za-z ]+" /></label>
+          <label class="block"><span class="text-sm text-white/70">Email*</span><input id="pd_email" type="email" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2 focus:ring-2 focus:ring-white/30" /></label>
+          <label class="block sm:col-span-2"><span class="text-sm text-white/70">Address Line 1*</span><input id="pd_addr1" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2 focus:ring-2 focus:ring-white/30" /></label>
+          <label class="block sm:col-span-2"><span class="text-sm text-white/70">Address Line 2</span><input id="pd_addr2" class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2 focus:ring-2 focus:ring-white/30" /></label>
+          <label class="block"><span class="text-sm text-white/70">City*</span><input id="pd_city" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2 focus:ring-2 focus:ring-white/30" /></label>
+          <label class="block"><span class="text-sm text-white/70">State/Region*</span><input id="pd_state" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2 focus:ring-2 focus:ring-white/30" /></label>
+          <label class="block"><span class="text-sm text-white/70">Postcode*</span><input id="pd_post" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2 focus:ring-2 focus:ring-white/30" pattern="\d{4}" /></label>
+          <label class="block"><span class="text-sm text-white/70">Country*</span><input id="pd_country" value="Australia" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2 focus:ring-2 focus:ring-white/30" /></label>
+          <label class="block sm:col-span-2"><span class="text-sm text-white/70">Payment Reference / Receipt # (optional)</span><input id="pd_ref" class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2 focus:ring-2 focus:ring-white/30" /></label>
           <label class="flex items-center gap-2 sm:col-span-2 mt-1"><input id="pd_confirm" type="checkbox" required class="h-4 w-4"><span class="text-sm text-white/70">I have sent the PayID transfer.</span></label>
         </form>
       </div>
 
       <div class="mt-6 flex items-center justify-end gap-3">
-        <button id="payidCancel" class="rounded-xl px-4 py-2 border border-white/15 hover:bg-white/10 focus-ring">Close</button>
-        <button id="payidSubmit" class="rounded-xl px-4 py-2 bg-white text-black font-semibold hover:bg-white/90 focus-ring">I’ve Paid</button>
+        <button type="button" id="payidCancel" class="rounded-xl px-4 py-2 border border-white/15 hover:bg-white/10 transition focus-ring">Close</button>
+        <button id="payidSubmit" class="rounded-xl px-4 py-2 bg-white text-black font-semibold hover:bg-white/90 transition focus-ring">I’ve Paid</button>
       </div>
     </div>
   </div>
 
   <!-- Back to top button -->
-  <button id="backToTop" class="hidden rounded-full bg-white/10 border border-white/20 p-3 hover:bg-white/20 focus-ring" aria-label="Back to top">
+  <button id="backToTop" class="hidden rounded-full bg-white/10 border border-white/20 p-3 hover:bg-white/20 transition focus-ring" aria-label="Back to top">
     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 15l7-7 7 7"/></svg>
   </button>
 
@@ -404,13 +455,13 @@
       <form name="reviews" method="POST" data-netlify="true" netlify-honeypot="bot-field" class="mt-4 grid gap-3">
         <input type="hidden" name="form-name" value="reviews" />
         <p class="hidden"><label>Don’t fill this out: <input name="bot-field" /></label></p>
-        <label class="block"><span class="text-sm text-white/70">Full Name*</span><input name="name" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2" /></label>
-        <label class="block"><span class="text-sm text-white/70">Email*</span><input name="email" type="email" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2" /></label>
+        <label class="block"><span class="text-sm text-white/70">Full Name*</span><input name="name" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2 focus:ring-2 focus:ring-white/30" pattern="[A-Za-z ]+" /></label>
+        <label class="block"><span class="text-sm text-white/70">Email*</span><input name="email" type="email" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2 focus:ring-2 focus:ring-white/30" /></label>
         <label class="block"><span class="text-sm text-white/70">Role / Title</span>
-          <input name="role" placeholder="e.g., PSA Collector, Card Shop Owner" class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2" />
+          <input name="role" placeholder="e.g., PSA Collector, Card Shop Owner" class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2 focus:ring-2 focus:ring-white/30" />
         </label>
         <label class="block"><span class="text-sm text-white/70">Rating*</span>
-          <select name="rating" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2">
+          <select name="rating" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2 focus:ring-2 focus:ring-white/30">
             <option value="5">★★★★★ (5)</option>
             <option value="4">★★★★☆ (4)</option>
             <option value="3">★★★☆☆ (3)</option>
@@ -419,11 +470,11 @@
           </select>
         </label>
         <label class="block"><span class="text-sm text-white/70">Your Review*</span>
-          <textarea name="message" rows="4" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2" placeholder="Tell us about your experience with The Slab Station..."></textarea>
+          <textarea name="message" rows="4" required class="mt-1 w-full rounded-xl bg-black border border-white/15 px-3 py-2 focus:ring-2 focus:ring-white/30" placeholder="Tell us about your experience with The Slab Station..."></textarea>
         </label>
         <div class="mt-2 flex items-center justify-end gap-2">
-          <button type="button" id="reviewCancel" class="rounded-xl px-4 py-2 border border-white/15 hover:bg-white/10">Cancel</button>
-          <button type="submit" class="rounded-xl px-4 py-2 bg-white text-black font-semibold hover:bg-white/90">Submit Review</button>
+          <button type="button" id="reviewCancel" class="rounded-xl px-4 py-2 border border-white/15 hover:bg-white/10 transition focus-ring">Cancel</button>
+          <button type="submit" class="rounded-xl px-4 py-2 bg-white text-black font-semibold hover:bg-white/90 transition focus-ring">Submit Review</button>
         </div>
       </form>
     </div>
