@@ -1,0 +1,20 @@
+Only edit files explicitly listed in the user’s task. Prefer minimal diffs.
+
+General rules:
+- Mobile-first. Use Tailwind utilities. Avoid new global CSS unless unavoidable.
+- NEVER touch payment/checkout logic or IDs used by JS, unless the task says so.
+- Keep context small: open only the files you will edit (e.g., index.html, script.js). Close others.
+- Do not “refactor for cleanliness” unless asked. No sweeping renames.
+- Prefer accessible patterns: roles/aria for tabs and carousels; visible focus states.
+- Media: prefer MP4/WebM over GIF; use poster, muted, playsinline; preload="metadata".
+- Performance: lazy-load offscreen images; decoding="async" for non-critical images.
+- Output requirements for every task:
+  1) Unified diffs for changed files (no commentary in between)
+  2) DONE REPORT (see templates in /docs)
+
+IDs to preserve (do not rename or remove without explicit instruction):
+- #features, #featuresViewport, #featuresTrack, #featuresDots
+- #how, .tab-btn, #tab-setup, #tab-showcase
+- #builder, #reviews, (any payment-related forms/modals)
+
+
