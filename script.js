@@ -470,35 +470,40 @@ reviewForm?.addEventListener('submit', async (e) => {
   form.reset();
 });
 
-// --- Features carousel (mobile) ---
-(function(){
-  const vp = document.getElementById('featViewport');
-  const track = document.getElementById('featTrack');
-  const prev = document.getElementById('featPrev');
-  const next = document.getElementById('featNext');
-  const dots = document.getElementById('featDots')?.children || [];
+// --- Features: one-card swipe carousel (dots, no arrows)
+(function () {
+  const viewport = document.getElementById('featuresViewport');
+  const track = document.getElementById('featuresTrack');
+  const dotsWrap = document.getElementById('featuresDots');
+  if (!viewport || !track || !dotsWrap) return;
 
-  if (!vp || !track) return;
+  const dots = Array.from(dotsWrap.querySelectorAll('button'));
+  let slideW = 0;
+  let ticking = false;
 
-  const slideCount = track.children.length;
-  let active = 0;
-
-  function setActive(i){
-    active = Math.max(0, Math.min(slideCount - 1, i));
-    vp.scrollTo({ left: vp.clientWidth * active, behavior: 'smooth' });
-    [...dots].forEach((d, idx) => {
-      d.className = 'h-1.5 rounded-full ' + (idx === active ? 'w-5 bg-white/70' : 'w-2.5 bg-white/30');
+  function measure() {
+    const first = track.querySelector('li');
+    slideW = first ? first.getBoundingClientRect().width + 16 /*gap*/ : viewport.clientWidth;
+  }
+  function setActiveByScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const idx = Math.round(viewport.scrollLeft / Math.max(1, slideW));
+      dots.forEach((d, i) => {
+        d.classList.toggle('bg-white/90', i === idx);
+        d.classList.toggle('bg-white/30', i !== idx);
+      });
+      ticking = false;
     });
   }
-  function onScroll(){
-    const i = Math.round(vp.scrollLeft / Math.max(1, vp.clientWidth));
-    if (i !== active) setActive(i);
+  function scrollToIndex(i) {
+    viewport.scrollTo({ left: i * slideW, behavior: 'smooth' });
   }
 
-  prev?.addEventListener('click', () => setActive(active - 1));
-  next?.addEventListener('click', () => setActive(active + 1));
-  vp.addEventListener('scroll', () => { window.requestAnimationFrame(onScroll); }, { passive:true });
-
-  // Resize recalibration
-  window.addEventListener('resize', () => setActive(active));
+  dots.forEach((d, i) => d.addEventListener('click', () => scrollToIndex(i)));
+  viewport.addEventListener('scroll', setActiveByScroll, { passive: true });
+  window.addEventListener('resize', measure);
+  measure();
+  setActiveByScroll();
 })();
