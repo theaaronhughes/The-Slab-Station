@@ -516,6 +516,19 @@ function renderStars(n = 5) {
   const track = document.getElementById("reviewsTrack");
   const dotsWrap = document.getElementById("reviewsDots");
   const grid = document.getElementById("reviewsGrid");
+  const summary = document.getElementById("reviewsSummary");
+
+  if (summary) {
+    const count = REVIEWS.length;
+    const stars = "★★★★★";
+    summary.innerHTML = `
+      <div class="inline-flex items-center gap-3">
+        <span class="text-2xl font-extrabold">5.0</span>
+        <span class="text-yellow-400" aria-label="5 out of 5 stars">${stars}</span>
+        <span class="text-white/70">Average rating from ${count} verified buyers</span>
+      </div>
+    `;
+  }
 
   if (grid) {
     grid.innerHTML = REVIEWS.map(
