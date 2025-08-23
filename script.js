@@ -388,188 +388,218 @@ document.querySelectorAll('a[href^="#"]').forEach((a) => {
   window.addEventListener("scroll", onScroll, { passive: true });
 })();
 
-// Reviews carousel
-const reviewsViewport = document.getElementById("reviewsViewport");
-const reviewsTrack = document.getElementById("reviewsTrack");
-const revPrev = document.getElementById("revPrev");
-const revNext = document.getElementById("revNext");
-const CARD_GAP = 24;
-
-function cardStride() {
-  const first = reviewsTrack?.querySelector("li");
-  if (!first) return 360;
-  const width = first.getBoundingClientRect().width;
-  return width + CARD_GAP;
-}
-function scrollCards(n) {
-  if (!reviewsViewport) return;
-  reviewsViewport.scrollBy({ left: cardStride() * n, behavior: "smooth" });
-}
-revPrev?.addEventListener("click", () => scrollCards(-1));
-revNext?.addEventListener("click", () => scrollCards(1));
-reviewsViewport?.addEventListener(
-  "wheel",
-  (e) => {
-    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
-      e.preventDefault();
-      reviewsViewport.scrollBy({ left: e.deltaX, behavior: "smooth" });
-    }
+// --- Reviews data (30) ---
+const REVIEWS = [
+  {
+    name: "Tyler K.",
+    role: "Card Shop Owner",
+    text: "Display quality is insane. Customers notice immediately—best way to showcase grails.",
+    stars: 5,
   },
-  { passive: false },
-);
+  {
+    name: "Alyssa P.",
+    role: "Collector",
+    text: "Rotation is smooth and quiet. Looks premium on my desk.",
+    stars: 5,
+  },
+  {
+    name: "Marco D.",
+    role: "TCG Seller",
+    text: "Stackable design is clutch. I’m ordering more for my showcase wall.",
+    stars: 5,
+  },
+  {
+    name: "Ben H.",
+    role: "Pokemon Collector",
+    text: "Finally a display worthy of PSA slabs. Build quality surprised me.",
+    stars: 5,
+  },
+  {
+    name: "Rina S.",
+    role: "BGS Collector",
+    text: "Cards pop under the lighting—clean minimal look.",
+    stars: 5,
+  },
+  {
+    name: "Jacob L.",
+    role: "Breaker",
+    text: "Great for streams—center slab rotates perfectly.",
+    stars: 5,
+  },
+  { name: "Nate W.", role: "Collector", text: "Easy assembly. Sturdy once stacked.", stars: 5 },
+  {
+    name: "Hannah G.",
+    role: "Store Manager",
+    text: "Customers ask about it constantly—instant conversation piece.",
+    stars: 5,
+  },
+  {
+    name: "Chris M.",
+    role: "Vending Booth",
+    text: "Transported fine and reassembled fast at the show.",
+    stars: 5,
+  },
+  {
+    name: "Ivy R.",
+    role: "Collector",
+    text: "Love the color options—purple looks amazing.",
+    stars: 5,
+  },
+  {
+    name: "Owen C.",
+    role: "Collector",
+    text: "Keeps slabs dust-free and safe from knocks.",
+    stars: 5,
+  },
+  {
+    name: "Samir A.",
+    role: "Collector",
+    text: "Best purchase for my graded cards this year.",
+    stars: 5,
+  },
+  {
+    name: "Jules T.",
+    role: "Collector",
+    text: "Compact footprint—fits perfectly on a shelf.",
+    stars: 5,
+  },
+  { name: "Kara V.", role: "Collector", text: "Rotating mechanism is whisper quiet.", stars: 5 },
+  {
+    name: "Ethan P.",
+    role: "Collector",
+    text: "Feels premium, not plasticky. Very happy.",
+    stars: 5,
+  },
+  { name: "Mira Z.", role: "Collector", text: "Stacking two units looks awesome.", stars: 5 },
+  { name: "Andre F.", role: "Collector", text: "Slabs fit perfectly—no wobble.", stars: 5 },
+  { name: "Noah S.", role: "Collector", text: "Instant desk upgrade.", stars: 5 },
+  {
+    name: "Phoebe L.",
+    role: "Collector",
+    text: "Packaging was solid; arrived pristine.",
+    stars: 5,
+  },
+  {
+    name: "Leo K.",
+    role: "Collector",
+    text: "Finally something that’s not a bulky case.",
+    stars: 5,
+  },
+  {
+    name: "Grace N.",
+    role: "Collector",
+    text: "Magnet for compliments when friends visit.",
+    stars: 5,
+  },
+  { name: "Victor J.", role: "Collector", text: "Stable base—no wobble on bump.", stars: 5 },
+  { name: "Izzy D.", role: "Collector", text: "Worth the price for the presentation.", stars: 5 },
+  { name: "Harper C.", role: "Collector", text: "Great gift for TCG fans.", stars: 5 },
+  {
+    name: "Quinn R.",
+    role: "Collector",
+    text: "Setup took minutes. Clear instructions.",
+    stars: 5,
+  },
+  { name: "Damon Y.", role: "Collector", text: "Shipping to VIC was quick.", stars: 5 },
+  { name: "Maddie S.", role: "Collector", text: "Looks fantastic with PSA 10s.", stars: 5 },
+  { name: "Rex P.", role: "Collector", text: "Ordering a second one.", stars: 5 },
+  { name: "Liam W.", role: "Collector", text: "Perfect shelf centerpiece.", stars: 5 },
+  { name: "Zara E.", role: "Collector", text: "Finish is smooth; edges clean.", stars: 5 },
+];
 
-let reviewsDataGlobal = null;
-(function renderReviews() {
-  if (!reviewsTrack) return;
-
-  const reviewsData = [
-    {
-      name: "Tyler K.",
-      role: "Card Shop Owner",
-      rating: 5,
-      text: "Display quality is insane. Customers notice it immediately—best way to showcase grails.",
-    },
-    // ... (all other reviews as in original, truncated for brevity in this response; include all 40+ in actual file)
-    {
-      name: "Harper T.",
-      role: "Collector",
-      rating: 5,
-      text: "No more cheap stands. This is a centerpiece for grails.",
-    },
-  ];
-
-  reviewsDataGlobal = reviewsData;
-  reviewsTrack.innerHTML = "";
-  reviewsData.forEach((r) => {
-    const li = document.createElement("li");
-    li.className =
-      "snap-start shrink-0 min-w-[320px] max-w-[420px] rounded-2xl border border-white/12 bg-white/[0.06] p-5 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/50 transition";
-
-    const header = document.createElement("header");
-    header.className = "flex items-center justify-between";
-
-    const left = document.createElement("div");
-    const nameP = document.createElement("p");
-    nameP.className = "font-semibold";
-    nameP.textContent = r.name;
-    const roleP = document.createElement("p");
-    roleP.className = "text-white/60 text-sm";
-    roleP.textContent = r.role;
-    left.appendChild(nameP);
-    left.appendChild(roleP);
-
-    const ratingDiv = document.createElement("div");
-    ratingDiv.className = "text-yellow-400";
-    ratingDiv.textContent = starFor(r.rating);
-
-    header.appendChild(left);
-    header.appendChild(ratingDiv);
-
-    const bodyP = document.createElement("p");
-    bodyP.className = "mt-3 text-white/80 leading-relaxed";
-    bodyP.textContent = `“${r.text}”`;
-
-    li.appendChild(header);
-    li.appendChild(bodyP);
-    reviewsTrack.appendChild(li);
-  });
-
-  const spacer = document.createElement("li");
-  spacer.className = "shrink-0 w-2";
-  reviewsTrack.appendChild(spacer);
-
-  updateAverageRating();
-})();
-
-function updateAverageRating() {
-  const avgEl = document.getElementById("avgRating");
-  const countEl = document.getElementById("avgCountText");
-  if (!reviewsDataGlobal || !avgEl || !countEl) return;
-  const total = reviewsDataGlobal.reduce((s, r) => s + Number(r.rating || 0), 0);
-  const count = reviewsDataGlobal.length;
-  const avg = total / Math.max(1, count);
-  avgEl.textContent = (Math.round(avg * 10) / 10).toFixed(1);
-  countEl.textContent = `Average rating from ${count} verified buyers`;
+function renderStars(n = 5) {
+  return "★★★★★".slice(0, n);
 }
 
-function starFor(rating) {
-  return rating >= 5 ? "★★★★★" : rating >= 4 ? "★★★★☆" : "★★★☆☆";
-}
+(function reviewsInit() {
+  const vp = document.getElementById("reviewsViewport");
+  const track = document.getElementById("reviewsTrack");
+  const dotsWrap = document.getElementById("reviewsDots");
+  const grid = document.getElementById("reviewsGrid");
 
-// Review submission (modal + Netlify form)
-const reviewBtn = document.getElementById("openReviewModal");
-const reviewModal = document.getElementById("reviewModal");
-const reviewClose = document.getElementById("reviewClose");
-const reviewCancel = document.getElementById("reviewCancel");
-const reviewForm = document.querySelector('#reviewModal form[name="reviews"]');
-
-function toggleReviewModal(show) {
-  if (!reviewModal) return;
-  reviewModal.classList.toggle("hidden", !show);
-  document.body.classList.toggle("modal-open", !!show);
-}
-
-reviewBtn?.addEventListener("click", () => toggleReviewModal(true));
-[reviewClose, reviewCancel].forEach((b) =>
-  b?.addEventListener("click", () => toggleReviewModal(false)),
-);
-
-// Intercept Netlify submit to avoid redirect; append to reviews immediately
-reviewForm?.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const form = e.currentTarget;
-  const fd = new FormData(form);
-
-  const name = fd.get("name")?.toString() || "Anonymous";
-  const role = fd.get("role")?.toString() || "Customer";
-  const email = fd.get("email")?.toString() || "";
-  const rating = Number(fd.get("rating") || 5);
-  const text = fd.get("message")?.toString() || "";
-
-  // Append locally for instant UX
-  if (reviewsDataGlobal) {
-    reviewsDataGlobal.unshift({ name, role, rating, text });
-    const li = document.createElement("li");
-    li.className =
-      "snap-start shrink-0 min-w-[320px] max-w-[420px] rounded-2xl border border-white/12 bg-white/[0.06] p-5 hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/50 transition";
-    const header = document.createElement("header");
-    header.className = "flex items-center justify-between";
-    const left = document.createElement("div");
-    const nameP = document.createElement("p");
-    nameP.className = "font-semibold";
-    nameP.textContent = name;
-    const roleP = document.createElement("p");
-    roleP.className = "text-white/60 text-sm";
-    roleP.textContent = role;
-    left.appendChild(nameP);
-    left.appendChild(roleP);
-    const ratingDiv = document.createElement("div");
-    ratingDiv.className = "text-yellow-400";
-    ratingDiv.textContent = starFor(rating);
-    header.appendChild(left);
-    header.appendChild(ratingDiv);
-    const bodyP = document.createElement("p");
-    bodyP.className = "mt-3 text-white/80 leading-relaxed";
-    bodyP.textContent = `“${text}”`;
-    li.appendChild(header);
-    li.appendChild(bodyP);
-    const spacer = reviewsTrack.querySelector("li.shrink-0.w-2");
-    reviewsTrack.insertBefore(li, spacer || null);
-    updateAverageRating();
+  if (grid) {
+    grid.innerHTML = REVIEWS.map(
+      (r) => `
+      <article class="rounded-2xl border border-white/15 p-5 bg-white/5">
+        <div class="flex items-baseline justify-between">
+          <h3 class="text-white font-semibold">${r.name}</h3>
+          <span class="text-yellow-400" aria-label="${r.stars} out of 5 stars">${renderStars(r.stars)}</span>
+        </div>
+        <p class="text-white/60 text-sm">${r.role}</p>
+        <p class="mt-3 text-white/80">${r.text}</p>
+      </article>
+    `,
+    ).join("");
   }
 
-  // Post to Netlify to store submission (no-redirect)
-  try {
-    await fetch("/", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams([...fd, ["form-name", "reviews"]]).toString(),
-    });
-  } catch {}
+  if (!vp || !track || !dotsWrap) return;
 
-  toggleReviewModal(false);
-  form.reset();
-});
+  // Build slides for mobile
+  track.innerHTML = REVIEWS.map(
+    (r, i) => `
+    <li id="review-slide-${i + 1}" class="snap-start shrink-0 w-[86%] max-w-[560px] mx-auto rounded-2xl border border-white/15 p-5 bg-white/5">
+      <div class="flex items-baseline justify-between">
+        <h3 class="text-white font-semibold">${r.name}</h3>
+        <span class="text-yellow-400" aria-label="${r.stars} out of 5 stars">${renderStars(r.stars)}</span>
+      </div>
+      <p class="text-white/60 text-sm">${r.role}</p>
+      <p class="mt-3 text-white/80">${r.text}</p>
+    </li>
+  `,
+  ).join("");
+
+  dotsWrap.innerHTML = REVIEWS.map(
+    (_, i) => `
+    <button type="button" role="tab" aria-controls="review-slide-${i + 1}" aria-selected="${i === 0 ? "true" : "false"}" class="${i === 0 ? "h-1.5 w-6 bg-white/90" : "h-1.5 w-3 bg-white/30"} rounded-full"></button>
+  `,
+  ).join("");
+
+  const slides = Array.from(track.children);
+  const dots = Array.from(dotsWrap.querySelectorAll("button"));
+  let slideW = 0,
+    gap = 16,
+    active = 0,
+    ticking = false;
+
+  function measure() {
+    const rect = slides[0]?.getBoundingClientRect();
+    slideW = (rect?.width || vp.clientWidth) + gap;
+  }
+  function setActive(i) {
+    active = Math.max(0, Math.min(slides.length - 1, i));
+    dots.forEach((d, idx) => {
+      d.setAttribute("aria-selected", String(idx === active));
+      d.tabIndex = idx === active ? 0 : -1;
+      d.className =
+        idx === active
+          ? "h-1.5 w-6 rounded-full bg-white/90"
+          : "h-1.5 w-3 rounded-full bg-white/30";
+    });
+    vp.setAttribute("aria-label", `Customer reviews — ${active + 1} of ${slides.length}`);
+  }
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      const i = Math.round(vp.scrollLeft / Math.max(1, slideW));
+      if (i !== active) setActive(i);
+      ticking = false;
+    });
+  }
+  function scrollToIndex(i) {
+    vp.scrollTo({ left: i * slideW, behavior: "smooth" });
+  }
+
+  dots.forEach((d, i) => d.addEventListener("click", () => scrollToIndex(i)));
+  vp.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", () => {
+    measure();
+    setActive(active);
+  });
+
+  measure();
+  setActive(0);
+})();
 
 // features carousel (accessible dots + "peek" width + aria announcements + keyboard nav + auto-advance)
 (function () {
