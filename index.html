@@ -324,6 +324,13 @@
           border-bottom-color: rgba(0, 0, 0, 0.12);
         }
       }
+      /* PayPal edge fix */
+      .paypal-wrap {
+        line-height: 0;
+      }
+      .paypal-wrap > * {
+        display: block;
+      }
     </style>
     <!-- Open Graph -->
     <meta property="og:title" content="The Slab Station — The Ultimate Slab Showcase" />
@@ -1058,7 +1065,11 @@
                   </button>
 
                   <!-- PayPal -->
-                  <div class="paypal-wrapper"><div id="paypal-container" class="w-full"></div></div>
+                  <div
+                    class="paypal-wrap overflow-hidden rounded-2xl bg-transparent p-0 border-0 shadow-none"
+                  >
+                    <div id="paypal-container" class="w-full"></div>
+                  </div>
 
                   <!-- PAYID -->
                   <button
