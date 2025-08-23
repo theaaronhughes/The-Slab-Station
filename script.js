@@ -33,9 +33,15 @@ document.querySelectorAll(".reveal-on-scroll").forEach((el) => {
   const setup = document.getElementById("video-setup");
   if (showcase && !showcase.currentSrc && !showcase.src) {
     showcase.src = "assets/videos/spin.mp4";
+    try {
+      showcase.load();
+    } catch (e) {}
   }
   if (setup && !setup.currentSrc && !setup.src) {
     setup.src = "assets/videos/setup.mp4";
+    try {
+      setup.load();
+    } catch (e) {}
   }
 })();
 
