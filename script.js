@@ -27,13 +27,17 @@ document.querySelectorAll(".reveal-on-scroll").forEach((el) => {
   io.observe(el);
 });
 
-// How it Works: set video sources (play/pause logic handled later)
-const videoSetup = document.getElementById("video-setup");
-const videoShowcase = document.getElementById("video-showcase");
-document.addEventListener("DOMContentLoaded", () => {
-  if (videoSetup) videoSetup.src = "assets/videos/howitworks.mp4";
-  if (videoShowcase) videoShowcase.src = "assets/videos/Mainvideo.mp4";
-});
+// --- Video sources init (idempotent) ---
+(function () {
+  const showcase = document.getElementById("video-showcase");
+  const setup = document.getElementById("video-setup");
+  if (showcase && !showcase.currentSrc && !showcase.src) {
+    showcase.src = "assets/videos/spin.mp4";
+  }
+  if (setup && !setup.currentSrc && !setup.src) {
+    setup.src = "assets/videos/setup.mp4";
+  }
+})();
 
 // Builder / Pricing
 const previewImg = document.getElementById("productPreview");
