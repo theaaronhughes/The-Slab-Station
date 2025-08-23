@@ -721,7 +721,7 @@ function renderStars(n = 5) {
   }
 })();
 
-// how-it-works: tab video controller + visibility pause
+// how-it-works: tab video controller + visibility pause + tap-to-play overlay
 (function () {
   const tabs = Array.from(document.querySelectorAll(".tab-btn"));
   const panels = ["tab-setup", "tab-showcase"]
@@ -738,24 +738,55 @@ function renderStars(n = 5) {
       b.tabIndex = on ? 0 : -1;
     });
   }
+
+  function syncOverlay(panelId) {
+    const p = document.getElementById(panelId);
+    if (!p) return;
+    const v = p.querySelector("video");
+    const ov = p.querySelector(".video-overlay");
+    if (!ov || !v) return;
+    const playing = !!(v.currentTime > 0 && !v.paused && !v.ended && v.readyState > 2);
+    ov.classList.toggle("hidden", playing);
+  }
+
   function playOnly(panelId) {
     vids.forEach((v) => v && v.pause());
     const v = document.querySelector(`#${panelId} video`);
-    if (v) v.play().catch(() => {});
+    if (v)
+      v.play()
+        .catch(() => {})
+        .finally(() => syncOverlay(panelId));
   }
 
-  // Initialize to currently selected tab or the first panel
+  // Initialize state
   const initial =
     tabs.find((b) => b.getAttribute("aria-selected") === "true")?.dataset.target || panels[0].id;
   showPanel(initial);
   playOnly(initial);
 
+  // Tab switching
   tabs.forEach((btn) => {
     btn.addEventListener("click", () => {
       const tgt = btn.dataset.target;
       showPanel(tgt);
       playOnly(tgt);
     });
+  });
+
+  // Overlay + video click toggle
+  panels.forEach((p) => {
+    const v = p.querySelector("video");
+    const ov = p.querySelector(".video-overlay");
+    if (!v || !ov) return;
+    const toggle = () => {
+      if (v.paused) v.play().catch(() => {});
+      else v.pause();
+    };
+    ov.addEventListener("click", toggle);
+    v.addEventListener("click", toggle);
+    v.addEventListener("play", () => syncOverlay(p.id));
+    v.addEventListener("pause", () => syncOverlay(p.id));
+    v.addEventListener("loadeddata", () => syncOverlay(p.id));
   });
 
   // Pause when a panel is <50% visible
@@ -770,6 +801,7 @@ function renderStars(n = 5) {
           } else if (!e.target.classList.contains("hidden")) {
             video.play().catch(() => {});
           }
+          syncOverlay(e.target.id);
         });
       },
       { threshold: 0.5 },

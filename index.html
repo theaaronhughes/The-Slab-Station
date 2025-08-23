@@ -331,6 +331,10 @@
       .paypal-wrap > * {
         display: block;
       }
+      /* Video overlay visibility control */
+      .video-overlay.hidden {
+        display: none;
+      }
     </style>
     <!-- Open Graph -->
     <meta property="og:title" content="The Slab Station — The Ultimate Slab Showcase" />
@@ -819,6 +823,11 @@
                 >
                   <source src="assets/videos/setup.mp4" type="video/mp4" />
                 </video>
+                <button
+                  class="video-overlay absolute inset-0 flex items-center justify-center rounded-[22px] bg-black/20 hover:bg-black/30 text-white/90 text-sm font-medium focus-ring"
+                >
+                  Tap to Play
+                </button>
               </div>
             </div>
             <div
@@ -842,6 +851,11 @@
                 >
                   <source src="assets/videos/spin.mp4" type="video/mp4" />
                 </video>
+                <button
+                  class="video-overlay absolute inset-0 flex items-center justify-center rounded-[22px] bg-black/20 hover:bg-black/30 text-white/90 text-sm font-medium focus-ring"
+                >
+                  Tap to Play
+                </button>
               </div>
             </div>
           </div>
