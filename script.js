@@ -27,46 +27,13 @@ document.querySelectorAll(".reveal-on-scroll").forEach((el) => {
   io.observe(el);
 });
 
-// How it Works
-const tabButtons = document.querySelectorAll(".tab-btn");
-const setupPanel = document.getElementById("tab-setup");
-const showcasePanel = document.getElementById("tab-showcase");
+// How it Works: set video sources (play/pause logic handled later)
 const videoSetup = document.getElementById("video-setup");
 const videoShowcase = document.getElementById("video-showcase");
-
 document.addEventListener("DOMContentLoaded", () => {
   if (videoSetup) videoSetup.src = "assets/videos/howitworks.mp4";
   if (videoShowcase) videoShowcase.src = "assets/videos/Mainvideo.mp4";
-  showTab("setup");
 });
-tabButtons.forEach((btn) =>
-  btn.addEventListener("click", () =>
-    showTab(btn.dataset.target === "tab-showcase" ? "showcase" : "setup"),
-  ),
-);
-
-function showTab(which) {
-  const activeId = which === "setup" ? "tab-setup" : "tab-showcase";
-  [setupPanel, showcasePanel].forEach((p) => p.classList.add("hidden"));
-  document.getElementById(activeId).classList.remove("hidden");
-  tabButtons.forEach((b) => {
-    const active = b.dataset.target === activeId;
-    b.classList.toggle("bg-white/20", active);
-    b.classList.toggle("border-white/25", active);
-    b.setAttribute("aria-selected", active ? "true" : "false");
-  });
-  try {
-    if (which === "setup") {
-      videoShowcase.pause();
-      videoShowcase.currentTime = 0;
-      videoSetup.play();
-    } else {
-      videoSetup.pause();
-      videoSetup.currentTime = 0;
-      videoShowcase.play();
-    }
-  } catch {}
-}
 
 // Builder / Pricing
 const previewImg = document.getElementById("productPreview");
@@ -652,39 +619,47 @@ reviewForm?.addEventListener("submit", async (e) => {
     .map((id) => document.getElementById(id))
     .filter(Boolean);
   const vids = panels.map((p) => p?.querySelector("video")).filter(Boolean);
-
   if (!tabs.length || !panels.length) return;
 
+  function showPanel(panelId) {
+    panels.forEach((p) => p.classList.toggle("hidden", p.id !== panelId));
+    tabs.forEach((b) => {
+      const on = b.dataset.target === panelId;
+      b.setAttribute("aria-selected", String(on));
+      b.tabIndex = on ? 0 : -1;
+    });
+  }
   function playOnly(panelId) {
     vids.forEach((v) => v && v.pause());
     const v = document.querySelector(`#${panelId} video`);
     if (v) v.play().catch(() => {});
   }
 
+  // Initialize to currently selected tab or the first panel
+  const initial =
+    tabs.find((b) => b.getAttribute("aria-selected") === "true")?.dataset.target || panels[0].id;
+  showPanel(initial);
+  playOnly(initial);
+
   tabs.forEach((btn) => {
     btn.addEventListener("click", () => {
       const tgt = btn.dataset.target;
-      tabs.forEach((b) => {
-        b.setAttribute("aria-selected", String(b === btn));
-        b.tabIndex = b === btn ? 0 : -1;
-      });
-      panels.forEach((p) => p.classList.toggle("hidden", p.id !== tgt));
+      showPanel(tgt);
       playOnly(tgt);
     });
   });
 
+  // Pause when a panel is <50% visible
   if ("IntersectionObserver" in window) {
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
           const video = e.target.querySelector("video");
           if (!video) return;
-          if (e.isIntersecting) {
-            if (!e.target.classList.contains("hidden")) {
-              video.play().catch(() => {});
-            }
-          } else {
+          if (!e.isIntersecting) {
             video.pause();
+          } else if (!e.target.classList.contains("hidden")) {
+            video.play().catch(() => {});
           }
         });
       },
