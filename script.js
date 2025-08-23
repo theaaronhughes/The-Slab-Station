@@ -553,7 +553,7 @@ reviewForm?.addEventListener("submit", async (e) => {
   form.reset();
 });
 
-// features carousel (accessible dots + "peek" width + aria announcements)
+// features carousel (accessible dots + "peek" width + aria announcements + keyboard nav + auto-advance)
 (function () {
   const viewport = document.getElementById("featuresViewport");
   const track = document.getElementById("featuresTrack");
@@ -561,11 +561,13 @@ reviewForm?.addEventListener("submit", async (e) => {
   if (!viewport || !track || !dotsWrap) return;
 
   const slides = Array.from(track.children);
-  const dots = Array.from(dotsWrap.querySelectorAll('button[role="tab"]'));
+  const dots = Array.from(dotsWrap.querySelectorAll('button[role="tab"], button'));
   let slideW = 0,
     gap = 16,
     active = 0,
     ticking = false;
+  let interacted = false,
+    timer = null;
 
   // Titles for announcements (fallback to h3 text)
   const titles = slides.map((s) => s.querySelector("h3")?.textContent?.trim() || "Feature");
@@ -581,15 +583,21 @@ reviewForm?.addEventListener("submit", async (e) => {
       `Key features — showing: ${titles[i]} (${i + 1} of ${slides.length})`,
     );
   }
-  function setActive(i) {
+  function setActive(i, opts = {}) {
     active = Math.max(0, Math.min(slides.length - 1, i));
     dots.forEach((d, idx) => {
       d.setAttribute("aria-selected", String(idx === active));
+      d.tabIndex = idx === active ? 0 : -1;
       d.className =
         idx === active
           ? "h-1.5 w-6 rounded-full bg-white/90"
           : "h-1.5 w-3 rounded-full bg-white/30";
     });
+    if (opts.focusDot && dots[active]) {
+      try {
+        dots[active].focus({ preventScroll: true });
+      } catch (_) {}
+    }
     announce(active);
   }
   function onScroll() {
@@ -601,11 +609,50 @@ reviewForm?.addEventListener("submit", async (e) => {
       ticking = false;
     });
   }
-  function scrollToIndex(i) {
+  function cancelAuto() {
+    interacted = true;
+    if (timer) clearInterval(timer);
+  }
+  function scrollToIndex(i, opts = {}) {
+    if (opts.user) cancelAuto();
     viewport.scrollTo({ left: i * slideW, behavior: "smooth" });
+    setActive(i, { focusDot: !!opts.focusDot });
   }
 
-  dots.forEach((d, i) => d.addEventListener("click", () => scrollToIndex(i)));
+  const cancelEvts = ["pointerdown", "touchstart", "wheel", "keydown", "click"];
+  cancelEvts.forEach((evt) => {
+    viewport.addEventListener(evt, cancelAuto, { passive: true });
+    dots.forEach((d) => d.addEventListener(evt, cancelAuto, { passive: true }));
+  });
+
+  dots.forEach((d, i) => {
+    d.addEventListener("click", () => scrollToIndex(i, { user: true, focusDot: true }));
+    d.addEventListener("keydown", (e) => {
+      switch (e.key) {
+        case "ArrowRight":
+          e.preventDefault();
+          scrollToIndex(Math.min(slides.length - 1, active + 1), { user: true, focusDot: true });
+          break;
+        case "ArrowLeft":
+          e.preventDefault();
+          scrollToIndex(Math.max(0, active - 1), { user: true, focusDot: true });
+          break;
+        case "Home":
+          e.preventDefault();
+          scrollToIndex(0, { user: true, focusDot: true });
+          break;
+        case "End":
+          e.preventDefault();
+          scrollToIndex(slides.length - 1, { user: true, focusDot: true });
+          break;
+        case "Enter":
+        case " ":
+          e.preventDefault();
+          scrollToIndex(i, { user: true, focusDot: true });
+          break;
+      }
+    });
+  });
   viewport.addEventListener("scroll", onScroll, { passive: true });
   window.addEventListener("resize", () => {
     measure();
@@ -615,32 +662,15 @@ reviewForm?.addEventListener("submit", async (e) => {
   measure();
   setActive(0);
 
-  // --- Auto-advance (gentle) ---
-  (function autoAdvanceSetup() {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (mq.matches) return;
-
-    let interacted = false;
-    let timer = null;
-    const cancel = () => {
-      if (interacted) return;
-      interacted = true;
-      if (timer) clearInterval(timer);
-    };
-    const advance = () => {
+  // Gentle auto-advance (respects reduced motion; cancels on interaction)
+  const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+  if (!mq.matches) {
+    timer = setInterval(() => {
       if (interacted) return;
       const next = (active + 1) % slides.length;
       viewport.scrollTo({ left: next * slideW, behavior: "smooth" });
-    };
-
-    // Cancel on any interaction
-    ["pointerdown", "touchstart", "wheel", "keydown", "click"].forEach((evt) => {
-      viewport.addEventListener(evt, cancel, { passive: true });
-      dots.forEach((d) => d.addEventListener(evt, cancel, { passive: true }));
-    });
-
-    timer = setInterval(advance, 4000);
-  })();
+    }, 4000);
+  }
 })();
 
 // how-it-works: tab video controller + visibility pause
