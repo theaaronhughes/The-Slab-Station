@@ -610,6 +610,33 @@ reviewForm?.addEventListener("submit", async (e) => {
 
   measure();
   setActive(0);
+
+  // --- Auto-advance (gentle) ---
+  (function autoAdvanceSetup() {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mq.matches) return;
+
+    let interacted = false;
+    let timer = null;
+    const cancel = () => {
+      if (interacted) return;
+      interacted = true;
+      if (timer) clearInterval(timer);
+    };
+    const advance = () => {
+      if (interacted) return;
+      const next = (active + 1) % slides.length;
+      viewport.scrollTo({ left: next * slideW, behavior: "smooth" });
+    };
+
+    // Cancel on any interaction
+    ["pointerdown", "touchstart", "wheel", "keydown", "click"].forEach((evt) => {
+      viewport.addEventListener(evt, cancel, { passive: true });
+      dots.forEach((d) => d.addEventListener(evt, cancel, { passive: true }));
+    });
+
+    timer = setInterval(advance, 4000);
+  })();
 })();
 
 // how-it-works: tab video controller + visibility pause
