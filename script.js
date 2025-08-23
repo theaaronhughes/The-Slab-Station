@@ -370,6 +370,18 @@ document.querySelectorAll('a[href^="#"]').forEach((a) => {
   btn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
 })();
 
+// header backdrop toggle on scroll
+(function () {
+  const header = document.querySelector("header");
+  if (!header) return;
+  const onScroll = () => {
+    const y = window.scrollY || document.documentElement.scrollTop || 0;
+    header.classList.toggle("scrolled", y > 8);
+  };
+  onScroll();
+  window.addEventListener("scroll", onScroll, { passive: true });
+})();
+
 // Reviews carousel
 const reviewsViewport = document.getElementById("reviewsViewport");
 const reviewsTrack = document.getElementById("reviewsTrack");

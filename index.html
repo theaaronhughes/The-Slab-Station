@@ -307,6 +307,23 @@
           animation: none;
         }
       }
+      /* Header backdrop on scroll */
+      header.scrolled {
+        background: rgba(0, 0, 0, 0.55);
+        -webkit-backdrop-filter: saturate(120%) blur(6px);
+        backdrop-filter: saturate(120%) blur(6px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+        transition:
+          background 0.25s ease,
+          border-color 0.25s ease,
+          backdrop-filter 0.25s ease;
+      }
+      @media (prefers-color-scheme: light) {
+        header.scrolled {
+          background: rgba(255, 255, 255, 0.7);
+          border-bottom-color: rgba(0, 0, 0, 0.12);
+        }
+      }
     </style>
     <!-- Open Graph -->
     <meta property="og:title" content="The Slab Station — The Ultimate Slab Showcase" />
