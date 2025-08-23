@@ -335,6 +335,10 @@
       .video-overlay.hidden {
         display: none;
       }
+      /* iOS safe-area aware offset for the scroll cue */
+      .safe-bottom {
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
+      }
     </style>
     <!-- Open Graph -->
     <meta property="og:title" content="The Slab Station — The Ultimate Slab Showcase" />
@@ -473,7 +477,7 @@
 
         <!-- Centered copy stack -->
         <div class="relative z-20 flex items-center justify-center p-5 md:p-8 text-center">
-          <div class="w-full max-w-3xl mx-auto space-y-4 md:space-y-6">
+          <div class="w-full max-w-3xl mx-auto space-y-4 md:space-y-6 pb-20 md:pb-16">
             <p class="uppercase text-xs tracking-wide text-white/70">THE SLAB STATION</p>
 
             <!-- Keep your original big headline -->
@@ -483,21 +487,13 @@
               The Ultimate Slab Showcase
             </h1>
 
-            <!-- Same paragraph copy; constrain width for better density on phones -->
-            <p
-              class="text-base md:text-lg text-white/85 mx-auto leading-relaxed max-w-[26ch] sm:max-w-[46ch]"
-            >
-              A premium, rotating, stackable display built for PSA/BGS graded cards — engineered to
-              look incredible on your desk or shelf.
-            </p>
-
-            <!-- CTAs unchanged -->
+            <!-- CTAs -->
             <div
-              class="flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 pt-1"
+              class="mt-6 md:mt-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 pt-1"
             >
               <a
                 href="#builder"
-                class="w-full sm:w-auto inline-flex items-center justify-center rounded-2xl bg-white text-black px-6 py-3 font-semibold hover:bg-white/90 transition focus-ring"
+                class="w-full sm:w-auto inline-flex items-center justify-center rounded-2xl bg-white text-black px-6 py-3.5 font-semibold shadow-lg shadow-black/30 ring-1 ring-white/20 hover:-translate-y-0.5 hover:shadow-black/40 active:translate-y-0 transition-all focus-ring"
               >
                 Buy Now
               </a>
@@ -551,7 +547,7 @@
             </ul>
 
             <!-- Scroll cue (mobile only) -->
-            <div class="absolute bottom-4 left-0 right-0 flex justify-center md:hidden">
+            <div class="absolute left-0 right-0 flex justify-center md:hidden safe-bottom">
               <a
                 href="#features"
                 class="scroll-cue inline-flex items-center justify-center rounded-full border border-white/25 [backdrop-filter:saturate(120%)_blur(2px)] px-3 py-2 text-white/85 focus-ring"
