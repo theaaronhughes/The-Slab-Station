@@ -339,6 +339,10 @@
       .safe-bottom {
         bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
       }
+      /* Larger iOS safe-area for hero scroll cue */
+      .safe-bottom-lg {
+        bottom: calc(env(safe-area-inset-bottom, 0px) + 42px);
+      }
     </style>
     <!-- Open Graph -->
     <meta property="og:title" content="The Slab Station — The Ultimate Slab Showcase" />
@@ -477,14 +481,14 @@
 
         <!-- Centered copy stack -->
         <div class="relative z-20 flex items-center justify-center p-5 md:p-8 text-center">
-          <div class="w-full max-w-3xl mx-auto space-y-4 md:space-y-6 pb-20 md:pb-16">
+          <div class="w-full max-w-3xl mx-auto space-y-4 md:space-y-6 pb-24 md:pb-16">
             <p class="uppercase text-xs tracking-wide text-white/70">THE SLAB STATION</p>
 
             <!-- Keep your original big headline -->
             <h1
               class="text-white font-extrabold tracking-tight leading-[1.05] text-[clamp(34px,8vw,56px)] md:text-6xl"
             >
-              The Ultimate Slab Showcase
+              The Ultimate Showcase
             </h1>
 
             <!-- CTAs -->
@@ -547,13 +551,13 @@
             </ul>
 
             <!-- Scroll cue (mobile only) -->
-            <div class="absolute left-0 right-0 flex justify-center md:hidden safe-bottom">
+            <div class="absolute left-0 right-0 flex justify-center md:hidden safe-bottom-lg">
               <a
                 href="#features"
-                class="scroll-cue inline-flex items-center justify-center rounded-full border border-white/25 [backdrop-filter:saturate(120%)_blur(2px)] px-3 py-2 text-white/85 focus-ring"
+                class="scroll-cue inline-flex items-center justify-center rounded-full border border-white/25 [backdrop-filter:saturate(120%)_blur(2px)] px-2.5 py-1.5 text-white/85 focus-ring"
               >
                 <svg
-                  class="h-5 w-5"
+                  class="h-4 w-4"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
