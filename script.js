@@ -668,3 +668,40 @@ reviewForm?.addEventListener("submit", async (e) => {
     panels.forEach((p) => io.observe(p));
   }
 })();
+
+// --- Sticky Buy Bar controller ---
+(function () {
+  const bar = document.getElementById("buyBar");
+  const hero = document.querySelector("section.hero");
+  const builder = document.getElementById("builder");
+  if (!bar || !hero) return;
+
+  let show = false;
+  function set(showing) {
+    bar.style.transform = showing ? "translateY(0)" : "translateY(100%)";
+  }
+
+  const opts = { threshold: 0.4 };
+  const heroIO = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      // show bar when hero is NOT sufficiently visible
+      show = !e.isIntersecting;
+      set(show);
+    });
+  }, opts);
+  heroIO.observe(hero);
+
+  if (builder) {
+    const builderIO = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting)
+            set(false); // hide when builder visible
+          else set(show);
+        });
+      },
+      { threshold: 0.2 },
+    );
+    builderIO.observe(builder);
+  }
+})();

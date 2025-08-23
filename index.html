@@ -1329,5 +1329,32 @@
       src="https://cdnjs.cloudflare.com/ajax/libs/focus-trap/7.5.2/focus-trap.umd.min.js"
       defer
     ></script>
+
+    <!-- Sticky Buy Bar (mobile only) -->
+    <div
+      id="buyBar"
+      class="fixed bottom-0 inset-x-0 z-40 md:hidden translate-y-full transition-transform duration-300"
+    >
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="mb-[env(safe-area-inset-bottom)]"></div>
+        <div
+          class="rounded-2xl bg-white/95 text-black backdrop-blur shadow-2xl border border-black/10 px-4 py-3"
+        >
+          <div class="flex items-center justify-between gap-3">
+            <div class="text-left">
+              <p class="text-xs uppercase tracking-wide text-black/60">The Slab Station</p>
+              <p class="text-sm font-semibold">From A$119.95 + shipping</p>
+            </div>
+            <a
+              href="#builder"
+              class="inline-flex items-center justify-center rounded-xl bg-black text-white px-4 py-3 text-sm font-semibold hover:bg-black/90 focus-ring"
+            >
+              Buy Now
+            </a>
+          </div>
+        </div>
+        <div class="pb-[calc(env(safe-area-inset-bottom)+8px)]"></div>
+      </div>
+    </div>
   </body>
 </html>
