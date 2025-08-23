@@ -822,6 +822,19 @@ function renderStars(n = 5) {
     bar.style.transform = showing ? "translateY(0)" : "translateY(100%)";
   }
 
+  const closeBtn = document.getElementById("buyBarClose");
+  const closed = sessionStorage.getItem("buyBarClosed") === "1";
+  if (closed) {
+    set(false);
+    return;
+  }
+  if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+      sessionStorage.setItem("buyBarClosed", "1");
+      set(false);
+    });
+  }
+
   const opts = { threshold: 0.4 };
   const heroIO = new IntersectionObserver((entries) => {
     entries.forEach((e) => {
