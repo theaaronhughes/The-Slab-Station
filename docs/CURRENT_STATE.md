@@ -430,34 +430,38 @@
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="mb-[env(safe-area-inset-bottom)]"></div>
     <div
-      class="rounded-2xl bg-white/95 text-black backdrop-blur shadow-2xl border border-black/10 px-4 py-3"
+      class="pointer-events-auto mx-auto w-[92vw] max-w-[720px] overflow-hidden rounded-3xl bg-white text-black ring-1 ring-black/5 shadow-[0_10px_30px_rgba(0,0,0,0.35)] p-2.5 md:p-3.5 grid grid-cols-[1fr_auto] items-center gap-2 md:gap-3 bb-card"
     >
-      <div class="flex items-center justify-between gap-3">
-        <div class="text-left">
-          <p class="text-xs uppercase tracking-wide text-black/60">The Slab Station</p>
-          <p class="text-sm font-semibold">From A$119.95 + shipping</p>
+      <div class="contents">
+        <div class="min-w-0">
+          <div
+            class="bb-brand !text-[11px] md:!text-xs uppercase tracking-[0.18em] font-semibold text-black/60"
+          >
+            THE SLAB STATION
+          </div>
+          <div
+            data-buybar-price
+            class="!text-[clamp(18px,4.5vw,20px)] leading-tight font-bold text-black break-words"
+          >
+            <span class="whitespace-nowrap">From A$119.95 + shipping</span>
+          </div>
         </div>
         <div class="flex items-center gap-2">
           <a
             href="#builder"
-            class="inline-flex items-center justify-center rounded-xl bg-black text-white px-4 py-3 text-sm font-semibold hover:bg-black/90 focus-ring"
+            aria-label="Buy now"
+            class="justify-self-end whitespace-nowrap shrink-0 inline-flex items-center justify-center px-5 md:px-6 py-2 md:py-2.5 rounded-full bg-black text-white text-[15px] font-semibold shadow-[0_6px_16px_rgba(0,0,0,0.35)] [touch-action:manipulation] bb-cta"
+            style="touch-action: manipulation"
           >
-            Buy Now
+            BUY NOW
           </a>
           <button
             id="buyBarClose"
+            type="button"
             aria-label="Close"
-            class="ml-1 inline-flex items-center justify-center rounded-lg border border-black/10 bg-white/60 text-black/70 hover:bg-white/80 h-8 w-8"
+            class="ml-1 justify-self-end shrink-0 inline-flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-full bg-black/5 ring-1 ring-black/10 text-black/70 hover:bg-black/10"
           >
-            <svg
-              viewBox="0 0 24 24"
-              class="h-4 w-4"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-            >
-              <path d="M6 6l12 12M18 6L6 18" />
-            </svg>
+            ✕
           </button>
         </div>
       </div>
@@ -732,53 +736,107 @@
 ## script.js — Sticky Buy Bar controller
 
 ```js
-(function () {
+/* =========================
+   Sticky Buy Bar Controller (class-based & resilient)
+   ========================= */
+(() => {
   const bar = document.getElementById("buyBar");
   const hero = document.querySelector("section.hero");
   const builder = document.getElementById("builder");
   if (!bar || !hero) return;
 
-  let show = false;
-  function set(showing) {
-    bar.style.transform = showing ? "translateY(0)" : "translateY(100%)";
+  const SCROLL_CUE = document.getElementById("scrollCue");
+  const CLOSED_KEY = "buyBarClosed";
+
+  // Query params
+  const qs = new URLSearchParams(location.search);
+  const forceShow = qs.get("debugBuyBar") === "1" || qs.get("buybar") === "show";
+  const forceReset = qs.get("buybar") === "reset";
+
+  // Normalized close flag helpers
+  const getClosed = () => {
+    try {
+      return sessionStorage.getItem(CLOSED_KEY) === "1";
+    } catch {
+      return false;
+    }
+  };
+  const setClosed = () => {
+    try {
+      sessionStorage.setItem(CLOSED_KEY, "1");
+    } catch {}
+  };
+  if (forceReset) {
+    try {
+      sessionStorage.removeItem(CLOSED_KEY);
+    } catch {}
   }
 
-  const closeBtn = document.getElementById("buyBarClose");
-  const closed = sessionStorage.getItem("buyBarClosed") === "1";
-  if (closed) {
-    set(false);
-    return;
+  // Show/Hide using classes (no inline transform)
+  const showBar = () => {
+    bar.classList.remove("hidden", "opacity-0", "pointer-events-none", "translate-y-full");
+    bar.classList.add("translate-y-0");
+    bar.setAttribute("aria-hidden", "false");
+    bar.dataset.visible = "1";
+    if (SCROLL_CUE) {
+      SCROLL_CUE.classList.add("hidden", "opacity-0", "pointer-events-none");
+    }
+  };
+  const hideBar = () => {
+    bar.classList.remove("translate-y-0");
+    bar.classList.add("translate-y-full");
+    bar.setAttribute("aria-hidden", "true");
+    bar.dataset.visible = "0";
+    if (SCROLL_CUE) {
+      SCROLL_CUE.classList.remove("hidden", "opacity-0", "pointer-events-none");
+    }
+  };
+
+  // Decision logic (works with/without IO)
+  const shouldShow = () => {
+    if (getClosed() && !forceShow) return false;
+    const threshold = Math.round(window.innerHeight * 0.35);
+    const heroBottom = hero ? hero.getBoundingClientRect().bottom : 0;
+    const builderTop = builder ? builder.getBoundingClientRect().top : Number.POSITIVE_INFINITY;
+    const pastHero = heroBottom < threshold;
+    const beforeBuilder = builderTop > threshold;
+    return forceShow ? beforeBuilder : pastHero && beforeBuilder;
+  };
+
+  const applyState = () => (shouldShow() ? showBar() : hideBar());
+
+  // Initial: ensure the element can animate (not display:none)
+  bar.classList.remove("hidden", "pointer-events-none");
+  // Start with a sensible state after layout
+  setTimeout(applyState, 100);
+
+  // Keep things fresh via IO (hints only; scroll fallback is authoritative)
+  try {
+    const io = new IntersectionObserver(() => applyState(), { threshold: [0, 0.35, 0.5, 1] });
+    io.observe(hero);
+    if (builder) io.observe(builder);
+  } catch {
+    /* no-op; scroll/resize will handle */
   }
+
+  // Fallback corrections
+  window.addEventListener("scroll", applyState, { passive: true });
+  window.addEventListener("resize", applyState);
+  document.addEventListener("visibilitychange", applyState);
+
+  // Close button
+  const closeBtn = document.getElementById("buyBarClose");
   if (closeBtn) {
     closeBtn.addEventListener("click", () => {
-      sessionStorage.setItem("buyBarClosed", "1");
-      set(false);
+      setClosed();
+      hideBar();
     });
   }
 
-  const opts = { threshold: 0.4 };
-  const heroIO = new IntersectionObserver((entries) => {
-    entries.forEach((e) => {
-      // show bar when hero is NOT sufficiently visible
-      show = !e.isIntersecting;
-      set(show);
-    });
-  }, opts);
-  heroIO.observe(hero);
-
-  if (builder) {
-    const builderIO = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting)
-            set(false); // hide when builder visible
-          else set(show);
-        });
-      },
-      { threshold: 0.2 },
-    );
-    builderIO.observe(builder);
-  }
+  // Make taps instant on mobile
+  bar.querySelectorAll("a[href],button").forEach((el) => {
+    el.style.touchAction = "manipulation";
+  });
 })();
 ```
 
