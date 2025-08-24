@@ -367,25 +367,28 @@
       }
     </style>
     <style>
-      /***** Buy Bar mobile caps *****/
+      /***** Buy Bar mobile caps (final) *****/
       @media (max-width: 480px) {
         #buyBar .bb-card {
-          width: min(92vw, 720px);
-          border-radius: 1.5rem;
-        }
-        #buyBar [data-buybar-price] {
-          font-size: clamp(16px, 3.6vw, 18px) !important;
-          line-height: 1.15 !important;
-          font-weight: 700 !important;
+          width: min(92vw, 680px) !important;
+          border-radius: 1.5rem !important;
+          padding: 0.5rem 0.75rem !important; /* tighter than p-3 */
+          gap: 0.5rem !important; /* ~gap-2 */
         }
         #buyBar .bb-brand {
-          font-size: 11px !important;
+          font-size: 10px !important;
           letter-spacing: 0.18em !important;
           opacity: 0.7 !important;
         }
+        #buyBar [data-buybar-price] {
+          font-size: clamp(15px, 3.4vw, 17px) !important;
+          line-height: 1.15 !important;
+          font-weight: 700 !important;
+          word-break: break-word;
+        }
         #buyBar .bb-cta {
-          font-size: 15px !important;
-          padding: 0.5rem 1.25rem !important;
+          font-size: 14px !important;
+          padding: 0.5rem 1rem !important; /* slightly smaller */
         }
       }
       /* Buy Bar hardening */
@@ -1497,7 +1500,7 @@
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="mb-[env(safe-area-inset-bottom)]"></div>
         <div
-          class="pointer-events-auto mx-auto w-[92vw] max-w-[720px] overflow-hidden rounded-3xl bg-white text-black ring-1 ring-black/5 shadow-[0_10px_30px_rgba(0,0,0,0.35)] p-3 md:p-4 grid grid-cols-[1fr_auto] items-center gap-3 md:gap-4 bb-card"
+          class="pointer-events-auto mx-auto w-[92vw] max-w-[720px] overflow-hidden rounded-3xl bg-white text-black ring-1 ring-black/5 shadow-[0_10px_30px_rgba(0,0,0,0.35)] p-2.5 md:p-3.5 grid grid-cols-[1fr_auto] items-center gap-2 md:gap-3 bb-card"
         >
           <div class="contents">
             <div class="min-w-0">
