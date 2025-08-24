@@ -511,6 +511,17 @@
       }
 
       /* ======================================================================= */
+      /* Buy Bar — force dark text glyph (covers raw ✕) */
+      #buyBarClose,
+      #buyBarClose[data-lock="pos"] {
+        color: #111 !important; /* always dark glyph */
+      }
+
+      /* Ensure inner text or spans/children also inherit */
+      #buyBarClose[data-lock="pos"] > * {
+        color: #111 !important;
+        opacity: 0.95;
+      }
       /* === Buy Bar — Guardrails =============================================== */
       /* Z-index tokens (documented): header 50, FABs 40, buybar 70, close 71  */
       :root {
