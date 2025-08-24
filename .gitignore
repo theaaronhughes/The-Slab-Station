@@ -6,3 +6,6 @@ Thumbs.db
 \n# Ignore heavy local media\nassets/images/New folder/\n*.MOV\n*.mov\n
 \n# Ignore heavy local media\nassets/images/New folder/\n*.MOV\n*.mov\n*.PNG\n*.png\n*.GIF\n*.gif\n
 \nassets/images/New folder/\nassets/images/New folder/**\n
+assets/images/IMG-9989-unscreen.gif
+assets/images/New folder/
+assets/images/spin.mp4
