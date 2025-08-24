@@ -1,0 +1,8 @@
+﻿assets/**
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.mp4
+*.mov
+netlify/functions/**/vendor/**
