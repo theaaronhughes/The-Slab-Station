@@ -1470,18 +1470,18 @@
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="mb-[env(safe-area-inset-bottom)]"></div>
         <div
-          class="pointer-events-auto mx-auto w-[92vw] max-w-[720px] rounded-3xl bg-white text-black shadow-[0_10px_30px_rgba(0,0,0,0.35)] ring-1 ring-black/5 p-3 md:p-4 flex items-center gap-3 md:gap-4"
+          class="pointer-events-auto mx-auto w-[92vw] max-w-[720px] overflow-hidden rounded-3xl bg-white text-black ring-1 ring-black/5 shadow-[0_10px_30px_rgba(0,0,0,0.35)] p-3 pr-3 md:p-4 md:pr-4 flex flex-wrap items-center gap-3 md:flex-nowrap md:gap-4"
         >
           <div class="flex items-center justify-between gap-3">
-            <div class="grow min-w-0 space-y-0.5">
+            <div class="flex-1 min-w-0">
               <div
-                class="text-[11px] md:text-xs uppercase tracking-[0.18em] font-semibold text-black/60"
+                class="!text-[11px] md:!text-xs uppercase tracking-[0.18em] font-semibold text-black/60"
               >
                 THE SLAB STATION
               </div>
               <div
                 data-buybar-price
-                class="text-[clamp(18px,3.8vw,22px)] leading-tight font-bold text-black"
+                class="!text-[18px] md:!text-[20px] leading-tight font-bold text-black break-words"
               >
                 <span class="whitespace-nowrap">From A$119.95 + shipping</span>
               </div>
@@ -1490,7 +1490,7 @@
               <a
                 href="#builder"
                 aria-label="Buy now"
-                class="shrink-0 inline-flex items-center justify-center px-5 md:px-6 py-2 md:py-2.5 rounded-full bg-black text-white text-[15px] font-semibold shadow-[0_6px_16px_rgba(0,0,0,0.35)] [touch-action:manipulation]"
+                class="order-3 shrink-0 inline-flex items-center justify-center px-5 md:px-6 py-2 md:py-2.5 rounded-full bg-black text-white text-[15px] font-semibold shadow-[0_6px_16px_rgba(0,0,0,0.35)] [touch-action:manipulation]"
                 style="touch-action: manipulation"
               >
                 BUY NOW
@@ -1499,7 +1499,7 @@
                 id="buyBarClose"
                 type="button"
                 aria-label="Close"
-                class="ml-1 shrink-0 inline-flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-full bg-black/5 ring-1 ring-black/10 text-black/70 hover:bg-black/10"
+                class="order-4 ml-1 shrink-0 inline-flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-full bg-black/5 ring-1 ring-black/10 text-black/70 hover:bg-black/10"
               >
                 ✕
               </button>
