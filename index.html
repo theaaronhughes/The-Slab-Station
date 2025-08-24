@@ -576,15 +576,21 @@
       /* ======================================================================= */
       /* Buy Bar — force solid close button (no transparency) */
       #buyBarClose {
-        background-color: #fff; /* hard white */
-        color: #000; /* dark glyph */
-        opacity: 1; /* ensure fully opaque */
-        -webkit-backdrop-filter: none; /* iOS Safari: kill blur */
+        background-color: #fff; /* disc */
+        color: #111 !important; /* force dark glyph even if raw text */
+        opacity: 1;
+        -webkit-backdrop-filter: none;
         backdrop-filter: none;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28); /* soft drop shadow */
-        border: 1px solid rgba(0, 0, 0, 0.08); /* subtle ring */
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+        border: 1px solid rgba(0, 0, 0, 0.08);
+      }
+      #buyBarClose > * {
+        color: #111 !important; /* spans, svg children */
+        opacity: 0.95;
       }
       #buyBarClose svg {
+        stroke: #111 !important;
+        fill: none !important;
         opacity: 0.9;
       }
       @media (max-width: 767px) {
