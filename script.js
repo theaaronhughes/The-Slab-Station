@@ -833,6 +833,18 @@ function renderStars(n = 5) {
   const closeBtn = document.getElementById("buyBarClose");
   const scrollCue = document.getElementById("scrollCue");
 
+  // Elements we should hide while the Buy Bar is visible to avoid overlap
+  const fabs = document.querySelectorAll(
+    '#scrollCue, #toTop, #scrollTop, #backToTop, .scroll-fab, [data-scroll-top], [data-fab]'
+  );
+  function setFabsHidden(hidden) {
+    fabs.forEach((el) => {
+      if (!el) return;
+      el.classList.toggle('opacity-0', hidden);
+      el.classList.toggle('pointer-events-none', hidden);
+    });
+  }
+
   const qs = location.search;
   const forceShow = /(?:debugBuyBar=1|buybar=show)/i.test(qs);
   const forceReset = /(?:buybar=reset)/i.test(qs);
@@ -855,11 +867,13 @@ function renderStars(n = 5) {
   function showBuyBar() {
     bar.classList.remove("translate-y-full", "opacity-0", "pointer-events-none");
     bar.classList.add("translate-y-0");
+    setFabsHidden(true);
   }
 
   function hideBuyBar() {
     bar.classList.add("translate-y-full", "opacity-0", "pointer-events-none");
     bar.classList.remove("translate-y-0");
+    setFabsHidden(false);
   }
 
   const show = () => {
