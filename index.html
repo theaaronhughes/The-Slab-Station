@@ -460,9 +460,35 @@
       }
       @media (max-width: 767px) {
         #buyBarClose {
-          width: 36px;
-          height: 36px;
-        } /* ~40–50% smaller on mobile */
+          width: 22px;
+          height: 22px;
+        }
+        /* Buy Bar — visually shrink the close disc but keep the 22×22 hit area */
+        #buyBarClose {
+          position: relative;
+          background-color: transparent !important; /* rely on inner disc for the white circle */
+        }
+        #buyBarClose::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          margin: auto;
+          width: 16px; /* ~25% smaller than 22px */
+          height: 16px;
+          border-radius: 9999px;
+          background: #fff; /* solid white */
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+          border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+        #buyBarClose span,
+        #buyBarClose svg {
+          position: relative;
+          z-index: 1;
+          opacity: 0.9;
+          transform: translateZ(0);
+          font-size: 12px;
+          line-height: 1;
+        }
       }
     </style>
     <!-- Open Graph -->
