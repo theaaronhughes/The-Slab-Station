@@ -402,6 +402,28 @@
         #buyBar [data-buybar-price]{ font-size:clamp(19px,5.2vw,22px); line-height:1.15; font-weight:700; color:#000; }
         #buyBar .bb-cta{ font-size:15px; padding:.625rem 1.25rem; }
       }
+      /* Buy Bar — mobile polish */
+      @media (max-width: 767px) {
+        #buyBar .bb-brand {
+          font-size: 12px;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
+          font-weight: 600;
+          color: rgba(0,0,0,.6);
+          line-height: 1.1;
+        }
+        #buyBar [data-buybar-price] {
+          font-size: clamp(18px, 4.8vw, 22px);
+          line-height: 1.05;
+          font-weight: 800;
+          color: #000;
+          word-break: break-word;
+        }
+        #buyBar .bb-cta {
+          font-size: 15px;
+          box-shadow: 0 6px 16px rgba(0,0,0,.35);
+        }
+      }
     </style>
     <!-- Open Graph -->
     <meta property="og:title" content="The Slab Station — The Ultimate Slab Showcase" />
@@ -1502,33 +1524,39 @@
     <!-- Sticky Buy Bar (mobile only) -->
     <div
       id="buyBar"
-      class="fixed bottom-0 inset-x-0 z-40 md:hidden translate-y-full transition-transform duration-300"
+      class="fixed inset-x-0 bottom-0 z-[70] pointer-events-none transition-transform duration-300 ease-out translate-y-0"
     >
-      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="mb-[env(safe-area-inset-bottom)]"></div>
-        <!-- BEGIN Buy Bar card -->
-        <div class="bb-card pointer-events-auto mx-auto grid grid-cols-[1fr_auto] items-center gap-3 p-3 md:p-3.5 rounded-3xl bg-white text-black shadow-[0_10px_30px_rgba(0,0,0,0.35)] ring-1 ring-black/5 overflow-hidden">
-          <!-- text column -->
-          <div class="min-w-0">
-            <div class="bb-brand">THE SLAB STATION</div>
-            <div data-buybar-price class="break-words">From A$119.95 + shipping</div>
-          </div>
-
-          <!-- CTA -->
-          <a href="#builder" aria-label="Buy now"
-             class="bb-cta shrink-0 inline-flex items-center justify-center whitespace-nowrap rounded-full bg-black text-white font-semibold shadow-[0_6px_16px_rgba(0,0,0,0.35)] [touch-action:manipulation]">
-            Buy Now
-          </a>
-
-          <!-- Close -->
-          <button id="buyBarClose" type="button" aria-label="Close"
-                  class="ml-1 justify-self-end shrink-0 inline-flex items-center justify-center w-9 h-9 rounded-full bg-black/5 ring-1 ring-black/10 text-black/70 hover:bg-black/10">
-            &times;
-          </button>
+      <!-- BEGIN REPLACE: #buyBar content -->
+      <div
+        class="pointer-events-auto mx-auto w-[92vw] max-w-[640px] rounded-3xl bg-white text-black shadow-[0_8px_26px_rgba(0,0,0,0.35)] ring-1 ring-black/5 grid grid-cols-[1fr_auto] items-center gap-3 p-3 relative mb-[calc(env(safe-area-inset-bottom,0px)+12px)]"
+      >
+        <!-- Text stack (brand + price) -->
+        <div class="min-w-0">
+          <div class="bb-brand">THE SLAB STATION</div>
+          <div data-buybar-price>From A$119.95 + shipping</div>
         </div>
-        <!-- END Buy Bar card -->
-        <div class="pb-[calc(env(safe-area-inset-bottom)+8px)]"></div>
+
+        <!-- CTA pill -->
+        <a
+          href="#builder"
+          aria-label="Buy now"
+          class="bb-cta shrink-0 whitespace-nowrap inline-flex items-center justify-center rounded-full bg-black text-white font-semibold px-5 py-2"
+          style="touch-action: manipulation"
+        >
+          Buy Now
+        </a>
+
+        <!-- Close button (top-right inside the card) -->
+        <button
+          id="buyBarClose"
+          type="button"
+          aria-label="Close buy bar"
+          class="absolute right-2.5 top-2.5 inline-flex items-center justify-center w-9 h-9 rounded-full bg-black/5 ring-1 ring-black/10 text-black/70 hover:bg-black/10"
+        >
+          <span aria-hidden="true">×</span>
+        </button>
       </div>
+      <!-- END REPLACE: #buyBar content -->
     </div>
   </body>
 </html>
