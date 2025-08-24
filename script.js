@@ -833,15 +833,30 @@ function renderStars(n = 5) {
   const closeBtn = document.getElementById("buyBarClose");
   const scrollCue = document.getElementById("scrollCue");
 
+  // Dev guardrails: visit with ?dev=1 to verify invariants in console
+  try {
+    const p = new URLSearchParams(location.search);
+    if (p.get("dev") === "1" && closeBtn) {
+      const pos = getComputedStyle(closeBtn).position;
+      if (pos !== "absolute") {
+        console.warn("[BUYBAR GUARD] closeBtn position drifted:", pos);
+      }
+      const pseudo = getComputedStyle(closeBtn, "::before");
+      if (!pseudo || pseudo.backgroundColor === "rgba(0, 0, 0, 0)") {
+        console.warn("[BUYBAR GUARD] closeBtn disc looks transparent or missing.");
+      }
+    }
+  } catch (_) {}
+
   // Elements we should hide while the Buy Bar is visible to avoid overlap
   const fabs = document.querySelectorAll(
-    '#scrollCue, #toTop, #scrollTop, #backToTop, .scroll-fab, [data-scroll-top], [data-fab]'
+    "#scrollCue, #toTop, #scrollTop, #backToTop, .scroll-fab, [data-scroll-top], [data-fab]",
   );
   function setFabsHidden(hidden) {
     fabs.forEach((el) => {
       if (!el) return;
-      el.classList.toggle('opacity-0', hidden);
-      el.classList.toggle('pointer-events-none', hidden);
+      el.classList.toggle("opacity-0", hidden);
+      el.classList.toggle("pointer-events-none", hidden);
     });
   }
 
@@ -901,7 +916,7 @@ function renderStars(n = 5) {
         hide();
       }
     },
-    { threshold: 0.6 }
+    { threshold: 0.6 },
   );
   if (hero) heroObs.observe(hero);
 
@@ -910,7 +925,7 @@ function renderStars(n = 5) {
     ([e]) => {
       if (e && e.isIntersecting) hide();
     },
-    { threshold: 0.15 }
+    { threshold: 0.15 },
   );
   if (builder) builderObs.observe(builder);
 

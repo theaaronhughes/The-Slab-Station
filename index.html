@@ -445,6 +445,46 @@
           transition: none !important;
         }
       }
+      /* === Buy Bar Guards ===================================================== */
+      /* 1) Never let global CSS override the absolute positioning. 
+         ID (100) + attribute (10) beats plain #buyBarClose (100). */
+      #buyBarClose[data-lock="pos"] {
+        position: absolute !important;
+      }
+
+      /* 2) Mobile-only visual sizing for the close disc; keep 22x22 hit area. */
+      @media (max-width: 767px) {
+        #buyBarClose[data-lock="pos"] {
+          width: 22px; /* hit area */
+          height: 22px; /* hit area */
+          background: transparent !important;
+          isolation: isolate;
+        }
+        #buyBarClose[data-lock="pos"]::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          margin: auto;
+          width: 16px; /* visual (≈ -25%) */
+          height: 16px;
+          border-radius: 9999px;
+          background: #fff; /* solid white */
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+          border: 1px solid rgba(0, 0, 0, 0.08);
+          z-index: 0;
+        }
+        #buyBarClose[data-lock="pos"] span,
+        #buyBarClose[data-lock="pos"] svg {
+          position: relative;
+          z-index: 1;
+          opacity: 0.9;
+          color: #111;
+          font-size: 12px;
+          line-height: 1;
+          transform: translateZ(0);
+        }
+      }
+      /* ======================================================================= */
       /* Buy Bar — force solid close button (no transparency) */
       #buyBarClose {
         background-color: #fff; /* hard white */
@@ -1616,8 +1656,9 @@
         <!-- Close button (top-right inside the card) -->
         <button
           id="buyBarClose"
+          data-lock="pos"
           aria-label="Close quick buy panel"
-          class="absolute right-0 top-0 z-[2] translate-x-1/2 -translate-y-1/2 rounded-full grid place-items-center pointer-events-auto w-9 h-9 md:w-9 md:h-9 focus-ring"
+          class="absolute right-0 top-0 translate-x-1/2 -translate-y-1/2 z-[71] rounded-full grid place-items-center pointer-events-auto w-9 h-9 md:w-9 md:h-9 focus-ring"
           type="button"
         >
           ✕
