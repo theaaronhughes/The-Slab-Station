@@ -445,6 +445,25 @@
           transition: none !important;
         }
       }
+      /* Buy Bar — force solid close button (no transparency) */
+      #buyBarClose {
+        background-color: #fff; /* hard white */
+        color: #000; /* dark glyph */
+        opacity: 1; /* ensure fully opaque */
+        -webkit-backdrop-filter: none; /* iOS Safari: kill blur */
+        backdrop-filter: none;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28); /* soft drop shadow */
+        border: 1px solid rgba(0, 0, 0, 0.08); /* subtle ring */
+      }
+      #buyBarClose svg {
+        opacity: 0.9;
+      }
+      @media (max-width: 767px) {
+        #buyBarClose {
+          width: 36px;
+          height: 36px;
+        } /* ~40–50% smaller on mobile */
+      }
     </style>
     <!-- Open Graph -->
     <meta property="og:title" content="The Slab Station — The Ultimate Slab Showcase" />
@@ -1563,10 +1582,7 @@
         <a
           href="#builder"
           aria-label="Buy now"
-          class="bb-cta shrink-0 inline-flex items-center justify-center whitespace-nowrap
-rounded-full bg-black text-white text-[15px] md:text-[15px] font-semibold
-px-5 md:px-6 py-2.5 shadow-[0_6px_16px_rgba(0,0,0,0.35)]
-[touch-action:manipulation] focus-ring"
+          class="bb-cta shrink-0 inline-flex items-center justify-center whitespace-nowrap rounded-full bg-black text-white text-[15px] md:text-[15px] font-semibold px-5 md:px-6 py-2.5 shadow-[0_6px_16px_rgba(0,0,0,0.35)] [touch-action:manipulation] focus-ring"
         >
           Buy Now
         </a>
@@ -1574,9 +1590,9 @@ px-5 md:px-6 py-2.5 shadow-[0_6px_16px_rgba(0,0,0,0.35)]
         <!-- Close button (top-right inside the card) -->
         <button
           id="buyBarClose"
-          type="button"
           aria-label="Close quick buy panel"
-          class="absolute right-0 top-0 translate-x-1/2 -translate-y-1/2 z-[1] grid place-items-center w-7 h-7 md:w-8 md:h-8 rounded-full bg-black/5 ring-1 ring-black/15 text-black/70 hover:bg-black/10 active:bg-black/15 transition-colors"
+          class="absolute right-0 top-0 z-[2] translate-x-1/2 -translate-y-1/2 rounded-full grid place-items-center pointer-events-auto w-9 h-9 md:w-9 md:h-9 focus-ring"
+          type="button"
         >
           ✕
         </button>
