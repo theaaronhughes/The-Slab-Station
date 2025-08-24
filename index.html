@@ -465,8 +465,8 @@
         }
         /* Buy Bar — visually shrink the close disc but keep the 22×22 hit area */
         #buyBarClose {
-          position: relative;
-          background-color: transparent !important; /* rely on inner disc for the white circle */
+          background-color: transparent !important; /* disc drawn by ::before */
+          isolation: isolate; /* keep pseudo stacking self-contained */
         }
         #buyBarClose::before {
           content: "";
