@@ -823,105 +823,98 @@ function renderStars(n = 5) {
   }
 })();
 
-/* =========================
-   Sticky Buy Bar Controller (class-based & resilient)
-   ========================= */
+// Sticky Buy Bar (IO show/hide + close/session + a11y + reduced-motion friendly)
 (() => {
   const bar = document.getElementById("buyBar");
-  const hero = document.querySelector("section.hero");
+  if (!bar) return;
+
   const builder = document.getElementById("builder");
-  if (!bar || !hero) return;
-
-  const SCROLL_CUE = document.getElementById("scrollCue");
-  const CLOSED_KEY = "buyBarClosed";
-
-  // Query params
-  const qs = new URLSearchParams(location.search);
-  const forceShow = qs.get("debugBuyBar") === "1" || qs.get("buybar") === "show";
-  const forceReset = qs.get("buybar") === "reset";
-
-  // Normalized close flag helpers
-  const getClosed = () => {
-    try {
-      return sessionStorage.getItem(CLOSED_KEY) === "1";
-    } catch {
-      return false;
-    }
-  };
-  const setClosed = () => {
-    try {
-      sessionStorage.setItem(CLOSED_KEY, "1");
-    } catch {}
-  };
-  if (forceReset) {
-    try {
-      sessionStorage.removeItem(CLOSED_KEY);
-    } catch {}
-  }
-
-  // Show/Hide using classes (no inline transform)
-  const showBar = () => {
-    bar.classList.remove("hidden", "opacity-0", "pointer-events-none", "translate-y-full");
-    bar.classList.add("translate-y-0");
-    bar.setAttribute("aria-hidden", "false");
-    bar.dataset.visible = "1";
-    if (SCROLL_CUE) {
-      SCROLL_CUE.classList.add("hidden", "opacity-0", "pointer-events-none");
-    }
-  };
-  const hideBar = () => {
-    bar.classList.remove("translate-y-0");
-    bar.classList.add("translate-y-full");
-    bar.setAttribute("aria-hidden", "true");
-    bar.dataset.visible = "0";
-    if (SCROLL_CUE) {
-      SCROLL_CUE.classList.remove("hidden", "opacity-0", "pointer-events-none");
-    }
-  };
-
-  // Decision logic (works with/without IO)
-  const shouldShow = () => {
-    if (getClosed() && !forceShow) return false;
-    const threshold = Math.round(window.innerHeight * 0.35);
-    const heroBottom = hero ? hero.getBoundingClientRect().bottom : 0;
-    const builderTop = builder ? builder.getBoundingClientRect().top : Number.POSITIVE_INFINITY;
-    const pastHero = heroBottom < threshold;
-    const beforeBuilder = builderTop > threshold;
-    return forceShow ? beforeBuilder : pastHero && beforeBuilder;
-  };
-
-  const applyState = () => (shouldShow() ? showBar() : hideBar());
-
-  // Initial: ensure the element can animate (not display:none)
-  bar.classList.remove("hidden", "pointer-events-none");
-  // Start with a sensible state after layout
-  setTimeout(applyState, 100);
-
-  // Keep things fresh via IO (hints only; scroll fallback is authoritative)
-  try {
-    const io = new IntersectionObserver(() => applyState(), { threshold: [0, 0.35, 0.5, 1] });
-    io.observe(hero);
-    if (builder) io.observe(builder);
-  } catch {
-    /* no-op; scroll/resize will handle */
-  }
-
-  // Fallback corrections
-  window.addEventListener("scroll", applyState, { passive: true });
-  window.addEventListener("resize", applyState);
-  document.addEventListener("visibilitychange", applyState);
-
-  // Close button
+  const hero = document.querySelector(".hero");
   const closeBtn = document.getElementById("buyBarClose");
-  if (closeBtn) {
-    closeBtn.addEventListener("click", () => {
-      setClosed();
-      hideBar();
-    });
-  }
+  const scrollCue = document.getElementById("scrollCue");
 
-  // Make taps instant on mobile
-  bar.querySelectorAll("a[href],button").forEach((el) => {
-    el.style.touchAction = "manipulation";
+  const qs = location.search;
+  const forceShow = /(?:debugBuyBar=1|buybar=show)/i.test(qs);
+  const forceReset = /(?:buybar=reset)/i.test(qs);
+
+  if (forceReset) sessionStorage.removeItem("buyBarClosed");
+
+  const isClosed = () => sessionStorage.getItem("buyBarClosed") === "1";
+  const setClosed = (v) => sessionStorage.setItem("buyBarClosed", v ? "1" : "0");
+
+  const hideCue = () => {
+    if (!scrollCue) return;
+    scrollCue.classList.add("hidden", "opacity-0", "pointer-events-none");
+  };
+  const showCue = () => {
+    if (!scrollCue) return;
+    scrollCue.classList.remove("hidden", "opacity-0", "pointer-events-none");
+  };
+
+  const show = () => {
+    if (isClosed() && !forceShow) return;
+    bar.classList.remove("translate-y-full");
+    bar.classList.add("translate-y-0");
+    bar.classList.remove("pointer-events-none");
+    bar.setAttribute("aria-hidden", "false");
+    hideCue();
+  };
+
+  const hide = () => {
+    bar.classList.add("translate-y-full");
+    bar.classList.remove("translate-y-0");
+    bar.classList.add("pointer-events-none");
+    bar.setAttribute("aria-hidden", "true");
+    showCue();
+  };
+
+  // Start hidden; IO will reveal when hero scrolls away
+  hide();
+
+  // Observe hero to reveal once it’s mostly scrolled out
+  const heroObs = new IntersectionObserver(
+    ([e]) => {
+      if (e && !e.isIntersecting) {
+        if (!isClosed() || forceShow) show();
+      } else {
+        hide();
+      }
+    },
+    { threshold: 0.6 }
+  );
+  if (hero) heroObs.observe(hero);
+
+  // Hide when the builder is visible
+  const builderObs = new IntersectionObserver(
+    ([e]) => {
+      if (e && e.isIntersecting) hide();
+    },
+    { threshold: 0.15 }
+  );
+  if (builder) builderObs.observe(builder);
+
+  // Close interactions
+  closeBtn?.addEventListener("click", () => {
+    setClosed(true);
+    hide();
   });
+
+  // ESC to dismiss for keyboard users
+  document.addEventListener("keydown", (ev) => {
+    if (ev.key === "Escape") {
+      setClosed(true);
+      hide();
+    }
+  });
+
+  // Optional: on hash change or resize, keep things sane
+  window.addEventListener("resize", () => {
+    // If user hasn't closed it and hero is off-screen, ensure it's shown
+    if (!isClosed() && (forceShow || (hero && !hero.getBoundingClientRect().top > 0))) {
+      show();
+    }
+  });
+
+  // Debug helpers (no need to change URL repeatedly)
+  if (forceShow) show();
 })();
