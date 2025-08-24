@@ -18,3 +18,4 @@ IDs to preserve (do not rename or remove without explicit instruction):
 - #builder, #reviews, (any payment-related forms/modals)
 
 
+ - Shell: Prefer cmd.exe; in PowerShell run commands one-per-line (no &&). Keep commit messages short (no quotes/semicolons).
