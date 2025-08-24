@@ -484,6 +484,32 @@
           transform: translateZ(0);
         }
       }
+      /* Buy Bar — Close glyph contrast (works for SVG + “×”), mobile-first but safe everywhere */
+      #buyBarClose[data-lock="pos"] {
+        color: #111 !important; /* for text “×” or SVG using currentColor */
+      }
+
+      #buyBarClose[data-lock="pos"] > * {
+        color: #111 !important; /* catch any inner wrapper/spans */
+        opacity: 0.95;
+      }
+
+      /* If the icon is an inline SVG, ensure dark stroke and no white fill */
+      #buyBarClose[data-lock="pos"] svg,
+      #buyBarClose[data-lock="pos"] svg *,
+      #buyBarClose[data-lock="pos"] path,
+      #buyBarClose[data-lock="pos"] line {
+        stroke: #111 !important;
+        fill: none !important; /* avoid white fill covering the “×” */
+        vector-effect: non-scaling-stroke;
+      }
+
+      /* Keep the SVG roughly 12×12 so it stays crisp inside the 16px disc */
+      #buyBarClose[data-lock="pos"] svg {
+        width: 12px !important;
+        height: 12px !important;
+      }
+
       /* ======================================================================= */
       /* === Buy Bar — Guardrails =============================================== */
       /* Z-index tokens (documented): header 50, FABs 40, buybar 70, close 71  */
