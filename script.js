@@ -848,12 +848,53 @@ function renderStars(n = 5) {
     });
   }
 
+  // --- Sync hero scroll-cue visibility with Buy Bar state ---
+  const scrollCueEl = document.getElementById("scrollCue");
+  const setCueVisible = (visible) => {
+    if (!scrollCueEl) return;
+    // Hide completely to avoid taking space; fade when we can
+    scrollCueEl.classList.toggle("hidden", !visible);
+    scrollCueEl.classList.toggle("opacity-0", !visible);
+    scrollCueEl.classList.toggle("pointer-events-none", !visible);
+  };
+
+  // Consider the bar "visible" when it isn't hidden or fully translated off screen
+  const isBuyBarVisible = () => {
+    if (!bar) return false;
+    const cl = bar.classList;
+    // Adjust checks to your show/hide classes; this combo works with typical translate/hidden patterns
+    const hidden =
+      cl.contains("hidden") || cl.contains("opacity-0") || cl.contains("translate-y-full");
+    return !hidden;
+  };
+
+  const syncCue = () => setCueVisible(!isBuyBarVisible());
+
+  // Initial sync
+  syncCue();
+
+  // Observe class/style changes on buyBar so cue follows any state updates
+  if (bar && "MutationObserver" in window) {
+    const mo = new MutationObserver(syncCue);
+    mo.observe(bar, { attributes: true, attributeFilter: ["class", "style"] });
+  }
+
+  // If there is a close button that hides the bar, show the cue again immediately
+  const buyBarCloseBtn = document.getElementById("buyBarClose");
+  if (buyBarCloseBtn) {
+    buyBarCloseBtn.addEventListener("click", () => {
+      setTimeout(syncCue, 0);
+    });
+  }
+
   const opts = { threshold: 0.4 };
   const heroIO = new IntersectionObserver((entries) => {
     entries.forEach((e) => {
       // show bar when hero is NOT sufficiently visible
       show = !e.isIntersecting;
       set(show);
+      // keep cue synced with bar state
+      syncCue();
     });
   }, opts);
   heroIO.observe(hero);
@@ -865,6 +906,8 @@ function renderStars(n = 5) {
           if (e.isIntersecting)
             set(false); // hide when builder visible
           else set(show);
+          // keep cue synced with bar state
+          syncCue();
         });
       },
       { threshold: 0.2 },
