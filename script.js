@@ -823,118 +823,105 @@ function renderStars(n = 5) {
   }
 })();
 
-// --- Sticky Buy Bar controller ---
-(function () {
+/* =========================
+   Sticky Buy Bar Controller (class-based & resilient)
+   ========================= */
+(() => {
   const bar = document.getElementById("buyBar");
   const hero = document.querySelector("section.hero");
   const builder = document.getElementById("builder");
   if (!bar || !hero) return;
 
-  // --- Debug + close-flag normalization ---
-  const params = new URLSearchParams(location.search);
-  const forceShow = params.has("debugBuyBar") || params.get("buybar") === "show";
+  const SCROLL_CUE = document.getElementById("scrollCue");
+  const CLOSED_KEY = "buyBarClosed";
 
-  let isClosed = false;
-  try {
-    // normalize to '1' for the close flag
-    const f = sessionStorage.getItem("buyBarClosed");
-    isClosed = f === "1" || f === "true";
-    if (forceShow) {
-      sessionStorage.removeItem("buyBarClosed");
-      isClosed = false;
+  // Query params
+  const qs = new URLSearchParams(location.search);
+  const forceShow = qs.get("debugBuyBar") === "1" || qs.get("buybar") === "show";
+  const forceReset = qs.get("buybar") === "reset";
+
+  // Normalized close flag helpers
+  const getClosed = () => {
+    try {
+      return sessionStorage.getItem(CLOSED_KEY) === "1";
+    } catch {
+      return false;
     }
-  } catch (_) {}
-
-  // If it's hard-closed and not forcing, keep hidden; otherwise ensure the element isn't 'display:none'
-  if (!isClosed) {
-    bar.classList.remove("hidden");
-    bar.classList.remove("pointer-events-none");
+  };
+  const setClosed = () => {
+    try {
+      sessionStorage.setItem(CLOSED_KEY, "1");
+    } catch {}
+  };
+  if (forceReset) {
+    try {
+      sessionStorage.removeItem(CLOSED_KEY);
+    } catch {}
   }
 
-  let show = false;
-  function set(showing) {
-    bar.style.transform = showing ? "translateY(0)" : "translateY(100%)";
+  // Show/Hide using classes (no inline transform)
+  const showBar = () => {
+    bar.classList.remove("hidden", "opacity-0", "pointer-events-none", "translate-y-full");
+    bar.classList.add("translate-y-0");
+    bar.setAttribute("aria-hidden", "false");
+    bar.dataset.visible = "1";
+    if (SCROLL_CUE) {
+      SCROLL_CUE.classList.add("hidden", "opacity-0", "pointer-events-none");
+    }
+  };
+  const hideBar = () => {
+    bar.classList.remove("translate-y-0");
+    bar.classList.add("translate-y-full");
+    bar.setAttribute("aria-hidden", "true");
+    bar.dataset.visible = "0";
+    if (SCROLL_CUE) {
+      SCROLL_CUE.classList.remove("hidden", "opacity-0", "pointer-events-none");
+    }
+  };
+
+  // Decision logic (works with/without IO)
+  const shouldShow = () => {
+    if (getClosed() && !forceShow) return false;
+    const threshold = Math.round(window.innerHeight * 0.35);
+    const heroBottom = hero ? hero.getBoundingClientRect().bottom : 0;
+    const builderTop = builder ? builder.getBoundingClientRect().top : Number.POSITIVE_INFINITY;
+    const pastHero = heroBottom < threshold;
+    const beforeBuilder = builderTop > threshold;
+    return forceShow ? beforeBuilder : pastHero && beforeBuilder;
+  };
+
+  const applyState = () => (shouldShow() ? showBar() : hideBar());
+
+  // Initial: ensure the element can animate (not display:none)
+  bar.classList.remove("hidden", "pointer-events-none");
+  // Start with a sensible state after layout
+  setTimeout(applyState, 100);
+
+  // Keep things fresh via IO (hints only; scroll fallback is authoritative)
+  try {
+    const io = new IntersectionObserver(() => applyState(), { threshold: [0, 0.35, 0.5, 1] });
+    io.observe(hero);
+    if (builder) io.observe(builder);
+  } catch {
+    /* no-op; scroll/resize will handle */
   }
 
+  // Fallback corrections
+  window.addEventListener("scroll", applyState, { passive: true });
+  window.addEventListener("resize", applyState);
+  document.addEventListener("visibilitychange", applyState);
+
+  // Close button
   const closeBtn = document.getElementById("buyBarClose");
-  const closed = sessionStorage.getItem("buyBarClosed") === "1";
-  if (closed) {
-    set(false);
-    return;
-  }
   if (closeBtn) {
     closeBtn.addEventListener("click", () => {
-      try {
-        sessionStorage.setItem("buyBarClosed", "1");
-      } catch (_) {}
-      set(false);
+      setClosed();
+      hideBar();
     });
   }
 
-  // --- Sync hero scroll-cue visibility with Buy Bar state ---
-  const scrollCueEl = document.getElementById("scrollCue");
-  const setCueVisible = (visible) => {
-    if (!scrollCueEl) return;
-    // Hide completely to avoid taking space; fade when we can
-    scrollCueEl.classList.toggle("hidden", !visible);
-    scrollCueEl.classList.toggle("opacity-0", !visible);
-    scrollCueEl.classList.toggle("pointer-events-none", !visible);
-  };
-
-  // Consider the bar "visible" when it isn't hidden or fully translated off screen
-  const isBuyBarVisible = () => {
-    if (!bar) return false;
-    const cl = bar.classList;
-    // Adjust checks to your show/hide classes; this combo works with typical translate/hidden patterns
-    const hidden =
-      cl.contains("hidden") || cl.contains("opacity-0") || cl.contains("translate-y-full");
-    return !hidden;
-  };
-
-  const syncCue = () => setCueVisible(!isBuyBarVisible());
-
-  // Initial sync
-  syncCue();
-
-  // Observe class/style changes on buyBar so cue follows any state updates
-  if (bar && "MutationObserver" in window) {
-    const mo = new MutationObserver(syncCue);
-    mo.observe(bar, { attributes: true, attributeFilter: ["class", "style"] });
-  }
-
-  // If there is a close button that hides the bar, show the cue again immediately
-  const buyBarCloseBtn = document.getElementById("buyBarClose");
-  if (buyBarCloseBtn) {
-    buyBarCloseBtn.addEventListener("click", () => {
-      setTimeout(syncCue, 0);
-    });
-  }
-
-  const opts = { threshold: 0.4 };
-  const heroIO = new IntersectionObserver((entries) => {
-    entries.forEach((e) => {
-      // show bar when hero is NOT sufficiently visible
-      show = !e.isIntersecting;
-      set(show);
-      // keep cue synced with bar state
-      syncCue();
-    });
-  }, opts);
-  heroIO.observe(hero);
-
-  if (builder) {
-    const builderIO = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting)
-            set(false); // hide when builder visible
-          else set(show);
-          // keep cue synced with bar state
-          syncCue();
-        });
-      },
-      { threshold: 0.2 },
-    );
-    builderIO.observe(builder);
-  }
+  // Make taps instant on mobile
+  bar.querySelectorAll("a[href],button").forEach((el) => {
+    el.style.touchAction = "manipulation";
+  });
 })();
