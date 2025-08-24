@@ -339,10 +339,17 @@
       .safe-bottom {
         bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
       }
-      /* Larger iOS safe-area for hero scroll cue (tunable) */
-      .safe-bottom-lg {
-        --cue-offset: 52px; /* adjust this value later if needed */
-        bottom: calc(env(safe-area-inset-bottom, 0px) + var(--cue-offset));
+      /* Larger iOS safe-area for hero scroll cue (locked) */
+      .hero .safe-bottom-lg {
+        --cue-offset: 64px; /* tweak this number later if you want */
+        bottom: calc(env(safe-area-inset-bottom, 0px) + var(--cue-offset)) !important;
+      }
+
+      /* Fallback if env() isn't available (older browsers) */
+      @supports not (bottom: calc(env(safe-area-inset-bottom, 0px) + 1px)) {
+        .hero .safe-bottom-lg {
+          bottom: var(--cue-offset) !important;
+        }
       }
     </style>
     <!-- Open Graph -->
