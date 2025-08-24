@@ -351,6 +351,20 @@
           bottom: var(--cue-offset) !important;
         }
       }
+      /* Full-bleed container (mobile): stretch to viewport edges */
+      .bleed {
+        width: 100vw;
+        margin-left: calc(50% - 50vw);
+        margin-right: calc(50% - 50vw);
+      }
+      @media (min-width: 768px) {
+        /* Disable bleed on desktop so layout stays centered */
+        .bleed {
+          width: auto;
+          margin-left: auto;
+          margin-right: auto;
+        }
+      }
     </style>
     <!-- Open Graph -->
     <meta property="og:title" content="The Slab Station — The Ultimate Slab Showcase" />
@@ -478,16 +492,16 @@
               The Ultimate Showcase
             </h1>
 
-            <!-- HERO VISUAL (16:9, show all 3 products, vertical crop for top band) -->
-            <div class="hero-visual mx-auto mt-4 md:mt-6 w-full max-w-[820px]">
-              <!-- 16:9 aspect ratio box to keep all 3 products in frame -->
-              <div class="relative w-full pt-[56.25%] overflow-hidden">
+            <!-- HERO VISUAL (full-bleed on mobile, taller than 16:9 to avoid clipping) -->
+            <div class="hero-visual bleed mt-4 md:mt-6">
+              <!-- Taller than 16:9 so products aren’t clipped; full-bleed on mobile -->
+              <div class="relative w-full pt-[60%] overflow-hidden">
                 <img
                   src="assets/images/hero-image.jpg"
                   alt="The Slab Station display — three units side-by-side"
                   fetchpriority="high"
                   decoding="async"
-                  class="absolute inset-0 w-full h-full object-cover object-[50%_60%]"
+                  class="absolute inset-0 w-full h-full object-cover object-[50%_58%]"
                 />
               </div>
             </div>
