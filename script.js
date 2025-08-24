@@ -830,6 +830,27 @@ function renderStars(n = 5) {
   const builder = document.getElementById("builder");
   if (!bar || !hero) return;
 
+  // --- Debug + close-flag normalization ---
+  const params = new URLSearchParams(location.search);
+  const forceShow = params.has("debugBuyBar") || params.get("buybar") === "show";
+
+  let isClosed = false;
+  try {
+    // normalize to '1' for the close flag
+    const f = sessionStorage.getItem("buyBarClosed");
+    isClosed = f === "1" || f === "true";
+    if (forceShow) {
+      sessionStorage.removeItem("buyBarClosed");
+      isClosed = false;
+    }
+  } catch (_) {}
+
+  // If it's hard-closed and not forcing, keep hidden; otherwise ensure the element isn't 'display:none'
+  if (!isClosed) {
+    bar.classList.remove("hidden");
+    bar.classList.remove("pointer-events-none");
+  }
+
   let show = false;
   function set(showing) {
     bar.style.transform = showing ? "translateY(0)" : "translateY(100%)";
@@ -843,7 +864,9 @@ function renderStars(n = 5) {
   }
   if (closeBtn) {
     closeBtn.addEventListener("click", () => {
-      sessionStorage.setItem("buyBarClosed", "1");
+      try {
+        sessionStorage.setItem("buyBarClosed", "1");
+      } catch (_) {}
       set(false);
     });
   }
