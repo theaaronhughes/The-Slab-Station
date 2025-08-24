@@ -851,19 +851,26 @@ function renderStars(n = 5) {
     scrollCue.classList.remove("hidden", "opacity-0", "pointer-events-none");
   };
 
+  // --- Buy Bar show/hide helpers (class-based) ---
+  function showBuyBar() {
+    bar.classList.remove("translate-y-full", "opacity-0", "pointer-events-none");
+    bar.classList.add("translate-y-0");
+  }
+
+  function hideBuyBar() {
+    bar.classList.add("translate-y-full", "opacity-0", "pointer-events-none");
+    bar.classList.remove("translate-y-0");
+  }
+
   const show = () => {
     if (isClosed() && !forceShow) return;
-    bar.classList.remove("translate-y-full");
-    bar.classList.add("translate-y-0");
-    bar.classList.remove("pointer-events-none");
+    showBuyBar();
     bar.setAttribute("aria-hidden", "false");
     hideCue();
   };
 
   const hide = () => {
-    bar.classList.add("translate-y-full");
-    bar.classList.remove("translate-y-0");
-    bar.classList.add("pointer-events-none");
+    hideBuyBar();
     bar.setAttribute("aria-hidden", "true");
     showCue();
   };
