@@ -510,6 +510,36 @@
         height: 12px !important;
       }
 
+      /* --- Buy Bar — WebKit text fill + stacking guard for close glyph (final) --- */
+      /* 1) Force glyph color for both raw text and wrappers (wins over mobile overrides) */
+      #buyBarClose,
+      #buyBarClose[data-lock="pos"] {
+        color: #111 !important; /* all engines */
+        -webkit-text-fill-color: #111 !important; /* WebKit: raw text glyphs */
+      }
+
+      /* 2) Children (any spans created later) inherit dark color */
+      #buyBarClose * {
+        color: #111 !important;
+      }
+
+      /* 3) SVG safety — if icon is swapped to SVG, keep strokes dark and fills transparent */
+      #buyBarClose svg,
+      #buyBarClose svg *,
+      #buyBarClose path,
+      #buyBarClose line {
+        stroke: #111 !important;
+        fill: none !important;
+      }
+
+      /* 4) Make sure the white disc sits under the glyph */
+      #buyBarClose[data-lock="pos"] {
+        z-index: 71;
+      } /* buy bar close z token */
+      #buyBarClose[data-lock="pos"]::before {
+        z-index: 0;
+      } /* disc layer */
+
       /* ======================================================================= */
       /* Buy Bar — force dark text glyph (covers raw ✕) */
       #buyBarClose,
