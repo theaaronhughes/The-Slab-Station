@@ -1,6 +1,6 @@
 ﻿Baseline Batch 32
 
-Commit: 173349a
+Commit: adc570f
 Key expectations
 
 Hero: full-bleed 3-up image with soft bottom gradient; H1 The Ultimate Showcase; primary CTA BUILD YOURS NOW.
