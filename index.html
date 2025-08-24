@@ -478,15 +478,18 @@
               The Ultimate Showcase
             </h1>
 
-            <!-- HERO VISUAL (full-width, slight zoom, no frame) -->
-            <div class="hero-visual mx-auto mt-4 md:mt-6 w-full">
-              <img
-                src="assets/images/hero-image.jpg"
-                alt="The Slab Station display — three units side-by-side"
-                fetchpriority="high"
-                decoding="async"
-                class="block w-full h-[42vh] max-h-[520px] object-cover object-[50%_64%]"
-              />
+            <!-- HERO VISUAL (16:9, show all 3 products, vertical crop for top band) -->
+            <div class="hero-visual mx-auto mt-4 md:mt-6 w-full max-w-[820px]">
+              <!-- 16:9 aspect ratio box to keep all 3 products in frame -->
+              <div class="relative w-full pt-[56.25%] overflow-hidden">
+                <img
+                  src="assets/images/hero-image.jpg"
+                  alt="The Slab Station display — three units side-by-side"
+                  fetchpriority="high"
+                  decoding="async"
+                  class="absolute inset-0 w-full h-full object-cover object-[50%_60%]"
+                />
+              </div>
             </div>
 
             <!-- CTAs -->
