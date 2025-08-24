@@ -339,9 +339,10 @@
       .safe-bottom {
         bottom: calc(env(safe-area-inset-bottom, 0px) + 18px);
       }
-      /* Larger iOS safe-area for hero scroll cue */
+      /* Larger iOS safe-area for hero scroll cue (tunable) */
       .safe-bottom-lg {
-        bottom: calc(env(safe-area-inset-bottom, 0px) + 42px);
+        --cue-offset: 52px; /* adjust this value later if needed */
+        bottom: calc(env(safe-area-inset-bottom, 0px) + var(--cue-offset));
       }
     </style>
     <!-- Open Graph -->
