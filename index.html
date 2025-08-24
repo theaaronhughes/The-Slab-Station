@@ -485,6 +485,69 @@
         }
       }
       /* ======================================================================= */
+      /* === Buy Bar — Guardrails =============================================== */
+      /* Z-index tokens (documented): header 50, FABs 40, buybar 70, close 71  */
+      :root {
+        --z-header: 50;
+        --z-fab: 40;
+        --z-buybar: 70;
+        --z-buybar-close: 71;
+      }
+
+      /* Never let global rules override the absolute positioning of the close btn */
+      #buyBarClose[data-lock="pos"] {
+        position: absolute !important;
+      }
+
+      /* Helpers to keep text from pushing the CTA off the card row */
+      .bb-text {
+        min-width: 0;
+      }
+      .bb-cta {
+        white-space: nowrap;
+      }
+
+      /* Mobile-only sizing lives here (no desktop bleed) */
+      @media (max-width: 767px) {
+        /* Visual size of the hanging close disc; keep touch target via element size */
+        #buyBarClose[data-lock="pos"] {
+          width: 22px; /* touch area */
+          height: 22px; /* touch area */
+          background: transparent !important;
+          isolation: isolate;
+        }
+        #buyBarClose[data-lock="pos"]::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          margin: auto;
+          width: 16px; /* visual disc */
+          height: 16px;
+          border-radius: 9999px;
+          background: #fff;
+          box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+          border: 1px solid rgba(0, 0, 0, 0.08);
+          z-index: 0;
+        }
+        #buyBarClose[data-lock="pos"] span,
+        #buyBarClose[data-lock="pos"] svg {
+          position: relative;
+          z-index: 1;
+          opacity: 0.9;
+          color: #111;
+          font-size: 12px;
+          line-height: 1;
+          transform: translateZ(0);
+        }
+      }
+
+      /* Respect users who prefer less motion */
+      @media (prefers-reduced-motion: reduce) {
+        #buyBar {
+          transition: none !important;
+        }
+      }
+      /* ======================================================================= */
       /* Buy Bar — force solid close button (no transparency) */
       #buyBarClose {
         background-color: #fff; /* hard white */
@@ -1639,7 +1702,7 @@
         class="bb-card relative overflow-visible pointer-events-auto mx-auto w-[92vw] max-w-[640px] rounded-3xl bg-white text-black shadow-[0_8px_26px_rgba(0,0,0,0.35)] ring-1 ring-black/5 grid grid-cols-[1fr_auto] items-center gap-3 p-3 mb-[calc(env(safe-area-inset-bottom,0px)+12px)]"
       >
         <!-- Text stack (brand + price) -->
-        <div class="min-w-0">
+        <div class="bb-text min-w-0">
           <div class="bb-brand">THE SLAB STATION</div>
           <div data-buybar-price>From A$119.95 + shipping</div>
         </div>
