@@ -70,7 +70,9 @@
         <!-- Logo -->
         <a href="#top" aria-label="Home" class="focus-ring">
           <img src="/assets/images/logo.jpg" alt="The Slab Station"
-               class="h-[60px] sm:h-[80px] lg:h-[94px] min-h-[40px] w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.35)]">
+               width="200" height="94"
+               class="h-[60px] sm:h-[80px] lg:h-[94px] min-h-[40px] w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.35)]"
+               loading="eager" decoding="async">
         </a>
 
         <div class="hidden md:flex items-center gap-8">
@@ -99,7 +101,8 @@
     <!-- HERO IMAGE -->
     <section class="relative">
       <img src="/assets/images/backgroundmain.jpg" alt="The Slab Station hero"
-           class="w-full h-[48vh] sm:h-[54vh] lg:h-[61vh] object-cover object-center reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700"
+           width="1920" height="1080"
+           class="w-full h-[48vh] sm:h-[54vh] lg:h-[61vh] object-cover object-center"
            fetchpriority="high" loading="eager" decoding="async" />
     </section>
 
@@ -133,9 +136,10 @@
             <img
               src="/assets/images/spinnobackground2.gif"
               alt="Rotating slab demo"
+              width="560" height="560"
               class="w-full max-w-[520px] md:max-w-[560px] reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700"
               loading="lazy"
-              fetchpriority="low"
+              decoding="async"
             />
           </div>
 
@@ -186,7 +190,9 @@
           <div class="w-full self-center">
             <div class="relative group rounded-2xl overflow-hidden ring-2 ring-white/80">
               <img src="/assets/images/IMG_8980.JPG" alt="Slab Station color grid"
-                   class="w-full h-full object-cover transition duration-300 ease-out group-hover:scale-[1.02]">
+                   width="1794" height="1794"
+                   class="w-full h-full object-cover transition duration-300 ease-out group-hover:scale-[1.02]"
+                   loading="lazy" decoding="async">
               <div class="pointer-events-none absolute inset-0 ring-1 ring-white/20 rounded-2xl"></div>
             </div>
           </div>
@@ -241,7 +247,9 @@
           <!-- Preview -->
           <div>
             <img id="productPreview" src="/assets/images/black.JPG" alt="Selected Slab Station style"
-                 class="mx-auto w-full max-w-xl rounded-2xl ring-1 ring-white/10 shadow-2xl shadow-white/10 reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700">
+                 width="2166" height="2201"
+                 class="mx-auto w-full max-w-xl rounded-2xl ring-1 ring-white/10 shadow-2xl shadow-white/10 reveal-on-scroll opacity-0 translate-y-4 transition ease-out duration-700"
+                 loading="eager" decoding="async">
           </div>
 
           <!-- Builder / Checkout -->
@@ -430,13 +438,15 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
         <img src="/assets/images/logo.jpg" alt="The Slab Station Logo"
-             class="h-14 sm:h-16 min-h-[40px] w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]" />
+             width="200" height="80"
+             class="h-14 sm:h-16 min-h-[40px] w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
+             loading="lazy" decoding="async" />
 
         <!-- Centered, larger Instagram button with text -->
         <a href="https://instagram.com/theslabstation" target="_blank" rel="noopener"
            class="inline-flex items-center gap-3 rounded-2xl border border-white/15 px-5 py-2.5 hover:bg-white/10 transition">
           <span class="text-sm sm:text-base">Follow us on</span>
-          <img src="/assets/images/instagram-icon.png" class="h-9 w-9 rounded-[10px]" alt="Instagram">
+          <img src="/assets/images/instagram-icon.png" width="36" height="36" class="h-9 w-9 rounded-[10px]" alt="Instagram" loading="lazy" decoding="async">
         </a>
 
         <p class="text-white/40 text-sm">&copy; <span id="year"></span> The Slab Station. All rights reserved.</p>
@@ -493,7 +503,7 @@
     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 15l7-7 7 7"/></svg>
   </button>
 
-  <!-- REVIEW MODAL (Netlify form) -->
+  <!-- REVIEW MODAL -->
   <div id="reviewModal" class="fixed inset-0 hidden">
     <div class="absolute inset-0 bg-black/70"></div>
     <div class="relative mx-auto mt-20 w-[92%] max-w-xl rounded-2xl border border-white/10 bg-zinc-900 p-6 shadow-2xl">

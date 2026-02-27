@@ -496,6 +496,7 @@ function updateAverageRating(){
       const img = document.createElement('img');
       img.src = (item.media_type === 'VIDEO' ? item.thumbnail_url : item.media_url);
       img.loading = 'lazy';
+      img.decoding = 'async';
       img.className = 'w-full h-44 object-cover rounded-2xl';
       a.appendChild(img);
       grid.appendChild(a);
@@ -508,6 +509,7 @@ function updateAverageRating(){
       const img = document.createElement('img');
       img.src = `/assets/images/${n}`;
       img.loading = 'lazy';
+      img.decoding = 'async';
       img.className = 'w-full h-44 object-cover rounded-2xl';
       grid.appendChild(img);
     });
