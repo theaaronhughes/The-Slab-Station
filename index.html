@@ -24,13 +24,13 @@
     .icon-wrap { background: linear-gradient(145deg, rgba(255,255,255,.12), rgba(255,255,255,.06)); border: 1px solid rgba(255,255,255,.14); }
     .no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
 
-    /* --- PayPal: no white edges, clean rounded button --- */
-    .paypal-wrapper{border-radius:1rem;overflow:hidden;background:transparent!important;display:block;position:relative;border:none!important;box-shadow:none!important;padding:0!important}
-    #paypal-container{display:block;border:none!important;outline:none!important;background:transparent!important}
-    #paypal-container, #paypal-container iframe{width:100%!important;border:0!important;background:transparent!important;display:block;box-shadow:none!important;outline:none!important}
-    #paypal-container > div{margin:0!important;border:none!important;box-shadow:none!important;background:transparent!important}
-    #paypal-container .paypal-buttons,
-    #paypal-container .paypal-buttons > div{border-radius:1rem!important;overflow:hidden!important;margin:0!important;border:none!important;box-shadow:none!important;outline:none!important;background:transparent!important}
+    /* --- PayPal: custom overlay (no white halo), SDK iframe invisible but receives clicks --- */
+    .paypal-wrapper{position:relative;overflow:hidden;border-radius:9999px;min-height:48px}
+    #paypal-container{position:relative;min-height:48px}
+    #paypal-container iframe{opacity:0!important;z-index:2!important;position:relative!important}
+    .paypal-overlay{position:absolute;inset:0;z-index:1;pointer-events:none;display:flex;align-items:center;justify-content:center;background:#FFC439;border-radius:9999px;font-family:system-ui,-apple-system,Arial,sans-serif;font-size:1rem;font-weight:600;color:#003087;transition:background .2s,transform .2s}
+    .paypal-wrapper:hover .paypal-overlay{background:#f0b72f;transform:scale(1.02)}
+    @media (prefers-reduced-motion: reduce){.paypal-wrapper:hover .paypal-overlay{transform:none}}
 
     /* Make sure the PayID modal always sits ON TOP of PayPal iframes */
     #payidModal{position:fixed;inset:0;z-index:2147483647 !important}
@@ -372,8 +372,11 @@
                   </div>
                 </button>
 
-                <!-- PayPal -->
-                <div class="paypal-wrapper"><div id="paypal-container" class="w-full"></div></div>
+                <!-- PayPal: custom overlay for clean look, SDK iframe underneath (opacity:0) for clicks -->
+                <div class="paypal-wrapper w-full">
+                  <div id="paypal-container" class="w-full min-h-[48px]"></div>
+                  <div class="paypal-overlay" aria-hidden="true">PayPal</div>
+                </div>
 
                 <!-- PAYID -->
                 <button type="button" id="payidBtn"
