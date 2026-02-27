@@ -34,8 +34,8 @@ const videoShowcase = document.getElementById('video-showcase');
 document.addEventListener('DOMContentLoaded', () => {
   // Swap titles/videos per your note:
   // "Setup & Storage" should show howitworks.mp4 and "Showcase Mode" should show Mainvideo.mp4
-  if (videoSetup) videoSetup.src = 'assets/videos/howitworks.mp4';
-  if (videoShowcase) videoShowcase.src = 'assets/videos/Mainvideo.mp4';
+  if (videoSetup) videoSetup.src = '/assets/videos/howitworks.mp4';
+  if (videoShowcase) videoShowcase.src = '/assets/videos/Mainvideo.mp4';
   showTab('setup');
 });
 tabButtons.forEach(btn => btn.addEventListener('click', () => showTab(btn.dataset.target === 'tab-showcase' ? 'showcase' : 'setup')));
@@ -124,18 +124,18 @@ gradingService?.addEventListener('change', updatePreview);
 
 function updatePreview(){
   const map = {
-    'Black':'assets/images/black.JPG',
-    'White':'assets/images/white.JPG',
-    'White/White/Red':'assets/images/whitered.JPG',
-    'White/White/Blue':'assets/images/whiteblue.JPG',
-    'Orange/Grey/Orange':'assets/images/orangegreyorange.JPG',
-    'Yellow/White/Yellow':'assets/images/yellowwhiteyellow.JPG',
-    'Red/Blue/Red':'assets/images/IMG_9805.jpg',
-    'Pink':'assets/images/IMG_9792.jpg',
-    'Blue':'assets/images/IMG_9002.JPG',
-    'Orange':'assets/images/orange.JPG',
-    'Yellow/Blue/Yellow':'assets/images/YBY.JPG',
-    'Red/White/Red':'assets/images/RWR.JPG'
+    'Black':'/assets/images/black.JPG',
+    'White':'/assets/images/white.JPG',
+    'White/White/Red':'/assets/images/whitered.JPG',
+    'White/White/Blue':'/assets/images/whiteblue.JPG',
+    'Orange/Grey/Orange':'/assets/images/orangegreyorange.JPG',
+    'Yellow/White/Yellow':'/assets/images/yellowwhiteyellow.JPG',
+    'Red/Blue/Red':'/assets/images/IMG_9805.jpg',
+    'Pink':'/assets/images/IMG_9792.jpg',
+    'Blue':'/assets/images/IMG_9002.JPG',
+    'Orange':'/assets/images/orange.JPG',
+    'Yellow/Blue/Yellow':'/assets/images/YBY.JPG',
+    'Red/White/Red':'/assets/images/RWR.JPG'
   };
   const style = selectedStyle.value;
   const src = style === 'Custom Colors' ? map['Black'] : (map[style] || map['Black']);
@@ -480,7 +480,7 @@ function updateAverageRating(){
   countEl.textContent = `Average rating from ${count} verified buyers`;
 }
 
-/* ---------- Instagram feed (via Netlify Function) ---------- */
+/* ---------- Instagram feed (via API) ---------- */
 (async function loadIG(){
   const grid = document.getElementById('igFeed');
   if (!grid) return;
@@ -506,7 +506,7 @@ function updateAverageRating(){
     grid.innerHTML = '';
     samples.forEach(n => {
       const img = document.createElement('img');
-      img.src = `assets/images/${n}`;
+      img.src = `/assets/images/${n}`;
       img.loading = 'lazy';
       img.className = 'w-full h-44 object-cover rounded-2xl';
       grid.appendChild(img);
