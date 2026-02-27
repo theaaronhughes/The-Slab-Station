@@ -1,14 +1,18 @@
-// Netlify Function: Email order summaries via Resend
-// Set env var RESEND_API_KEY in Netlify dashboard
-
 const { Resend } = require('resend');
-const resend = new Resend(process.env.RESEND_API_KEY);
 
-exports.handler = async (event) => {
-  if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' };
+module.exports = async (req, res) => {
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+
+  const toEmail = process.env.ORDER_TO_EMAIL || 'theaaronhughes@gmail.com';
+  const fromEmail = process.env.ORDER_FROM_EMAIL || 'orders@slabstation.app';
+
+  if (!process.env.RESEND_API_KEY) {
+    return res.status(500).json({ error: 'Missing RESEND_API_KEY' });
+  }
+
   try {
-    const { method, providerId, order, buyer } = JSON.parse(event.body || '{}');
-    const to = 'theaaronhughes@gmail.com';
+    const body = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
+    const { method, providerId, order, buyer } = body;
 
     const shippingBlock = buyer?.shipping ? `
       <h3>Shipping</h3>
@@ -37,28 +41,29 @@ exports.handler = async (event) => {
         <p><b>Method:</b> ${method}${providerId ? ` (${providerId})` : ''}</p>
         ${payidRef}
         <ul>
-          <li><b>Grading:</b> ${order.grading}</li>
-          <li><b>Style:</b> ${order.style}</li>
-          ${order.custom ? `<li><b>Custom:</b> ${order.custom}</li>` : ''}
-          ${order.customNotes ? `<li><b>Notes:</b> ${order.customNotes}</li>` : ''}
-          <li><b>Add-ons:</b> ${order.addon}</li>
-          <li><b>Quantity:</b> ${order.qty}</li>
-          <li><b>Total (AUD):</b> $${Number(order.total).toFixed(2)}</li>
+          <li><b>Grading:</b> ${order?.grading}</li>
+          <li><b>Style:</b> ${order?.style}</li>
+          ${order?.custom ? `<li><b>Custom:</b> ${order.custom}</li>` : ''}
+          ${order?.customNotes ? `<li><b>Notes:</b> ${order.customNotes}</li>` : ''}
+          <li><b>Add-ons:</b> ${order?.addon}</li>
+          <li><b>Quantity:</b> ${order?.qty}</li>
+          <li><b>Total (AUD):</b> $${Number(order?.total || 0).toFixed(2)}</li>
         </ul>
         ${shippingBlock}
         ${payerBlock}
       </div>`;
 
+    const resend = new Resend(process.env.RESEND_API_KEY);
     const resp = await resend.emails.send({
-      from: 'orders@slabstation.app', // use a verified sender in your Resend account
-      to,
-      subject: `New Order (${method}) — ${order.style} x${order.qty}`,
-      html
+      from: fromEmail,
+      to: toEmail,
+      subject: `New Order (${method}) — ${order?.style || 'Slab Station'} x${order?.qty || 1}`,
+      html,
     });
 
-    return { statusCode: 200, body: JSON.stringify({ ok: true, id: resp.id }) };
+    return res.status(200).json({ ok: true, id: resp.data?.id });
   } catch (err) {
     console.error(err);
-    return { statusCode: 500, body: JSON.stringify({ ok: false, error: err.message }) };
+    return res.status(500).json({ ok: false, error: err.message });
   }
 };

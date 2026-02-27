@@ -1,46 +1,36 @@
-// netlify/functions/create-checkout.js
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-function cors() {
-  return {
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST,OPTIONS',
-  };
-}
-
-exports.handler = async (event) => {
-  if (event.httpMethod === 'OPTIONS') {
-    return { statusCode: 204, headers: cors() };
-  }
-  if (event.httpMethod !== 'POST') {
-    return { statusCode: 405, headers: cors(), body: JSON.stringify({ error: 'Method not allowed' }) };
-  }
+module.exports = async (req, res) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  if (req.method === 'OPTIONS') return res.status(204).end();
+  if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   try {
     if (!process.env.STRIPE_SECRET_KEY) throw new Error('Missing STRIPE_SECRET_KEY');
 
-    const payload = JSON.parse(event.body || '{}');
+    const payload = typeof req.body === 'string' ? JSON.parse(req.body || '{}') : (req.body || {});
     const order = payload.order || payload || {};
 
-    const qty = Number(order.qty || 1);
+    const qty = Math.max(1, Number(order.qty || 1));
     const style = order.style || 'Custom';
     const grading = order.grading || 'PSA';
     const addon = order.addon || 'None';
-
-    // Build line items (AUD cents). Support either `total` OR `subtotal` + `shipping`
-    const line_items = [];
-    const desc = `The Slab Station — ${style} | Grading: ${grading}`;
+    const custom = order.custom || '';
+    const customNotes = (order.customNotes || '').slice(0, 500);
 
     const total = Number(order.total);
     const subtotal = Number(order.subtotal);
     const shipping = Number(order.shipping);
 
+    const line_items = [];
+    const desc = `The Slab Station — ${style} | Grading: ${grading}${addon && addon !== 'None' ? ` | ${addon}` : ''}`;
+
     if (!isNaN(total) && total > 0) {
       line_items.push({
-        quantity: 1, // already includes qty/shipping in `total`
+        quantity: 1,
         price_data: {
-          currency: 'AUD',
+          currency: 'aud',
           unit_amount: Math.round(total * 100),
           product_data: { name: 'The Slab Station', description: desc },
         },
@@ -50,7 +40,7 @@ exports.handler = async (event) => {
         line_items.push({
           quantity: 1,
           price_data: {
-            currency: 'AUD',
+            currency: 'aud',
             unit_amount: Math.round(subtotal * 100),
             product_data: { name: 'The Slab Station', description: desc },
           },
@@ -60,7 +50,7 @@ exports.handler = async (event) => {
         line_items.push({
           quantity: 1,
           price_data: {
-            currency: 'AUD',
+            currency: 'aud',
             unit_amount: Math.round(shipping * 100),
             product_data: { name: 'Shipping (Australia Wide)' },
           },
@@ -70,19 +60,21 @@ exports.handler = async (event) => {
 
     if (!line_items.length) throw new Error('Missing/invalid pricing in request');
 
-    // Build safe success/cancel URLs
-    const originHeader = event.headers.origin;
-    const proto = event.headers['x-forwarded-proto'] || 'https';
-    const host = event.headers.host;
-    const origin = originHeader || process.env.SITE_URL || `${proto}://${host}`;
+    const origin = payload.origin || req.headers.origin || process.env.SITE_URL || `https://${req.headers.host || 'the-slab-station.vercel.app'}`;
 
     const session = await stripe.checkout.sessions.create({
       mode: 'payment',
-      // IMPORTANT: only 'card'. Apple Pay is included automatically here.
-      payment_method_types: ['card'],
+      payment_method_types: ['card', 'apple_pay', 'google_pay', 'afterpay_clearpay'],
       line_items,
+      shipping_address_collection: { allowed_countries: ['AU', 'NZ', 'US', 'CA', 'GB', 'IE', 'SG', 'HK'] },
+      phone_number_collection: { enabled: true },
       metadata: {
-        style, grading, qty: String(qty), addon: String(addon || ''),
+        style,
+        grading,
+        qty: String(qty),
+        addon: String(addon),
+        custom: String(custom),
+        customNotes,
         subtotal: isNaN(subtotal) ? '' : String(subtotal),
         shipping: isNaN(shipping) ? '' : String(shipping),
         total: isNaN(total) ? '' : String(total),
@@ -91,9 +83,9 @@ exports.handler = async (event) => {
       cancel_url: `${origin}/index.html#builder`,
     });
 
-    return { statusCode: 200, headers: cors(), body: JSON.stringify({ url: session.url }) };
+    return res.status(200).json({ url: session.url });
   } catch (err) {
     console.error('create-checkout error:', err);
-    return { statusCode: 500, headers: cors(), body: JSON.stringify({ error: err.message || 'Server error' }) };
+    return res.status(500).json({ error: err.message || 'Server error' });
   }
 };

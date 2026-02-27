@@ -124,10 +124,10 @@ gradingService?.addEventListener('change', updatePreview);
 
 function updatePreview(){
   const map = {
-    'Black':'assets/images/black.jpg',
-    'White':'assets/images/white.jpg',
-    'White/White/Red':'assets/images/whitered.jpg',
-    'White/White/Blue':'assets/images/whiteblue.jpg',
+    'Black':'assets/images/black.JPG',
+    'White':'assets/images/white.JPG',
+    'White/White/Red':'assets/images/whitered.JPG',
+    'White/White/Blue':'assets/images/whiteblue.JPG',
     'Orange/Grey/Orange':'assets/images/orangegreyorange.JPG',
     'Yellow/White/Yellow':'assets/images/yellowwhiteyellow.JPG',
     'Red/Blue/Red':'assets/images/IMG_9805.jpg',
@@ -181,7 +181,7 @@ async function startStripeCheckout() {
   btns.forEach(b=>b.classList.add('btn-busy'));
   const order = buildOrder();
   try {
-    const res = await fetch('/.netlify/functions/create-checkout', {
+    const res = await fetch('/api/create-checkout', {
       method: 'POST',
       headers: { 'Content-Type':'application/json' },
       body: JSON.stringify({ ...order, origin: window.location.origin })
@@ -196,8 +196,19 @@ cardCheckoutBtn?.addEventListener('click', startStripeCheckout);
 appleCheckoutBtn?.addEventListener('click', startStripeCheckout);
 
 /* ---------- PayPal (collect shipping; hide card funding) ---------- */
-(function loadPayPal(){
-  const id = window.PAYPAL_CLIENT_ID || 'sb';
+(async function loadPayPal(){
+  let id = window.PAYPAL_CLIENT_ID;
+  if (!id) {
+    try {
+      const r = await fetch('/api/config');
+      const cfg = await r.json();
+      id = cfg?.paypalClientId || '';
+    } catch (_) {}
+  }
+  if (!id) {
+    document.getElementById('paypal-container')?.closest('.paypal-wrapper')?.classList.add('hidden');
+    return;
+  }
   const s = document.createElement('script');
   s.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(id)}&currency=AUD&intent=capture&components=buttons&disable-funding=card,credit,venmo,paylater`;
   s.onload = renderPayPal;
@@ -313,7 +324,7 @@ payidSubmit?.addEventListener('click', async () => {
 /* ---------- Email order summaries (serverless) ---------- */
 async function sendOrderEmail(method, providerId, order, buyer){
   try {
-    await fetch('/.netlify/functions/submit-order', {
+    await fetch('/api/submit-order', {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ method, providerId, order, buyer })
@@ -475,7 +486,7 @@ function updateAverageRating(){
   if (!grid) return;
 
   try {
-    const res = await fetch('/.netlify/functions/instagram-feed');
+    const res = await fetch('/api/instagram-feed');
     if (!res.ok) throw new Error('no ig token / bad response');
     const data = await res.json(); // [{permalink, media_url, thumbnail_url, media_type}]
     grid.innerHTML = '';
@@ -491,7 +502,7 @@ function updateAverageRating(){
     });
   } catch {
     // Fallback to local images if function not configured yet
-    const samples = ['black.jpg','white.jpg','IMG_9805.jpg','IMG_9792.jpg','IMG_9002.JPG','orange.JPG'];
+    const samples = ['black.JPG','white.JPG','IMG_9805.jpg','IMG_9792.jpg','IMG_9002.JPG','orange.JPG'];
     grid.innerHTML = '';
     samples.forEach(n => {
       const img = document.createElement('img');
@@ -505,12 +516,12 @@ function updateAverageRating(){
 
 // (Instagram slider removed)
 
-/* ---------- Review submission (modal + Netlify form) ---------- */
+/* ---------- Review submission (modal + API) ---------- */
 const reviewBtn = document.getElementById('openReviewModal');
 const reviewModal = document.getElementById('reviewModal');
 const reviewClose = document.getElementById('reviewClose');
 const reviewCancel = document.getElementById('reviewCancel');
-const reviewForm = document.querySelector('#reviewModal form[name="reviews"]');
+const reviewForm = document.getElementById('reviewForm');
 
 function toggleReviewModal(show){
   if (!reviewModal) return;
@@ -521,19 +532,36 @@ function toggleReviewModal(show){
 reviewBtn?.addEventListener('click', () => toggleReviewModal(true));
 [reviewClose, reviewCancel].forEach(b => b?.addEventListener('click', () => toggleReviewModal(false)));
 
-// Intercept Netlify submit to avoid redirect; append to reviews immediately
-reviewForm?.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const form = e.currentTarget;
-  const fd = new FormData(form);
+// Submit review via API (button click, not form submit)
+async function handleReviewSubmit() {
+  const form = reviewForm;
+  if (!form) return;
+  const name = document.getElementById('reviewName')?.value?.trim() || 'Anonymous';
+  const role = document.getElementById('reviewRole')?.value?.trim() || 'Customer';
+  const email = document.getElementById('reviewEmail')?.value?.trim() || '';
+  const rating = Number(document.getElementById('reviewRating')?.value || 5);
+  const text = document.getElementById('reviewMessage')?.value?.trim() || '';
+  if (!name || !email || !text) {
+    alert('Please fill in name, email and your review.');
+    return;
+  }
+  const botField = form.querySelector('[name="bot-field"]');
+  if (botField?.value) return;
 
-  const name = fd.get('name')?.toString() || 'Anonymous';
-  const role = fd.get('role')?.toString() || 'Customer';
-  const email = fd.get('email')?.toString() || '';
-  const rating = Number(fd.get('rating') || 5);
-  const text = fd.get('message')?.toString() || '';
+  try {
+    const res = await fetch('/api/submit-review', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, role, rating, message: text }),
+    });
+    const data = await res.json();
+    if (!res.ok || !data?.ok) throw new Error('Submit failed');
+  } catch (err) {
+    console.error(err);
+    alert('Could not submit. Please try again.');
+    return;
+  }
 
-  // Append locally for instant UX
   if (reviewsDataGlobal) {
     reviewsDataGlobal.unshift({ name, role, rating, text });
     // Re-render the track minimally: prepend one card
@@ -548,16 +576,14 @@ reviewForm?.addEventListener('submit', async (e) => {
     header.appendChild(left); header.appendChild(ratingDiv);
     const bodyP = document.createElement('p'); bodyP.className='mt-3 text-white/80 leading-relaxed'; bodyP.textContent=`“${text}”`;
     li.appendChild(header); li.appendChild(bodyP);
-    const spacer = reviewsTrack.querySelector('li.shrink-0.w-2');
-    reviewsTrack.insertBefore(li, spacer || null);
+    const spacer = reviewsTrack?.querySelector('li.shrink-0.w-2');
+    if (reviewsTrack && spacer) reviewsTrack.insertBefore(li, spacer);
+    else if (reviewsTrack) reviewsTrack.appendChild(li);
     updateAverageRating();
   }
 
-  // Post to Netlify to store submission (no-redirect)
-  try {
-    await fetch('/', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body: new URLSearchParams([...fd, ['form-name','reviews']]).toString() });
-  } catch {}
-
   toggleReviewModal(false);
   form.reset();
-});
+}
+reviewForm?.addEventListener('submit', (e) => { e.preventDefault(); handleReviewSubmit(); });
+document.getElementById('reviewSubmit')?.addEventListener('click', (e) => { e.preventDefault(); handleReviewSubmit(); });
