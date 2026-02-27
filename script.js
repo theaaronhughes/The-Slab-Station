@@ -495,6 +495,8 @@ function updateAverageRating(){
       a.href = item.permalink; a.target = '_blank'; a.rel = 'noopener';
       const img = document.createElement('img');
       img.src = (item.media_type === 'VIDEO' ? item.thumbnail_url : item.media_url);
+      img.width = 400;
+      img.height = 176;
       img.loading = 'lazy';
       img.decoding = 'async';
       img.className = 'w-full h-44 object-cover rounded-2xl';
@@ -508,6 +510,8 @@ function updateAverageRating(){
     samples.forEach(n => {
       const img = document.createElement('img');
       img.src = `/assets/images/${n}`;
+      img.width = 400;
+      img.height = 176;
       img.loading = 'lazy';
       img.decoding = 'async';
       img.className = 'w-full h-44 object-cover rounded-2xl';
