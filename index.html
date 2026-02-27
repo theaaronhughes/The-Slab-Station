@@ -24,13 +24,13 @@
     .icon-wrap { background: linear-gradient(145deg, rgba(255,255,255,.12), rgba(255,255,255,.06)); border: 1px solid rgba(255,255,255,.14); }
     .no-scrollbar::-webkit-scrollbar{display:none}.no-scrollbar{-ms-overflow-style:none;scrollbar-width:none}
 
-    /* --- PayPal full-bleed + spacing/edge fixes --- */
-    .paypal-wrapper{border-radius:1rem;overflow:hidden;background:transparent;display:block;position:relative}
-    #paypal-container{display:block}
-    #paypal-container, #paypal-container iframe{width:100%!important;border:0!important;background:transparent!important;display:block}
-    #paypal-container > div{margin:0!important}
+    /* --- PayPal: no white edges, clean rounded button --- */
+    .paypal-wrapper{border-radius:1rem;overflow:hidden;background:transparent!important;display:block;position:relative;border:none!important;box-shadow:none!important;padding:0!important}
+    #paypal-container{display:block;border:none!important;outline:none!important;background:transparent!important}
+    #paypal-container, #paypal-container iframe{width:100%!important;border:0!important;background:transparent!important;display:block;box-shadow:none!important;outline:none!important}
+    #paypal-container > div{margin:0!important;border:none!important;box-shadow:none!important;background:transparent!important}
     #paypal-container .paypal-buttons,
-    #paypal-container .paypal-buttons > div{border-radius:1rem!important;overflow:hidden!important;margin:0!important}
+    #paypal-container .paypal-buttons > div{border-radius:1rem!important;overflow:hidden!important;margin:0!important;border:none!important;box-shadow:none!important;outline:none!important;background:transparent!important}
 
     /* Make sure the PayID modal always sits ON TOP of PayPal iframes */
     #payidModal{position:fixed;inset:0;z-index:2147483647 !important}
@@ -439,20 +439,19 @@
   <!-- FOOTER -->
   <footer class="border-t border-white/10 bg-black">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <div class="flex flex-col sm:flex-row items-center justify-between gap-6">
-        <img src="/assets/images/logo.jpg" alt="The Slab Station Logo"
-             width="200" height="80"
-             class="h-14 sm:h-16 min-h-[40px] w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
-             loading="lazy" decoding="async" />
-
-        <!-- Centered, larger Instagram button with text -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 items-center justify-items-center gap-6 sm:gap-4">
+        <div class="flex justify-center sm:justify-start w-full sm:w-auto order-2 sm:order-1">
+          <img src="/assets/images/logo.jpg" alt="The Slab Station Logo"
+               width="200" height="80"
+               class="h-14 sm:h-16 min-h-[40px] w-auto object-contain drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]"
+               loading="lazy" decoding="async" />
+        </div>
         <a href="https://instagram.com/theslabstation" target="_blank" rel="noopener" aria-label="Follow us on Instagram"
-           class="inline-flex items-center gap-3 rounded-2xl border border-white/15 px-5 py-2.5 hover:bg-white/10 transition focus-ring">
-          <span class="text-sm sm:text-base">Follow us on</span>
-          <img src="/assets/images/instagram-icon.png" width="36" height="36" class="h-9 w-9 rounded-[10px]" alt="Instagram" loading="lazy" decoding="async">
+           class="inline-flex items-center justify-center gap-2.5 rounded-xl border border-white/15 px-4 py-2.5 hover:bg-white/10 transition focus-ring order-1 sm:order-2">
+          <img src="/assets/images/instagram-icon.png" width="24" height="24" class="h-6 w-6 shrink-0 object-contain" alt="" aria-hidden="true" loading="lazy" decoding="async">
+          <span class="text-sm font-medium">Follow us on Instagram</span>
         </a>
-
-        <p class="text-white/40 text-sm">&copy; <span id="year"></span> The Slab Station. All rights reserved.</p>
+        <p class="text-white/40 text-sm text-center sm:text-right order-3 w-full sm:w-auto">&copy; <span id="year"></span> The Slab Station. All rights reserved.</p>
       </div>
     </div>
   </footer>

@@ -217,11 +217,16 @@ appleCheckoutBtn?.addEventListener('click', startStripeCheckout);
 function renderPayPal(){
   if (!window.paypal) return;
   const container = document.getElementById('paypal-container');
-  // Mutation observer to kill random margins PayPal sometimes injects
+  // Mutation observer to remove margins, borders, box-shadow PayPal injects
   const mo = new MutationObserver(() => {
-    [...container.querySelectorAll('[style]')].forEach(el => {
-      if (el.style.margin) el.style.margin = '0px';
-      if (el.style.borderRadius) el.style.borderRadius = '16px';
+    [...container.querySelectorAll('*')].forEach(el => {
+      if (el.style) {
+        if (el.style.margin) el.style.margin = '0px';
+        if (el.style.borderRadius) el.style.borderRadius = '16px';
+        if (el.style.border) el.style.border = 'none';
+        if (el.style.boxShadow) el.style.boxShadow = 'none';
+        if (el.style.outline) el.style.outline = 'none';
+      }
     });
   });
   mo.observe(container, { subtree:true, attributes:true });
